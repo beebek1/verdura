@@ -1,21 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import bird from '../assets/birds.png'
 import group from '../assets/Group.png'
 import individual from '../assets/individual.png'
 import gmail from '../assets/gmail.png'
 import github from '../assets/github.png'
+import { Eye, EyeOff } from 'lucide-react'
+
 
 
 const LoginInd = () => {
+    const [showPassword, setShowPassword] = useState(false)
   return (
       /* <img src={bird} alt="text" /> */
-   <div className="flex h-screen w-screen overflow-hidden">
-    <div className="w-1/2 bg-[#1E3A2A] relative">
-        <img src={bird} 
-        alt="Birds" 
-        className="absolute  h-full w-full object-cover"
-        />
-    </div>
+   <div className="flex h-screen  ">
+    <div
+  className="w-1/2 bg-[#1E3A2A] bg-center bg-cover "
+  style={{ backgroundImage: `url(${bird})` }}
+/>
     <div className="w-1/2 flex items-center justify-center bg-white">
         <div className="w-full max-w-md px-8">
             <h1 className="text-3xl font-bold text-center mb-4">
@@ -54,10 +55,20 @@ const LoginInd = () => {
             placeholder='Email'
             />
 
-            <input type="password" 
-            className='w-full border p-3 mt-1 mb-6 outline-none'
-            placeholder='**********'
+            <div className="relative mb-6">
+            <input 
+                type={showPassword ? "text" : "password"}
+                className='w-full border p-3 mt-1 outline-none pr-10'
+                placeholder='**********'
             />
+            <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+            </div>
 
             <p className='text-right'>
                 <span className='text-blue-600 cursor-pointer'>Forgot password?</span>
@@ -100,7 +111,7 @@ const LoginInd = () => {
                 </button>
             </div>
 
-            <p className='text center mt-10'>
+            <p className='text-center mt-10'>
                 New to Verdura?<span className='text-blue-600 cursor-pointer'>Sign Up</span>
             </p>
 
