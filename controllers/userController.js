@@ -1,4 +1,5 @@
 const RegisterUser = require("../models/userModel");
+const sendEmail = require("../helpers/sendEmail");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
@@ -19,18 +20,37 @@ const registerUser = async(req, res) =>{
         })
     }
 
-    // const verificationToken = crypto.randomBytes(32).toString("hex");
-    // const verification
+    //verification token for verifying
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    //token expiry ( 1 hours )
+    const verificationTokenExpires = new Date(Date.now() + 1 * 60 * 60 * 1000);
 
     //hashing password 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     //passing data to model
     const createUser = await RegisterUser.create({
+        role: "user",
         username,
         email,
-        password : hashedPassword
+        password : hashedPassword,
+        verificationToken,
+        verificationTokenExpires
     });
+
+    //for sending email
+    const verifyLink = `http://localhost:3000/api/user/verify-email?token=${verificationToken}`;
+
+    await sendEmail(
+        email,
+        "Verify your email",
+        `
+            <h2>Email Verification</h2>
+            <p>Click the link below to verify your email: </p>
+            <a href="${verifyLink}"> click Here to verify </a>
+        `
+    )
 
     return res.status(201).json({
         message: "user registered successfully",
@@ -38,13 +58,12 @@ const registerUser = async(req, res) =>{
             username: createUser.username,
             email: createUser.email
         }
-    })
-}
+    });
+    }
 
+
+//for login
 const userLogin = async (req, res) =>{
-
-
-    console.log("iim here ")
 
     const{email, password} = req.body;
 
@@ -54,12 +73,16 @@ const userLogin = async (req, res) =>{
         })
     }
 
-    const user = await RegisterUser.findOne({where: {email : email}})
+    const user = await RegisterUser.findOne({where: {email : email, role: "user"}})
 
     //if there is no user
     if(!user){
         return res.status(404).json({
             message: ` no user with this email ${email} exists `
+        })
+    }else if(user.isVerified===false){
+        return res.status(404).json({
+            message: `${email} isn't verified`
         })
     }
 
@@ -75,5 +98,7 @@ const userLogin = async (req, res) =>{
         })
     }
 };
+
+
 
 module.exports = {registerUser, userLogin};

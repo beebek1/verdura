@@ -10,9 +10,14 @@ const Register = sequelize.define(
             primaryKey: true
         },
 
+        role: {
+            type: DataTypes.ENUM("user", "admin"),
+            allowNull: false,
+            defaultValue: "user"
+        },
+
         username: {
             type: DataTypes.STRING,
-            unique: true, 
             allowNull: false
         },
 
@@ -28,9 +33,10 @@ const Register = sequelize.define(
 
         },
 
-        isVerfied: {
+        isVerified: {
             type: DataTypes.BOOLEAN,
-            defaultValue:false
+            defaultValue:false,
+            allowNull:false
         },
 
         verificationToken: {
