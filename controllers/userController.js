@@ -1,50 +1,87 @@
 const RegisterUser = require("../models/userModel");
+const OrgInfo = require("../models/orgModel/orgModel");
+const IndInfo = require("../models/indModel/indModel");
+
+const sendEmail = require("../helpers/sendEmail");
+
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 
+
+//user registeration
 const registerUser = async(req, res) =>{
 
-    const{username, email, password} = req.body;
+    const{username, email, password, role, orgDetails, indDetails} = req.body;
 
-    if(!username || !email || !password){
+    if(!username || !email || !password || !role){
         return res.status(400).json({
             message: "please fill all the fields"
         })
-    };
+    }
 
-    const user = await RegisterUser.findOne({where:{username: username}});
+    //check whether the email already exists
+    const user = await RegisterUser.findOne({where:{email : email}});
     if(user){
         return res.status(400).json({
             message: `${username} already exists`
         })
     }
 
-    // const verificationToken = crypto.randomBytes(32).toString("hex");
-    // const verification
+    //verification token for verifying
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    //token expiry ( 1 hours )
+    const verificationTokenExpires = new Date(Date.now() + 1 * 60 * 60 * 1000);
 
     //hashing password 
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     //passing data to model
-    const createUser = await RegisterUser.create({
+    const currentUser = await RegisterUser.create({
+        role: role === "org" ?"org" : "ind",
         username,
         email,
-        password : hashedPassword
+        password : hashedPassword,
+        verificationToken,
+        verificationTokenExpires
     });
 
+    if(role === "org" && orgDetails){
+        await OrgInfo.create({org_id : currentUser.id, ...orgDetails});
+        
+    }else if(role === "ind" && indDetails){
+        await IndInfo.create({ind_id: currentUser.id, ...indDetails});
+
+    }else{
+        console.log("data filled in main user table but not in subTables", currentUser.id)
+    }
+
+    //for sending email
+    const verifyLink = `http://localhost:3000/api/user/verify-email?token=${verificationToken}`;
+
+    await sendEmail(
+        email,
+        "Verify your email",
+        `
+            <h2>Email Verification</h2>
+            <p>Click the link below to verify your email: </p>
+            <a href="${verifyLink}"> click Here to verify </a>
+        `
+    )
+
     return res.status(201).json({
-        message: "user registered successfully",
+        message: "user captured but unverified",
         user:{
-            username: createUser.username,
-            email: createUser.email
+            username: currentUser.username,
+            email: currentUser.email
         }
-    })
-}
+    });
+    }
 
+
+//for login
 const userLogin = async (req, res) =>{
-
-
-    console.log("iim here ")
 
     const{email, password} = req.body;
 
@@ -54,20 +91,38 @@ const userLogin = async (req, res) =>{
         })
     }
 
-    const user = await RegisterUser.findOne({where: {email : email}})
+    const user = await RegisterUser.findOne({where:{email: email}});
 
     //if there is no user
     if(!user){
         return res.status(404).json({
             message: ` no user with this email ${email} exists `
         })
+    }else if(!user.isVerified){
+        return res.status(403).json({
+            message: `${email} isn't verified. Please verify yourself`
+        })
     }
 
     const isMatch = await bcrypt.compare(password, user.password)
 
-    if(isMatch){
+    if(isMatch){ 
+
+        //for JWT login token
+        const token = jwt.sign(
+            {
+                id: user.id,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: process.env.JWT_EXPIRES_IN
+            }
+        );
+
         return res.status(201).json({
-            message : "login successfull"
+            message : "login successful",
+            token : token
         })
     }else{
         return res.status(400).json({
@@ -75,5 +130,7 @@ const userLogin = async (req, res) =>{
         })
     }
 };
+
+
 
 module.exports = {registerUser, userLogin};
