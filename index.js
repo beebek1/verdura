@@ -4,15 +4,15 @@ const { sequelize, connectDB } = require("./db/database");
 
 //models
 require("./models/userModel");
-require("./models/indModel");
-require("./models/orgModel");
+require("./models/indModel/indModel");
+require("./models/orgModel/orgModel");
+require("./models/orgModel/createBlogModel");
 
 //middleware
 app.use(express.json());
 
 //userRoutes and productRoutes
 app.use("/api/user", require('./routes/userRoute'));
-
 
 app.get("/",(req,res) =>{
     res.json({message: "Welcome to the Home Page"});

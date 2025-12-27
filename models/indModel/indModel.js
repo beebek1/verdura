@@ -1,6 +1,6 @@
 const {DataTypes} = require("sequelize");
-const {sequelize} = require("../db/database");
-const Register = require("./userModel");
+const {sequelize} = require("../../db/database");
+const Register = require("../userModel");
 
 const IndInfo = sequelize.define(
     "IndividualInfo",

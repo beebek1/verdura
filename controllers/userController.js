@@ -1,11 +1,12 @@
 const RegisterUser = require("../models/userModel");
-const OrgInfo = require("../models/orgModel");
-const IndInfo = require("../models/indModel");
+const OrgInfo = require("../models/orgModel/orgModel");
+const IndInfo = require("../models/indModel/indModel");
 
 const sendEmail = require("../helpers/sendEmail");
 
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 
 
 //user registeration
@@ -90,7 +91,7 @@ const userLogin = async (req, res) =>{
         })
     }
 
-    const user = await RegisterUser.findOne({where: {email : email, role: "org"}})
+    const user = await RegisterUser.findOne({where:{email: email}});
 
     //if there is no user
     if(!user){
@@ -105,9 +106,23 @@ const userLogin = async (req, res) =>{
 
     const isMatch = await bcrypt.compare(password, user.password)
 
-    if(isMatch){
+    if(isMatch){ 
+
+        //for JWT login token
+        const token = jwt.sign(
+            {
+                id: user.id,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: process.env.JWT_EXPIRES_IN
+            }
+        );
+
         return res.status(201).json({
-            message : "login successfull"
+            message : "login successful",
+            token : token
         })
     }else{
         return res.status(400).json({

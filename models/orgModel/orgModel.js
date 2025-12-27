@@ -1,6 +1,6 @@
 const {DataTypes} = require("sequelize");
-const {sequelize} = require("../db/database");
-const Register = require("./userModel");
+const {sequelize} = require("../../db/database");
+const Register = require("../userModel");
 
 const OrgInfo = sequelize.define(
     "OrgInfo",
@@ -28,6 +28,7 @@ const OrgInfo = sequelize.define(
 
         verification_status: {
             type: DataTypes.BOOLEAN,
+            defaultValue: false,
             allowNull:false
         },
         
@@ -41,7 +42,25 @@ const OrgInfo = sequelize.define(
         address: {
             type: DataTypes.STRING,
             allowNull:false
-        }   
+        },
+
+        total_blogs: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull:false
+        },
+        
+        total_upvotes: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull:false
+        },
+        
+        total_views: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull:false,
+        }
 
     },
     {
