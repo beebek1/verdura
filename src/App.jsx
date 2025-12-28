@@ -8,8 +8,8 @@ function App() {
 
   return (
     <div>
-        <LoginInd/> 
-        {/* <ProfileInd />   */}
+        {/* <LoginInd/>  */}
+        <ProfileInd />  
        
     
     </div>
