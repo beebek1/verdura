@@ -2,12 +2,28 @@ const RegisterUser = require("../models/userModel");
 const OrgInfo = require("../models/orgModel/orgModel");
 const IndInfo = require("../models/indModel/indModel");
 
-const sendEmail = require("../helpers/sendEmail");
+const {emailSender} = require("../helpers/verifyEmail");
+const verifyEmailTemplate = require("../utils/emailTemplates/verifyEmailTemplate");
+const resetPasswordemailTemplate = require("../utils/emailTemplates/resetPasswordemailTemplate");
+
 
 const bcrypt = require("bcrypt");
+
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 
+
+//for getting token
+const verifyToken = () =>{
+
+    //verification token for verifying
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    //token expiry (1 hours)
+    const verificationTokenExpires = new Date(Date.now() + 1 * 60 * 60 * 1000);
+
+    return {verificationToken, verificationTokenExpires}
+}
 
 //user registeration
 const registerUser = async(req, res) =>{
@@ -28,11 +44,8 @@ const registerUser = async(req, res) =>{
         })
     }
 
-    //verification token for verifying
-    const verificationToken = crypto.randomBytes(32).toString("hex");
-
-    //token expiry ( 1 hours )
-    const verificationTokenExpires = new Date(Date.now() + 1 * 60 * 60 * 1000);
+    //for getting token and hasing the password
+    const{verificationToken, verificationTokenExpires} = verifyToken();
 
     //hashing password 
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -57,21 +70,16 @@ const registerUser = async(req, res) =>{
         console.log("data filled in main user table but not in subTables", currentUser.id)
     }
 
-    //for sending email
+    //link inside email
     const verifyLink = `http://localhost:3000/api/user/verify-email?token=${verificationToken}`;
 
-    await sendEmail(
-        email,
-        "Verify your email",
-        `
-            <h2>Email Verification</h2>
-            <p>Click the link below to verify your email: </p>
-            <a href="${verifyLink}"> click Here to verify </a>
-        `
-    )
+    const html = verifyEmailTemplate(verifyLink)
+
+    //sending email
+    emailSender(html, "Verify your email" ,email);
 
     return res.status(201).json({
-        message: "user captured but unverified",
+        message: "user captured but unverified email sent",
         user:{
             username: currentUser.username,
             email: currentUser.email
@@ -79,6 +87,55 @@ const registerUser = async(req, res) =>{
     });
     }
 
+//forgot password
+const forgotPassword = async(req, res) =>{
+    try{
+        const {email} = req.body;
+
+        if(!email){
+            return res.status(400).json({
+                message : "pleasee enter valid email address"
+            })
+        }
+
+        const user = await RegisterUser.findOne({where:{email: email}});
+        if(!user){
+            return res.status(400).json({
+                message : "unregistered email"
+            })
+        }
+        
+        const { verificationToken, verificationTokenExpires} = verifyToken();
+
+        //link inside email
+        const verifyLink = `http://localhost:3000/api/user/reset-password?token=${verificationToken}`;
+
+        const html = resetPasswordemailTemplate(verifyLink)
+
+        //sending email
+        emailSender(html, "Reset password request" ,email);
+ 
+
+        
+
+        user.verificationToken = verificationToken,
+        user.verificationTokenExpires = verificationTokenExpires,
+
+        await user.save();
+
+        return res.status(201).json({
+            message: "email sent, please verify yourself"
+        })
+
+    
+    }catch(error){
+        return res.status(400).json({
+            message: "something went wrong",
+            error: error.message
+        })
+    }
+}
+    
 
 //for login
 const userLogin = async (req, res) =>{
@@ -133,4 +190,30 @@ const userLogin = async (req, res) =>{
 
 
 
-module.exports = {registerUser, userLogin};
+const deleteUser = async(req, res) =>{
+
+    try{
+        const id=req.user.id
+        const user= await RegisterUser.findByPk(id)
+
+        if (!user){
+            return res.json({
+                message: "user not found"
+            })
+        }
+        await user.destroy()
+         return res.json({
+                message: "user deleted!!"
+            })
+    }
+    catch(error){
+        return res.status(401).json({
+            message: "something went wrong form userdelete",
+            error: error.message
+        })
+    }
+}
+
+
+
+module.exports = {registerUser, userLogin, deleteUser, forgotPassword};
