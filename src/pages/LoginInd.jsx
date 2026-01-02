@@ -5,11 +5,76 @@ import individual from '../assets/individual.png'
 import gmail from '../assets/gmail.png'
 import github from '../assets/github.png'
 import { Eye, EyeOff } from 'lucide-react'
-
+import toast from 'react-hot-toast'
+import {useNavigate} from 'react-router-dom'
 
 
 const LoginInd = () => {
+
+    const navigate = useNavigate()
+
     const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+    const [formData, setFormData] = useState({
+        email:'',
+        password:'',
+        confirmPassword:'',
+        rememberMe: false,
+    });
+    const handleChange = (e) =>{
+        const value = e.target.type === 'checkbox'? e.target.checked : e.target.value;
+        setFormData({
+            ...formData,
+            [e.target.name]: value,
+        });
+    };
+
+    const validate =() => {
+        if(!formData.email.trim()){
+            toast.error("Email is Rqquired");
+            return false;
+        }
+
+        if(!formData.password.trim()){
+            toast.error("Password is required");
+            return false;
+        }
+        if(!formData.confirmPassword.trim()){
+            toast.error("Confirm password is required");
+            return false;
+        }
+        if(formData.password !== formData.confirmPassword){
+            toast.error("Passwords do not match");
+            return false;
+        }
+        if(!formData.rememberMe){
+            toast.error("Please tick Remember Me")
+            return false;
+        }
+        return true;
+    }
+
+    const hanldleSubmit = async (e) => {
+        e.preventDefault();
+        if(!validate()) return;
+        try{
+            toast.success("Registration successful");
+            setFormData({
+                email:'',
+                password:'',
+                confirmPassword:'',
+                rememberMe:false,
+            });
+            setTimeout(() =>{
+                navigate('/inddashboard');
+            }, 1000);
+
+        }catch(error){
+            toast.error("Something went wrong");
+        }
+    }
+
   return (
       /* <img src={bird} alt="text" /> */
    <div className="flex h-screen  ">
@@ -50,16 +115,23 @@ const LoginInd = () => {
                 </button>
             </div>
 
-            <input type="email" 
-            className='w-full border p-3 mt-1 mb-4 outline-none'
+            <input 
+            type="email" 
+            name="email"
             placeholder='Email'
+            value={formData.email}
+            onChange={handleChange}
+            className='w-full border p-3 mt-1 mb-4 outline-none'
             />
 
             <div className="relative mb-6">
             <input 
                 type={showPassword ? "text" : "password"}
-                className='w-full border p-3 mt-1 outline-none pr-10'
+                name="password"
                 placeholder='**********'
+                value={formData.password}
+                onChange={handleChange}
+                className='w-full border p-3 mt-1 outline-none pr-10'
             />
             <button 
                 type="button"
@@ -70,16 +142,46 @@ const LoginInd = () => {
             </button>
             </div>
 
+            <div className="relative mb-6">
+                <input 
+                type={showConfirmPassword? "text": "password"}
+                name="confirmPassword"
+                placeholder='********' 
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full border p-3 mt-1 outline-none pr-10"
+            />
+            <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+                    {showConfirmPassword? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+
+            </div>
+
             <p className='text-right'>
-                <span className='text-blue-600 cursor-pointer'>Forgot password?</span>
+                <span 
+                onClick={() => navigate('/forgetpassword')}
+                className='text-blue-600 cursor-pointer hover:underline'>Forgot password?</span>
             </p>
 
             <div className='flex items-center gap-2 mb-6'>
-                <input type="checkbox" className='w-4 h-4' />
-                <span className=' text-gray-500'>Remember me</span>
+                <input 
+                type="checkbox" 
+                name="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+                className='w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500' 
+                />
+                <span className='ml-2 text-gray-500'>Remember me</span>
             </div>
 
-            <button className='w-full p-3 bg-[#174928] text-white font-italic'>
+            <button 
+            onClick={hanldleSubmit}
+            className='w-full p-3 bg-[#174928] text-white font-italic'
+            >
                 Log In
             </button>
 
@@ -112,7 +214,7 @@ const LoginInd = () => {
             </div>
 
             <p className='text-center mt-10'>
-                New to Verdura?<span className='text-blue-600 cursor-pointer'>Sign Up</span>
+                New to Verdura?<span className='text-blue-600 cursor-pointer hover:underline'>Sign Up</span>
             </p>
 
 

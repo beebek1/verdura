@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import bird from '../assets/birds.png'
+import Navbar from '../components/NavbarInd'
 
 const ProfileInd = () => {
   return (
-    <div className="min-h-screen bg-gray-100 w-full">
+    <div className="flex flex-col min-h-screen bg-gray-100 w-full">
+      {/* Navbar */}
+      <Navbar transparent={false}/>
+      
       {/* Main Content */}
-      <div className="max-w-5xl mx-auto px-0 py-8">
+      <div className="flex-grow max-w-5xl mx-auto px-0 py-8 w-full">
         {/* Header */}
         <div className="text-center mb-8 px-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">Account Settings</h1>
@@ -18,7 +22,7 @@ const ProfileInd = () => {
             {/* Left Column */}
             <div className="flex-1">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-2">Organization Bio</h2>
+                <h2 className="text-xl font-bold text-gray-800 mb-2">Personal Bio</h2>
                 <p className="text-gray-600">
                   A community-driven environmental group focused on reforestation and waste reduction projects.
                 </p>
@@ -106,7 +110,7 @@ const ProfileInd = () => {
         </div>
 
         {/* Delete Account & Logout */}
-        <div className="space-y-2 px-4">
+        <div className="space-y-2 px-4 mb-8">
           <button className="text-red-600 hover:text-red-700 font-bold text-lg">
             Delete Account
           </button>
@@ -118,7 +122,7 @@ const ProfileInd = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-slate-800 text-white py-8 mt-16 w-full">
+      <footer className="bg-slate-800 text-white py-8 w-full">
         <div className="text-center">
           <h2 className="text-4xl font-bold mb-2">Verdura</h2>
           <p className="text-sm text-gray-400">copyright © 2025 Impact Teams, Inc.</p>
