@@ -1,19 +1,22 @@
-import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import './App.css'
-import Navabr from './components/Navabr'
-import Signup from './pages/signup'
-import Registration from './pages/registration'
-
+import Register from "./pages/register";
+import { Toaster } from "react-hot-toast";
+//import Footers from './components/Footers';
+import VerduraCampaign from "./pages/campaign";
+import Footer from "./components/Footers";
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-   <div>
-    <Navabr/>
-    <Registration/>
-   </div>
-  )
+    <Router>
+      <Toaster position="top-right" />
+      <Routes>
+        <Route path="/" element={<VerduraCampaign />} />
+        <Route path="/login" element={<div>login</div>} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/contact" element={<div>contact</div>} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
