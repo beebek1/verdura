@@ -1,26 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
-import bird from '../assets/birds.png'
 
 const ForgetPassword = () => {
+
     const navigate = useNavigate()
+
     const [email, setEmail] = useState('')
 
     const handlechange = (e) => {
+        setEmail(e.target.value)
+    }
+
+    const handleSubmit = (e) =>{
         e.preventDefault();
-        
         if(!email){
            return toast.error("please fill all the fields")
         }
-        setEmail(prev()=>{
-            
-        })
+        toast.success("verification link sent")
     }
 
     return (
         <div className="flex h-screen">
-            <Toaster/>
 
             {/* Left Side - Form */}
             <div className="w-1/2 flex items-center justify-center bg-white">
@@ -48,7 +49,7 @@ const ForgetPassword = () => {
                     </div>
 
                     <button
-                        onClick={() => toast.success('Reset link sent!')}
+                        onClick={handleSubmit}
                         className="w-full p-3 bg-[#00605a] text-white font-semibold rounded-md hover:bg-teal-900 transition-colors"
                     >
                         Send Reset Link

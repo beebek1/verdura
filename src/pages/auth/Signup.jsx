@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { act, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast, Toaster } from 'react-hot-toast'
 
 export default function SignupIn() {
   const [activeTab, setActiveTab] = useState('individual');
@@ -8,34 +9,49 @@ export default function SignupIn() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   
   const[formData, setFormData] = useState({
-    fullname : '',
+    fullName : '',
     email : '',
     password : '',
     confirmPassword : '',
     panNo : ''
-  })
-  // Individual form state
-  const [fullName, setFullName] = useState('');
-  const [individualEmail, setIndividualEmail] = useState('');
-  const [individualPassword, setIndividualPassword] = useState('');
-  const [individualConfirmPassword, setIndividualConfirmPassword] = useState('');
-  
-  // Organization form state
-  const [organizationName, setOrganizationName] = useState('');
-  const [panNumber, setPanNumber] = useState('');
-  const [organizationEmail, setOrganizationEmail] = useState('');
-  const [organizationPassword, setOrganizationPassword] = useState('');
-  const [organizationConfirmPassword, setOrganizationConfirmPassword] = useState('');
+  });
 
   const handleChange = (e) => {
-    
+    const{ name, value} = e.target;
+
+    setFormData(prev =>({
+      ...prev, 
+      [name] : value
+    }))
   }
+
+  // for checking before sending
+  const isVerified = ()=>{
+    if(!formData.fullName || !formData.email || !formData.password){
+      toast.error("fill all the fields");
+      return false
+    }else if(activeTab === "organization" && !formData.panNo){
+      toast.error("PAN NO. cannot be empty")
+      return false
+    }else if(formData.password !==formData.confirmPassword){
+      toast.error("Confirm password didn't match")
+      return false
+    }else if(!agreedToTerms){
+      toast.error("you must agree to Terms & Condition")
+      return false
+    }
+      return true
+  }
+
+  // final submit
   const handleSubmit = () => {
-    console.log('Account creation submitted');
+    if(!isVerified()) return
+    console.log('Account creation submitted', isVerified());
   };
 
   return (
     <div className="flex min-h-screen overflow-hidden">
+      <Toaster/>
         {/* Left side - Chameleon Image */}
         <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-800 via-teal-700 to-teal-900 items-center justify-center p-0 overflow-hidden">
           <div className="relative w-full h-full flex items-center justify-center">
@@ -89,8 +105,9 @@ export default function SignupIn() {
                   <input
                     type="text"
                     placeholder="Bibek Soti"
-                    value={formData.fullname}
-                    onChange={(e) => setFullName(e.target.value)}
+                    value={formData.fullName}
+                    name= "fullName"
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent"
                   />
                 </div>
@@ -102,9 +119,10 @@ export default function SignupIn() {
                   </label>
                   <input
                     type="email"
+                    name= "email"
                     placeholder="bibek@mycowndomain@gmail.com"
                     value={formData.email}
-                    onChange={(e) => setIndividualEmail(e.target.value)}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent"
                   />
                 </div>
@@ -117,9 +135,10 @@ export default function SignupIn() {
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
+                      name= "password"
                       placeholder="••••••••••"
                       value={formData.password}
-                      onChange={(e) => setIndividualPassword(e.target.value)}
+                      onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent pr-12"
                     />
                     <button
@@ -149,9 +168,10 @@ export default function SignupIn() {
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
+                      name= "confirmPassword"
                       placeholder="••••••••••"
                       value={formData.confirmPassword}
-                      onChange={(e) => setIndividualConfirmPassword(e.target.value)}
+                      onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent pr-12"
                     />
                     <button
@@ -224,9 +244,10 @@ export default function SignupIn() {
                   </label>
                   <input
                     type="text"
+                    name= "fullName"
                     placeholder="Big O Impacts"
-                    value={formData.fullname}
-                    onChange={(e) => setOrganizationName(e.target.value)}
+                    value={formData.fullName}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent"
                   />
                 </div>
@@ -238,9 +259,10 @@ export default function SignupIn() {
                   </label>
                   <input
                     type="text"
+                    name= "panNo"
                     placeholder="AAAPA1234A"
                     value={formData.panNo}
-                    onChange={(e) => setPanNumber(e.target.value)}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent"
                   />
                 </div>
@@ -252,9 +274,10 @@ export default function SignupIn() {
                   </label>
                   <input
                     type="email"
+                    name= "email"
                     placeholder="bibek@myowndomain@gmail.com"
-                    value={formData.con}
-                    onChange={(e) => setOrganizationEmail(e.target.value)}
+                    value={formData.email}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent"
                   />
                 </div>
@@ -267,9 +290,10 @@ export default function SignupIn() {
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
+                      name= "password"
                       placeholder="••••••••••"
-                      value={organizationPassword}
-                      onChange={(e) => setOrganizationPassword(e.target.value)}
+                      value={formData.password}
+                      onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent pr-12"
                     />
                     <button
@@ -299,9 +323,10 @@ export default function SignupIn() {
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
+                      name= "confirmPassword"
                       placeholder="••••••••••"
-                      value={organizationConfirmPassword}
-                      onChange={(e) => setOrganizationConfirmPassword(e.target.value)}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent pr-12"
                     />
                     <button

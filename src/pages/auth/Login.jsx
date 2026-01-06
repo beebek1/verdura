@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const LoginInd = () => {
     const [activeTab, setActiveTab] = useState('individual');
@@ -8,7 +9,6 @@ const LoginInd = () => {
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     
     const [formData, setFormData] = useState({
-        fullName: '',
         email: '',
         password: '',
     });
@@ -21,18 +21,14 @@ const LoginInd = () => {
     };
 
     const validate = () => {
-        if (!formData.fullName.trim()) {
-            alert("Full Name is Required");
-            return false;
-        }
 
         if (!formData.email.trim()) {
-            alert("Email is Required");
+            toast.error("Email is Required");
             return false;
         }
 
         if (!formData.password.trim()) {
-            alert("Password is required");
+            toast.error("Password is required");
             return false;
         }
         return true;
@@ -42,13 +38,7 @@ const LoginInd = () => {
         e.preventDefault();
         if (!validate()) return;
         try {
-            alert("Registration successful");
-            setFormData({
-                fullName: '',
-                email: '',
-                password: '',
-            });
-            // Navigate to dashboard would happen here
+            
             console.log('Navigate to /inddashboard');
         } catch (error) {
             alert("Something went wrong");
