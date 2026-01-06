@@ -1,13 +1,22 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
 import bird from '../assets/birds.png'
 
 const ForgetPassword = () => {
     const navigate = useNavigate()
-    // const [email, setEmail] = useState('')
+    const [email, setEmail] = useState('')
 
-    // const handdlechange = 
+    const handlechange = (e) => {
+        e.preventDefault();
+        
+        if(!email){
+           return toast.error("please fill all the fields")
+        }
+        setEmail(prev()=>{
+            
+        })
+    }
 
     return (
         <div className="flex h-screen">
@@ -32,42 +41,31 @@ const ForgetPassword = () => {
                             type="email"
                             name="email"
                             placeholder="Enter your email"
-                            className="w-full border border-gray-300 p-3 rounded-md outline-none focus:border-[#174928] focus:ring-2 focus:ring-[#174928] focus:ring-opacity-20 transition-all"
+                            value={email}
+                            onChange={handlechange}
+                            className="w-full border border-gray-300 p-3 rounded-md outline-none focus:border-[#174928] focus:ring-1 focus:ring-[#00605a] focus:ring-opacity-20 transition-all"
                         />
                     </div>
 
                     <button
                         onClick={() => toast.success('Reset link sent!')}
-                        className="w-full p-3 bg-[#174928] text-white font-semibold rounded-md hover:bg-[#1a5c32] transition-colors"
+                        className="w-full p-3 bg-[#00605a] text-white font-semibold rounded-md hover:bg-teal-900 transition-colors"
                     >
                         Send Reset Link
                     </button>
 
-                    <div className="mt-6 text-center">
-                        <p className="text-gray-600">
-                            Remember your password?{' '}
-                            <span
-                                onClick={() => navigate('/')}
-                                className="text-blue-600 font-semibold cursor-pointer hover:underline"
-                            >
+                        <div className="text-center mt-9">
+                            <span className="text-gray-600">Remember your password?  </span>
+                            <Link to='/signin' className="text-teal-700 hover:underline font-medium">
                                 Sign In
-                            </span>
-                        </p>
-                    </div>
+                            </Link>
+                        </div>
                 </div>
             </div>
 
             {/* Right Side - Background Image */}
-            <div 
-                className="w-1/2 bg-[#1E3A2A] bg-center bg-cover flex items-center justify-center"
-                style={{ backgroundImage: `url(${bird})` }}
-            >
-                <div className="text-center text-white px-8  bg-opacity-40 p-8 rounded-lg">
-                    <h1 className="text-5xl font-bold mb-4">Verdura</h1>
-                    <p className="text-xl">
-                        Reset your password and get back to making an impact
-                    </p>
-                </div>
+            <div className="w-1/2 bg-teal-900 bg-center bg-cover flex items-center justify-center">
+
             </div>
         </div>
     )

@@ -1,187 +1,186 @@
-import React, { useState } from 'react'
-import bird from '../assets/birds.png'
-import group from '../assets/Group.png'
-import individual from '../assets/individual.png'
-import gmail from '../assets/gmail.png'
-import github from '../assets/github.png'
-import { Eye, EyeOff } from 'lucide-react'
-import toast from 'react-hot-toast'
-import {useNavigate} from 'react-router-dom'
-
+import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const LoginInd = () => {
-
-    const navigate = useNavigate()
-    const [showPassword, setShowPassword] = useState(false)
+    const [activeTab, setActiveTab] = useState('individual');
+    const [showPassword, setShowPassword] = useState(false);
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
+    
     const [formData, setFormData] = useState({
-        email:'',
-        password:'',
+        fullName: '',
+        email: '',
+        password: '',
     });
-    const handleChange = (e) =>{
+
+    const handleChange = (e) => {
         setFormData({
             ...formData,
-            [e.target.name]:e.target.value,
+            [e.target.name]: e.target.value,
         });
     };
 
-    const validate =() => {
-        if(!formData.email.trim()){
-            toast.error("Email is Rqquired");
+    const validate = () => {
+        if (!formData.fullName.trim()) {
+            alert("Full Name is Required");
             return false;
         }
 
-        if(!formData.password.trim()){
-            toast.error("Password is required");
+        if (!formData.email.trim()) {
+            alert("Email is Required");
+            return false;
+        }
+
+        if (!formData.password.trim()) {
+            alert("Password is required");
             return false;
         }
         return true;
     }
 
-    const hanldleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if(!validate()) return;
-        try{
-            toast.success("Registration successful");
+        if (!validate()) return;
+        try {
+            alert("Registration successful");
             setFormData({
-                email:'',
-                password:'',
+                fullName: '',
+                email: '',
+                password: '',
             });
-            setTimeout(() =>{
-                navigate('/inddashboard');
-            }, 1000);
-
-        }catch(error){
-            toast.error("Something went wrong");
+            // Navigate to dashboard would happen here
+            console.log('Navigate to /inddashboard');
+        } catch (error) {
+            alert("Something went wrong");
         }
     }
 
-  return (
-      /* <img src={bird} alt="text" /> */
-   <div className="flex h-screen  ">
-    <div
-  className="w-1/2 bg-[#1E3A2A] bg-center bg-cover "
-  style={{ backgroundImage: `url(${bird})` }}
-/>
-    <div className="w-1/2 flex items-center justify-center bg-white">
-        <div className="w-full max-w-md px-8">
-            <h1 className="text-3xl font-bold text-center mb-4">
-                Sign In to Verdura
-            </h1>
-            <p className="text-center text-gray-500 mb-8">
-                Track impact, grow greener, and inspire real change
-            </p>
-            
-            {/* group and individual login buttons */}
-            <div className="flex justify-center gap-10 mb-8">
-                <button className="flex flex-col items-center text-sm text-gray-500">
-                    <span className="flex items-center gap-1">
-                        <img src={individual}
-                         alt="Individual icon"
-                         className='w-5 h-5'
-                         />
-                        Individual Portal
-                    </span>
-                    {/* <span className="w-full h-[2px] bg-black mt-1" /> */}
-                </button>
-
-                <button className='flex justify-center items-center text-sm text-gray-500'>
-                     <span className="flex items-center gap-1">
-                        <img src={group}
-                         alt="Group icon" 
-                         className='w-5 h-5'
-                        />
-                        Organization Portal
-                     </span>  
-                </button>
-            </div>
-
-            <input 
-            type="email" 
-            name="email"
-            placeholder='Email'
-            value={formData.email}
-            onChange={handleChange}
-            className='w-full border p-3 mt-1 mb-4 outline-none'
-            />
-
-            <div className="relative mb-6">
-            <input 
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder='**********'
-                value={formData.password}
-                onChange={handleChange}
-                className='w-full border p-3 mt-1 outline-none pr-10'
-            />
-            <button 
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+    return (
+        <div className="flex h-screen">
+            <div
+                className="w-1/2 bg-teal-800 bg-center bg-cover flex items-center justify-center"
             >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </button>
+                <div className="text-white text-2xl">Bird Background Image</div>
             </div>
+            <div className="w-1/2 flex items-center justify-center bg-white">
+                <div className="w-full max-w-md px-8">
+                    <h1 className="text-3xl font-bold text-center mb-4">
+                        Sign In to Verdura
+                    </h1>
+                    <p className="text-center text-gray-500 mb-8">
+                        Track impact, grow greener, and inspire real change
+                    </p>
+                    
+                    {/* Tab Selection */}
+                    <div className="flex gap-2 mb-8 bg-gray-100 p-1 rounded-lg">
+                        <button
+                            onClick={() => setActiveTab('individual')}
+                            className={`flex-1 py-2.5 px-4 rounded-md font-medium transition-all ${
+                                activeTab === 'individual'
+                                    ? 'bg-white text-teal-700 shadow-sm'
+                                    : 'text-gray-600 hover:text-gray-900'
+                            }`}
+                        >
+                            Individual
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('organization')}
+                            className={`flex-1 py-2.5 px-4 rounded-md font-medium transition-all ${
+                                activeTab === 'organization'
+                                    ? 'bg-white text-teal-700 shadow-sm'
+                                    : 'text-gray-600 hover:text-gray-900'
+                            }`}
+                        >
+                            Organization
+                        </button>
+                    </div>
 
-            <p className='text-right'>
-                <span 
-                onClick={() => navigate('/forgetpassword')}
-                className='text-blue-600 cursor-pointer hover:underline'>Forgot password?</span>
-            </p>
+                    <div className="space-y-5">
 
-            <div className='flex items-center gap-2 mb-6'>
-                <input 
-                type="checkbox" 
-                className='w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500' 
-                />
-                <span className='ml-2 text-gray-500'>Remember me</span>
+                        {/* Email */}
+                        <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-2 uppercase tracking-wide">
+                                Email Address
+                            </label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="bibek@myowndomain@gmail.com"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent"
+                            />
+                        </div>
+
+                        {/* Password */}
+                        <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-2 uppercase tracking-wide">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="••••••••••"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent pr-12"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Terms Checkbox */}
+                        <div className="flex justify-between gap-3 pt-2">
+                            
+                            <div className='flex gap-3'>
+                            <input
+                            type="checkbox"
+                            id="terms"
+                            checked={agreedToTerms}
+                            onChange={(e) => setAgreedToTerms(e.target.checked)}
+                            className=" cursor-pointer mt-1 w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                            />
+                            <label htmlFor="terms" className="text-sm text-gray-600">
+                                Remember Me
+                            </label>
+                            </div>
+
+                            <Link to='/reset-password' className="text-teal-700 hover:underline text-sm">
+                            Forgot Password ?
+                            </Link>
+                        </div>
+
+                        {/* Submit Button */}
+                        <button
+                            onClick={handleSubmit}
+                            className="w-full bg-teal-800 hover:bg-teal-900 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 uppercase tracking-wide"
+                        >
+                            Create an Account
+                        </button>
+
+                        {/* Sign In Link */}
+                        <div className="text-center pt-4">
+                            <span className="text-gray-600">New to Verdura?  </span>
+                            <Link to='/signup' className="text-teal-700 hover:underline font-medium">
+                                Sign Up
+                            </Link>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <button 
-            onClick={hanldleSubmit}
-            className='w-full p-3 bg-[#174928] text-white font-italic'
-            >
-                Log In
-            </button>
-
-            <div className='flex items-center gap-4 my-6'>
-                <div className='flex-1 h-px bg-gray-300'></div>
-                <div className='text-xs text-gray-500'>Or</div>
-                <div className='flex-1 h-px bg-gray-300'></div>
-            </div>
-
-            <div className='flex gap-4 justify-center'>
-                <button className='flex items-center. gap-2 border px-4 py-2 text-sm'>
-                    <span className="flex items-center gap-1">
-                        <img src={gmail} 
-                        alt="Gmail"
-                        className='w-5 h-5'
-                         />
-                         Sign in with Google
-                    </span>
-                </button>
-
-                <button className='flex items-center. gap-2 border px-4 py-2 text-sm'>
-                    <span className="flex items-center gap-1">
-                        <img src={github} 
-                        alt="Gmail"
-                        className='w-5 h-5'
-                         />
-                         Sign in with Github
-                    </span>
-                </button>
-            </div>
-
-            <p className='text-center mt-10'>
-                New to Verdura?<span className='text-blue-600 cursor-pointer hover:underline'>Sign Up</span>
-            </p>
-
-
         </div>
-    </div>
-
-   </div>
-    
-  )
+    );
 }
 
-export default LoginInd
+export default LoginInd;
