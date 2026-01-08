@@ -22,5 +22,5 @@ const config ={
         'authorization':`Bearer ${localStorage.getItem("token")}`
     }
 }
-export const createUserApi =(data) => ApiFormData.post("/api/user/register",data)
-export const loginUserApi =(data) => Api.post("/api/user/login",data)
+export const createUserApi =(data) => Api.post("/api/auth/register",data)
+export const loginUserApi =(data) => Api.post("/api/auth/login",data)

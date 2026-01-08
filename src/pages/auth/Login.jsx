@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { loginUserApi } from '../../services/api';
 
 const LoginInd = () => {
-    const [activeTab, setActiveTab] = useState('individual');
     const [showPassword, setShowPassword] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+    const navigate= useNavigate();
     
     const [formData, setFormData] = useState({
         email: '',
@@ -38,10 +40,20 @@ const LoginInd = () => {
         e.preventDefault();
         if (!validate()) return;
         try {
-            
-            console.log('Navigate to /inddashboard');
+
+            await toast.promise(
+                loginUserApi(formData),
+                {
+                    loading : "verifying credentials",
+                    success : (res) => { setTimeout(() => {
+                        navigate('/')
+                    }, 1400);
+                    return res.data.message
+                },
+                }
+            )
         } catch (error) {
-            alert("Something went wrong");
+            toast.error(error?.response?.data?.message || "something terribly went wrong");
         }
     }
 
@@ -61,29 +73,6 @@ const LoginInd = () => {
                         Track impact, grow greener, and inspire real change
                     </p>
                     
-                    {/* Tab Selection */}
-                    <div className="flex gap-2 mb-8 bg-gray-100 p-1 rounded-lg">
-                        <button
-                            onClick={() => setActiveTab('individual')}
-                            className={`flex-1 py-2.5 px-4 rounded-md font-medium transition-all ${
-                                activeTab === 'individual'
-                                    ? 'bg-white text-teal-700 shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
-                            }`}
-                        >
-                            Individual
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('organization')}
-                            className={`flex-1 py-2.5 px-4 rounded-md font-medium transition-all ${
-                                activeTab === 'organization'
-                                    ? 'bg-white text-teal-700 shadow-sm'
-                                    : 'text-gray-600 hover:text-gray-900'
-                            }`}
-                        >
-                            Organization
-                        </button>
-                    </div>
 
                     <div className="space-y-5">
 

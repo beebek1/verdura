@@ -120,14 +120,6 @@ export default function VerduraCampaign() {
           ))}
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-slate-800 text-white py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Verdura</h2>
-          <p className="text-gray-400">copyright © 2025 Impact Teams, Inc.</p>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { User } from 'lucide-react';
 import Verdu from '../assets/verdu.png';
 
-const Navbar = ({ transparent = false, role = 'organization' }) => {
+const Navbar = ({ transparent = true, role = 'individual' }) => {
   const [hoveredItem, setHoveredItem] = useState(null);
 
   // Define navigation items based on role

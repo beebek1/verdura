@@ -1,6 +1,7 @@
 import React, { act, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast, Toaster } from 'react-hot-toast'
+import { createUserApi } from '../../services/api';
 
 export default function SignupIn() {
   const [activeTab, setActiveTab] = useState('individual');
@@ -8,6 +9,8 @@ export default function SignupIn() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   
+  const navigate = useNavigate();
+
   const[formData, setFormData] = useState({
     fullName : '',
     email : '',
@@ -44,9 +47,35 @@ export default function SignupIn() {
   }
 
   // final submit
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if(!isVerified()) return
-    console.log('Account creation submitted', isVerified());
+
+    //data format while sending to backend
+    const sendData = {
+      username : formData.fullName,
+      email : formData.email,
+      password : formData.password,
+      role : activeTab,
+      panNo : formData.panNo
+    }
+
+    try{
+      await toast.promise(
+        createUserApi(sendData),
+        {
+          loading : <b>registering user..</b>,
+          success : (res) => {setTimeout(() => {
+              navigate('/signin')
+            }, 1400);
+
+            return res.data.message;
+          }
+        }
+      )
+
+    }catch(error){
+      return toast.error(error?.response?.data?.message || "something went heavily wrong")
+    }
   };
 
   return (

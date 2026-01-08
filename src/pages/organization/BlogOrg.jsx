@@ -190,14 +190,6 @@ export default function BlogList() {
           ))}
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 mt-16">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Verdura</h2>
-          <p className="text-gray-400 text-sm">Copyright © 2025 Impact Teams, Inc.</p>
-        </div>
-      </footer>
     </div>
   );
 }
