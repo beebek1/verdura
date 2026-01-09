@@ -1,7 +1,7 @@
 import React from 'react'
-import bird from '../assets/birds.png'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import bird from '../../assets/birds.png'
+import Navbar from '../../components/Navbar'
+import Footer from '../../components/Footer'
 
 const ProfileInd = () => {
   return (

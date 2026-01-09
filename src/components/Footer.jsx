@@ -59,7 +59,7 @@ const Footer = ({ role = 'individual' }) => {
       <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-emerald-500/5 animate-pulse" />
       
       {/* Decorative top border */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-400" />
+      {/* <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-400" /> */}
 
       <div className="relative max-w-7xl mx-auto px-8 py-16">
         {/* Main Footer Content */}

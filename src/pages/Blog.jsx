@@ -1,10 +1,11 @@
 import React from 'react';
 import BlogCard from '../components/BlogCard';
 import BlogOrg from './organization/BlogOrg';
+import authRole from '../pages/protect/authRole';
 
 const Blogs = () => {
 
-  const role = "organization";
+  const role = authRole()
   const blogs = [
     {
       id: 1,

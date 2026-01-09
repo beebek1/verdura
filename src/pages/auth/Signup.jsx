@@ -11,6 +11,7 @@ export default function SignupIn() {
   
   const navigate = useNavigate();
 
+
   const[formData, setFormData] = useState({
     fullName : '',
     email : '',

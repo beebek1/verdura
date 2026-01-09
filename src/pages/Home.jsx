@@ -1,4 +1,3 @@
-import React from 'react'
 import coverpic from '../assets/coverpic.png'
 import BtnCompo from '../components/BtnCompo'
 import ImageFormat from '../components/ImageFormat'
@@ -6,7 +5,7 @@ import IndDashboard from './individual/IndDashboard'
 import OrgDashboard from './organization/OrgDashboard'
 
 const Home = () => {
-
+  
   // TEMP: replace with backend role later
   const role = "individual";
 

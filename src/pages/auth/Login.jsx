@@ -48,6 +48,10 @@ const LoginInd = () => {
                     success : (res) => { setTimeout(() => {
                         navigate('/')
                     }, 1400);
+
+                    //saving token in local storage
+                    localStorage.setItem("token",res.data.token);
+
                     return res.data.message
                 },
                 }

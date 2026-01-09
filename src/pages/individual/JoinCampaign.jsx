@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import NavbarInd from '../components/Navbar';
 
 const CampaignCard = ({ id, title, status, volunteers, currentVolunteers, description, location, date }) => {
   const [isJoined, setIsJoined] = useState(false);
@@ -242,7 +241,7 @@ const JoinCampaign = () => {
         </div>
       </main>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slide-in {
           from {
             transform: translateX(100%);
