@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import {Toaster} from 'react-hot-toast';
 
 
-import Profile from './pages/individual/profile.jsx';
+import Profile from './pages/organization/profileOrg.jsx';
 import ForgetPassword from './pages/auth/ForgetPassword.jsx';
 import SignUpInd from './pages/auth/Signup.jsx';
 import Login from './pages/auth/Login.jsx';
