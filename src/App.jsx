@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import {Toaster} from 'react-hot-toast';
 
 
-import ProfileInd from './pages/individual/ProfileInd.jsx';
+import Profile from './pages/individual/profile.jsx';
 import ForgetPassword from './pages/auth/ForgetPassword.jsx';
 import SignUpInd from './pages/auth/Signup.jsx';
 import Login from './pages/auth/Login.jsx';
@@ -27,7 +27,7 @@ function AppWrapper(){
       {!hideComponents && <Navbar/>}
         <Routes>
           
-            <Route path='/profileind' element={<ProfileInd/>}/>
+            <Route path='/profileind' element={<Profile/>}/>
             <Route path='/blog' element={<Blog/>}/>
             <Route path='/reset-password' element={<ForgetPassword/>}/>
             <Route path='/signin' element={<Login/>}/>
