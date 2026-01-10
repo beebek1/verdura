@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Verdu from '../assets/verdu.png';
+import Verdu from '../assets/logo.png';
 
 const Footer = ({ role = 'individual' }) => {
   const [email, setEmail] = useState('');

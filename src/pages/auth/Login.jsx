@@ -37,25 +37,17 @@ const LoginInd = () => {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
         if (!validate()) return;
         try {
 
-            await toast.promise(
-                loginUserApi(formData),
-                {
-                    loading : "verifying credentials",
-                    success : (res) => { setTimeout(() => {
-                        navigate('/')
-                    }, 1400);
+            const response = await loginUserApi(formData);
 
-                    //saving token in local storage
-                    localStorage.setItem("token",res.data.token);
+            //saving token in local storage
+            localStorage.setItem("token",response.data.token);
 
-                    return res.data.message
-                },
-                }
-            )
+            toast.success (response.data.message)
+            navigate("/")
+
         } catch (error) {
             toast.error(error?.response?.data?.message || "something terribly went wrong");
         }

@@ -61,18 +61,12 @@ export default function SignupIn() {
     }
 
     try{
-      await toast.promise(
-        createUserApi(sendData),
-        {
-          loading : <b>registering user..</b>,
-          success : (res) => {setTimeout(() => {
-              navigate('/signin')
-            }, 1400);
 
-            return res.data.message;
-          }
-        }
-      )
+      const response = await createUserApi(sendData);
+
+      toast.success(response.data.message);
+
+      navigate('/signin')
 
     }catch(error){
       return toast.error(error?.response?.data?.message || "something went heavily wrong")
@@ -81,7 +75,6 @@ export default function SignupIn() {
 
   return (
     <div className="flex min-h-screen overflow-hidden">
-      <Toaster/>
         {/* Left side - Chameleon Image */}
         <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-teal-800 via-teal-700 to-teal-900 items-center justify-center p-0 overflow-hidden">
           <div className="relative w-full h-full flex items-center justify-center">

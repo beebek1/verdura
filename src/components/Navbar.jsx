@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { User } from 'lucide-react';
 import { Menu, X } from 'lucide-react';
-import Verdu from '../assets/verdu.png';
+import Verdu from '../assets/logo.png';
 import UserRole from '../pages/protect/authRole';
 
 const Navbar = ({ transparent = false}) => {
