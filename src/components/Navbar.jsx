@@ -18,12 +18,13 @@ const Navbar = ({ transparent = false}) => {
     organization: [
       { label: 'Blog', href: '/blog' },
       { label: 'Campaigns', href: '/campaigns' },
+      { label: 'Climate', to: '/climate' },
       { label: 'Profile', href: '/profile', icon: User }
     ],
     individual: [
       { label: 'Blog', to: '/blog' },
       { label: 'Campaigns', to: '/campaigns' },
-      { label: 'My Impact', to: '/my-impact' },
+      { label: 'Climate', to: '/climate' },
       { label: 'Profile', to: '/profileind', icon: User }
     ]
   };

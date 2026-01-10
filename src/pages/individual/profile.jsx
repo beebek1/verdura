@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Mail, MapPin, Calendar, Award, TrendingUp, Settings, Bell, Shield, Link2, Camera, Edit2, Save, X, Leaf, Target, Clock, Star, ChevronRight } from 'lucide-react';
+import { User, Mail, MapPin, Calendar, Award, TrendingUp, Settings, Bell, Shield, Camera, Edit2, Save, X, Leaf, Target, Clock, Star, ChevronRight, Users, Briefcase } from 'lucide-react';
 
 // Mock user data - would come from backend
 const userData = {
@@ -7,7 +7,7 @@ const userData = {
     name: "Aayush Kumar",
     email: "aayush.kumar@example.com",
     bio: "Passionate environmentalist dedicated to making a positive impact through community action and sustainable practices.",
-    avatar: null, // Could be URL
+    avatar: null,
     joinDate: "January 2024",
     location: {
       country: "Nepal",
@@ -16,13 +16,23 @@ const userData = {
     }
   },
   stats: {
-    impactScore: 620,
     campaignsJoined: 6,
     hoursContributed: 42,
-    treesPlanted: 127,
-    rank: "Green Leaf",
-    rankProgress: 45,
-    nextRank: "Forest Guardian"
+    impactScore: 620,
+    goalProgress: {
+      current: 620,
+      target: 1000,
+      percentage: 62,
+      estimatedCO2Offset: 3.8,
+      aheadOfUsers: 78
+    }
+  },
+  currentRank: {
+    name: "Green Leaf",
+    icon: "🌿",
+    nextRank: "Forest Guardian",
+    progressToNext: 45,
+    rankLevels: ["Seedling", "Green Leaf", "Forest Guardian", "Tree Spirit", "Earth Champion"]
   },
   achievements: [
     { id: 1, name: "First Campaign", icon: "🎯", earned: true, date: "Jan 2024" },
@@ -32,11 +42,52 @@ const userData = {
     { id: 5, name: "Community Leader", icon: "👥", earned: false, date: null },
     { id: 6, name: "Carbon Crusher", icon: "💨", earned: false, date: null }
   ],
-  recentActivity: [
-    { id: 1, action: "Planted 5 saplings", campaign: "Tree Plantation Drive", date: "2 days ago", icon: "🌱" },
-    { id: 2, action: "Joined Beach Cleanup", campaign: "Coastal Cleanup", date: "1 week ago", icon: "🏖️" },
-    { id: 3, action: "Completed 10 hours", campaign: "Community Garden", date: "2 weeks ago", icon: "⏱️" }
+  campaigns: [
+    {
+      id: 1,
+      title: "Tree Plantation Drive",
+      hoursContributed: 9,
+      nextMilestone: "Plant 1000 trees",
+      status: "Active",
+      progress: 62
+    },
+    {
+      id: 2,
+      title: "Community Cleanup",
+      hoursContributed: 4,
+      nextMilestone: "Collect 500kg waste",
+      status: "Active",
+      progress: 40
+    }
   ],
+  articles: [
+    { title: "How Tree Plantation Improves Air Quality", upvotes: 152 },
+    { title: "Volunteer Stories from the Field", upvotes: 98 }
+  ],
+  recentContributions: [
+    {
+      id: 1,
+      action: "Planted 5 saplings",
+      date: "Jan 20, 2025",
+      campaign: "Tree Plantation Drive"
+    },
+    {
+      id: 2,
+      action: "Joined Beach Cleanup",
+      date: "Jan 14, 2025",
+      campaign: "Coastal Cleanup"
+    },
+    {
+      id: 3,
+      action: "Upvoted 'Why Tree Planting Matters'",
+      date: "Jan 12, 2025",
+      campaign: null
+    }
+  ],
+  quickStats: {
+    volunteers: 80,
+    description: "Snapshot of recent activity"
+  },
   preferences: {
     emailNotifications: true,
     campaignUpdates: true,
@@ -60,13 +111,13 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
 
   return (
     <div className="relative group mb-8">
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl blur-2xl opacity-50" />
-      <div className="relative bg-gradient-to-r from-emerald-500/10 to-teal-500/10 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+      <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Avatar */}
           <div className="relative group/avatar">
             <div 
-              className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-5xl font-bold text-white shadow-lg shadow-emerald-500/50 cursor-pointer"
+              className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-5xl font-bold text-white shadow-lg shadow-emerald-500/30 cursor-pointer"
               onMouseEnter={() => setImageHover(true)}
               onMouseLeave={() => setImageHover(false)}
               style={{ fontFamily: "'Inter', sans-serif" }}
@@ -96,26 +147,26 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                     type="text"
                     value={localProfile.name}
                     onChange={(e) => handleChange('name', e.target.value)}
-                    className="text-3xl font-bold text-white bg-white/5 border border-white/20 rounded-lg px-3 py-2 mb-2 w-full focus:outline-none focus:border-emerald-400"
+                    className="text-3xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 mb-2 w-full focus:outline-none focus:border-emerald-500"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   />
                 ) : (
-                  <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  <h1 className="text-3xl font-bold text-gray-800 mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
                     {profile.name}
                   </h1>
                 )}
                 
-                <div className="flex flex-wrap gap-3 text-sm text-gray-300 mb-3">
+                <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-3">
                   <span className="flex items-center gap-1.5">
-                    <Mail className="w-4 h-4" />
+                    <Mail className="w-4 h-4 text-emerald-600" />
                     {profile.email}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4" />
+                    <MapPin className="w-4 h-4 text-emerald-600" />
                     {profile.location.city}, {profile.location.country}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Calendar className="w-4 h-4" />
+                    <Calendar className="w-4 h-4 text-emerald-600" />
                     Joined {profile.joinDate}
                   </span>
                 </div>
@@ -125,11 +176,11 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                     value={localProfile.bio}
                     onChange={(e) => handleChange('bio', e.target.value)}
                     rows={3}
-                    className="text-gray-300 text-sm bg-white/5 border border-white/20 rounded-lg px-3 py-2 w-full focus:outline-none focus:border-emerald-400"
+                    className="text-gray-600 text-sm bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:border-emerald-500"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   />
                 ) : (
-                  <p className="text-gray-300 text-sm leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  <p className="text-gray-600 text-sm leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
                     {profile.bio}
                   </p>
                 )}
@@ -139,23 +190,23 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                 {!isEditing ? (
                   <button
                     onClick={onEdit}
-                    className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all duration-300 hover:scale-105"
+                    className="p-2.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-all duration-300 hover:scale-105"
                   >
-                    <Edit2 className="w-5 h-5 text-emerald-400" />
+                    <Edit2 className="w-5 h-5 text-emerald-600" />
                   </button>
                 ) : (
                   <>
                     <button
                       onClick={handleSave}
-                      className="p-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 rounded-lg transition-all duration-300 hover:scale-105"
+                      className="p-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 rounded-lg transition-all duration-300 hover:scale-105 shadow-md"
                     >
                       <Save className="w-5 h-5 text-white" />
                     </button>
                     <button
                       onClick={onCancel}
-                      className="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all duration-300 hover:scale-105"
+                      className="p-2.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-all duration-300 hover:scale-105"
                     >
-                      <X className="w-5 h-5 text-red-400" />
+                      <X className="w-5 h-5 text-red-500" />
                     </button>
                   </>
                 )}
@@ -168,19 +219,21 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
   );
 };
 
-const StatsCard = ({ icon: Icon, label, value, sublabel }) => (
+const StatsCard = ({ icon: Icon, label, value, sublabel, color = "from-emerald-500 to-teal-500" }) => (
   <div className="relative group">
-    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-    <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 text-center">
-      <Icon className="w-8 h-8 mx-auto mb-3 text-emerald-400" />
-      <div className="text-3xl font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <div className="relative bg-white rounded-xl p-6 border border-gray-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 text-center">
+      <div className={`w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center shadow-md`}>
+        <Icon className="w-6 h-6 text-white" />
+      </div>
+      <div className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
         {value}
       </div>
-      <div className="text-sm text-gray-300 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <div className="text-sm text-gray-700 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
         {label}
       </div>
       {sublabel && (
-        <div className="text-xs text-gray-400 mt-1" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="text-xs text-gray-500 mt-1" style={{ fontFamily: "'Inter', sans-serif" }}>
           {sublabel}
         </div>
       )}
@@ -188,20 +241,74 @@ const StatsCard = ({ icon: Icon, label, value, sublabel }) => (
   </div>
 );
 
+const ProgressBar = ({ progress, showPercentage = false }) => (
+  <div className="relative">
+    <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+      <div 
+        className="h-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700 ease-out relative shadow-sm"
+        style={{ width: `${progress}%` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent animate-pulse" />
+      </div>
+    </div>
+    {showPercentage && (
+      <span className="absolute -right-12 top-1/2 -translate-y-1/2 text-sm font-semibold text-emerald-600" style={{ fontFamily: "'Inter', sans-serif" }}>
+        {progress}%
+      </span>
+    )}
+  </div>
+);
+
+const CampaignCard = ({ campaign }) => (
+  <div className="relative group">
+    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <div className="relative bg-white rounded-xl p-6 border border-gray-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+            {campaign.title}
+          </h3>
+          <div className="flex items-center gap-3 text-sm text-gray-600 mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <span className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-emerald-600" />
+              {campaign.hoursContributed} hours
+            </span>
+            <span className="text-gray-400">•</span>
+            <span className="flex items-center gap-1.5">
+              <Target className="w-4 h-4 text-emerald-600" />
+              Next: {campaign.nextMilestone}
+            </span>
+          </div>
+          <div className="flex items-center gap-3 text-xs" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200 font-medium">
+              {campaign.status}
+            </span>
+            <span className="text-gray-600">Progress: {campaign.progress}%</span>
+          </div>
+        </div>
+        <button className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg whitespace-nowrap" style={{ fontFamily: "'Inter', sans-serif" }}>
+          Continue
+        </button>
+      </div>
+      <ProgressBar progress={campaign.progress} />
+    </div>
+  </div>
+);
+
 const AchievementBadge = ({ achievement }) => (
-  <div className={`relative group ${!achievement.earned && 'opacity-50'}`}>
-    <div className={`absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-xl blur-xl transition-opacity duration-500 ${achievement.earned ? 'opacity-50 group-hover:opacity-100' : 'opacity-0'}`} />
-    <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-all duration-300 text-center">
+  <div className={`relative group ${!achievement.earned && 'opacity-40'}`}>
+    <div className={`absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg transition-opacity duration-500 ${achievement.earned ? 'opacity-50 group-hover:opacity-100' : 'opacity-0'}`} />
+    <div className="relative bg-white rounded-xl p-4 border border-gray-200 hover:border-emerald-300 hover:shadow-md transition-all duration-300 text-center">
       <div className="text-4xl mb-2">{achievement.icon}</div>
-      <div className="text-sm font-semibold text-white mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
+      <div className="text-sm font-semibold text-gray-800 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
         {achievement.name}
       </div>
       {achievement.earned ? (
-        <div className="text-xs text-emerald-400" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="text-xs text-emerald-600 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
           {achievement.date}
         </div>
       ) : (
-        <div className="text-xs text-gray-500" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="text-xs text-gray-400" style={{ fontFamily: "'Inter', sans-serif" }}>
           Locked
         </div>
       )}
@@ -210,7 +317,7 @@ const AchievementBadge = ({ achievement }) => (
 );
 
 export default function UserProfile() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('impact');
   const [isEditing, setIsEditing] = useState(false);
   const [preferences, setPreferences] = useState(userData.preferences);
 
@@ -224,17 +331,15 @@ export default function UserProfile() {
   };
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: User },
-    { id: 'activity', label: 'Activity', icon: TrendingUp },
+    { id: 'impact', label: 'My Impact', icon: TrendingUp },
     { id: 'achievements', label: 'Achievements', icon: Award },
+    { id: 'profile', label: 'Profile Info', icon: User },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a2332] via-[#29313D] to-[#1e2633] relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-emerald-500/5 animate-pulse" />
-      
-      <div className="relative p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50/30 to-teal-50/30">
+      <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           <ProfileHeader 
             profile={userData.profile}
@@ -254,8 +359,8 @@ export default function UserProfile() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/50'
-                      : 'bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10'
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-emerald-300'
                   }`}
                   style={{ fontFamily: "'Inter', sans-serif" }}
                 >
@@ -267,99 +372,212 @@ export default function UserProfile() {
           </div>
 
           {/* Tab Content */}
-          {activeTab === 'overview' && (
+          {activeTab === 'impact' && (
             <div className="space-y-6">
-              {/* Stats Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <StatsCard icon={Target} label="Impact Score" value={userData.stats.impactScore} />
-                <StatsCard icon={Leaf} label="Campaigns" value={userData.stats.campaignsJoined} sublabel="Active" />
-                <StatsCard icon={Clock} label="Hours" value={userData.stats.hoursContributed} sublabel="Contributed" />
-                <StatsCard icon={Star} label="Trees" value={userData.stats.treesPlanted} sublabel="Planted" />
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatsCard 
+                  icon={Leaf} 
+                  label="Campaigns Joined" 
+                  value={userData.stats.campaignsJoined}
+                  color="from-emerald-500 to-teal-500"
+                />
+                <StatsCard 
+                  icon={Clock} 
+                  label="Hours Contributed" 
+                  value={userData.stats.hoursContributed}
+                  color="from-teal-500 to-emerald-600"
+                />
+                <StatsCard 
+                  icon={Award} 
+                  label="Impact Score" 
+                  value={userData.stats.impactScore}
+                  color="from-emerald-600 to-teal-500"
+                />
               </div>
 
-              {/* Current Rank */}
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl blur-2xl opacity-50" />
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                  <h2 className="text-xl font-bold text-white mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Current Rank Progress
-                  </h2>
-                  <div className="flex items-center gap-6 mb-6">
-                    <div className="text-6xl">🌿</div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-2xl font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent" style={{ fontFamily: "'Inter', sans-serif" }}>
-                          {userData.stats.rank}
-                        </h3>
-                        <span className="text-sm text-gray-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                          {userData.stats.rankProgress}% to {userData.stats.nextRank}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Left Column - Main Impact */}
+                <div className="lg:col-span-2 space-y-6">
+                  {/* Goal Progress */}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                    <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+                      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                        <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          Total Goal Progress
+                        </h2>
+                        <span className="text-sm text-emerald-700 bg-emerald-100 px-4 py-2 rounded-lg border border-emerald-200 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          Ahead of {userData.stats.goalProgress.aheadOfUsers}% of users
                         </span>
                       </div>
-                      <div className="relative">
-                        <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden backdrop-blur-sm">
-                          <div 
-                            className="h-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700 ease-out relative"
-                            style={{ width: `${userData.stats.rankProgress}%` }}
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent animate-pulse" />
+                      
+                      <div className="mb-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-medium text-gray-700" style={{ fontFamily: "'Inter', sans-serif" }}>
+                            You have: <span className="text-emerald-600 font-semibold">{userData.stats.goalProgress.current}</span> / {userData.stats.goalProgress.target}
+                          </span>
+                          <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent" style={{ fontFamily: "'Inter', sans-serif" }}>
+                            {userData.stats.goalProgress.percentage}%
+                          </span>
+                        </div>
+                        <ProgressBar progress={userData.stats.goalProgress.percentage} />
+                      </div>
+
+                      <div className="relative group/rank">
+                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg opacity-0 group-hover/rank:opacity-100 transition-opacity duration-500" />
+                        <div className="relative bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
+                          <div className="flex items-start gap-4">
+                            <div className="text-5xl drop-shadow-sm">{userData.currentRank.icon}</div>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                                <h3 className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                  {userData.currentRank.name}
+                                </h3>
+                                <span className="text-sm text-gray-700 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                  Next level: {userData.currentRank.progressToNext}%
+                                </span>
+                              </div>
+                              <div className="mb-4">
+                                <ProgressBar progress={userData.currentRank.progressToNext} />
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-gray-600 flex-wrap" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                {userData.currentRank.rankLevels.map((rank, idx) => (
+                                  <React.Fragment key={rank}>
+                                    <span className={idx === 1 ? 'font-semibold text-emerald-700' : ''}>
+                                      {rank}
+                                    </span>
+                                    {idx < userData.currentRank.rankLevels.length - 1 && (
+                                      <ChevronRight className="w-3 h-3" />
+                                    )}
+                                  </React.Fragment>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-emerald-200">
+                            <p className="text-sm text-gray-700" style={{ fontFamily: "'Inter', sans-serif" }}>
+                              Goal level: <span className="font-semibold text-emerald-700">Yearly Goal</span> • 
+                              Estimated CO₂ offset: <span className="font-semibold text-emerald-700">{userData.stats.goalProgress.estimatedCO2Offset} t</span>
+                            </p>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-400" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Keep contributing to campaigns to unlock the next rank and exclusive badges!
-                  </p>
-                </div>
-              </div>
 
-              {/* Top Achievements */}
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl blur-2xl opacity-50" />
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
-                      Recent Achievements
+                  {/* Current Campaigns */}
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                      Current Campaigns
                     </h2>
-                    <button 
-                      onClick={() => setActiveTab('achievements')}
-                      className="text-sm text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
-                      style={{ fontFamily: "'Inter', sans-serif" }}
-                    >
-                      View All <ChevronRight className="w-4 h-4" />
-                    </button>
+                    <div className="space-y-4">
+                      {userData.campaigns.map(campaign => (
+                        <CampaignCard key={campaign.id} campaign={campaign} />
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {userData.achievements.slice(0, 3).map(achievement => (
-                      <AchievementBadge key={achievement.id} achievement={achievement} />
-                    ))}
+
+                  {/* Recent Contributions */}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                    <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+                      <h2 className="text-xl font-bold text-gray-800 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Recent Contributions
+                      </h2>
+                      <div className="space-y-4">
+                        {userData.recentContributions.map(contribution => (
+                          <div key={contribution.id} className="flex items-start gap-4 pb-4 border-b border-gray-200 last:border-0 group/item hover:bg-gray-50 -mx-4 px-4 py-2 rounded-lg transition-colors duration-300">
+                            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 mt-2 shadow-sm" />
+                            <div className="flex-1">
+                              <p className="font-semibold text-gray-800 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                {contribution.action}
+                              </p>
+                              <p className="text-sm text-gray-600" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                {contribution.date}
+                                {contribution.campaign && (
+                                  <span className="text-emerald-600 font-medium"> — {contribution.campaign}</span>
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
 
-          {activeTab === 'activity' && (
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl blur-2xl opacity-50" />
-              <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                <h2 className="text-xl font-bold text-white mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Recent Activity
-                </h2>
-                <div className="space-y-4">
-                  {userData.recentActivity.map(activity => (
-                    <div key={activity.id} className="flex items-start gap-4 p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-300">
-                      <div className="text-3xl">{activity.icon}</div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-white mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-                          {activity.action}
-                        </h3>
-                        <p className="text-sm text-gray-400" style={{ fontFamily: "'Inter', sans-serif" }}>
-                          {activity.campaign} • {activity.date}
+                {/* Right Column - Additional Info */}
+                <div className="space-y-6">
+                  {/* Current Rank Card */}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-200/60 to-teal-200/60 rounded-2xl blur-xl" />
+                    <div className="relative bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl p-8 shadow-lg">
+                      <h2 className="text-lg font-semibold text-white mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Current Rank
+                      </h2>
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="text-6xl drop-shadow-lg">{userData.currentRank.icon}</div>
+                        <div>
+                          <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
+                            {userData.currentRank.name}
+                          </h3>
+                          <p className="text-emerald-100 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
+                            Next: {userData.currentRank.nextRank}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-emerald-50" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Rank is based on your cumulative Impact Score.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Articles Upvoted */}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                    <div className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                      <h2 className="text-lg font-bold text-gray-800 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Articles You Upvoted
+                      </h2>
+                      <div className="space-y-3">
+                        {userData.articles.map((article, idx) => (
+                          <div 
+                            key={idx} 
+                            className="flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-300 group/article cursor-pointer"
+                          >
+                            <p className="text-sm font-medium text-gray-800 flex-1 group-hover/article:text-emerald-700 transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>
+                              {article.title}
+                            </p>
+                            <span className="text-sm text-emerald-600 ml-3 font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                              ▲ {article.upvotes}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quick Stats */}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-teal-200/60 to-emerald-200/60 rounded-2xl blur-xl" />
+                    <div className="relative bg-gradient-to-br from-teal-500 to-emerald-500 rounded-2xl p-8 shadow-lg">
+                      <h2 className="text-lg font-semibold text-white mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Quick Stats
+                      </h2>
+                      <p className="text-emerald-50 text-sm mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        {userData.quickStats.description}
+                      </p>
+                      <div className="text-center">
+                        <div className="text-6xl font-bold text-white mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          {userData.quickStats.volunteers}
+                        </div>
+                        <p className="text-emerald-50 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          volunteers
                         </p>
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -367,9 +585,9 @@ export default function UserProfile() {
 
           {activeTab === 'achievements' && (
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl blur-2xl opacity-50" />
-              <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                <h2 className="text-xl font-bold text-white mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+              <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+                <h2 className="text-xl font-bold text-gray-800 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
                   All Achievements
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -381,31 +599,119 @@ export default function UserProfile() {
             </div>
           )}
 
+          {activeTab === 'profile' && (
+            <div className="space-y-6">
+              {/* Personal Information */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+                  <h2 className="text-xl font-bold text-gray-800 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    Personal Information
+                  </h2>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        defaultValue={userData.profile.name}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-gray-800"
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        defaultValue={userData.profile.email}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-gray-800"
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Bio
+                      </label>
+                      <textarea
+                        rows={4}
+                        defaultValue={userData.profile.bio}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-gray-800"
+                        style={{ fontFamily: "'Inter', sans-serif" }}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Location
+                      </label>
+                      <div className="grid grid-cols-3 gap-3">
+                        <input
+                          type="text"
+                          placeholder="Country"
+                          defaultValue={userData.profile.location.country}
+                          className="px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-gray-800"
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        />
+                        <input
+                          type="text"
+                          placeholder="State"
+                          defaultValue={userData.profile.location.state}
+                          className="px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-gray-800"
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        />
+                        <input
+                          type="text"
+                          placeholder="City"
+                          defaultValue={userData.profile.location.city}
+                          className="px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-gray-800"
+                          style={{ fontFamily: "'Inter', sans-serif" }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <button className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Save Changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'settings' && (
             <div className="space-y-6">
               {/* Notification Settings */}
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl blur-2xl opacity-50" />
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
                   <div className="flex items-center gap-3 mb-6">
-                    <Bell className="w-6 h-6 text-emerald-400" />
-                    <h2 className="text-xl font-bold text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-md">
+                      <Bell className="w-5 h-5 text-white" />
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
                       Notifications
                     </h2>
                   </div>
                   <div className="space-y-4">
                     {Object.entries(preferences).filter(([key]) => key !== 'profileVisibility').map(([key, value]) => (
-                      <div key={key} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
-                        <span className="text-gray-200 capitalize" style={{ fontFamily: "'Inter', sans-serif" }}>
+                      <div key={key} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                        <span className="text-gray-800 capitalize font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
                           {key.replace(/([A-Z])/g, ' $1').trim()}
                         </span>
                         <button
                           onClick={() => togglePreference(key)}
                           className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
-                            value ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-white/20'
+                            value ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gray-300'
                           }`}
                         >
-                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ${
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-300 ${
                             value ? 'translate-x-7' : 'translate-x-1'
                           }`} />
                         </button>
@@ -417,23 +723,25 @@ export default function UserProfile() {
 
               {/* Privacy Settings */}
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-2xl blur-2xl opacity-50" />
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
                   <div className="flex items-center gap-3 mb-6">
-                    <Shield className="w-6 h-6 text-emerald-400" />
-                    <h2 className="text-xl font-bold text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-md">
+                      <Shield className="w-5 h-5 text-white" />
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
                       Privacy
                     </h2>
                   </div>
                   <div className="space-y-4">
-                    <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                      <label className="block text-gray-200 mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                      <label className="block text-gray-800 font-medium mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
                         Profile Visibility
                       </label>
                       <select 
                         value={preferences.profileVisibility}
                         onChange={(e) => setPreferences({...preferences, profileVisibility: e.target.value})}
-                        className="w-full bg-white/10 border border-white/20 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-emerald-400"
+                        className="w-full bg-white border border-gray-300 text-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
                         style={{ fontFamily: "'Inter', sans-serif" }}
                       >
                         <option value="public">Public</option>
@@ -447,16 +755,16 @@ export default function UserProfile() {
 
               {/* Danger Zone */}
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-2xl blur-2xl opacity-50" />
-                <div className="relative bg-white/5 backdrop-blur-sm border border-red-500/30 rounded-2xl p-8">
-                  <h2 className="text-xl font-bold text-red-400 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                <div className="absolute inset-0 bg-gradient-to-r from-red-100/50 to-orange-100/50 rounded-2xl blur-xl" />
+                <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-red-200">
+                  <h2 className="text-xl font-bold text-red-600 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
                     Danger Zone
                   </h2>
                   <div className="space-y-3">
-                    <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 rounded-lg text-red-400 transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
                       Log Out
                     </button>
-                    <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 rounded-lg text-red-400 transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
                       Delete Account
                     </button>
                   </div>

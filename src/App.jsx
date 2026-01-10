@@ -12,7 +12,6 @@ import Navbar from './components/Navbar.jsx';
 import Blog from './pages/Blog.jsx';
 import Footer from './components/Footer.jsx';
 import CreateBlog from './pages/organization/CreateBlog.jsx';
-import MyImpact from './pages/myImpact.jsx';
 
 import Campaign from './pages/individual/JoinCampaign.jsx'
 
@@ -35,7 +34,6 @@ function AppWrapper(){
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/campaigns' element={<Campaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
-            <Route path='/my-impact' element={<MyImpact/>}/>
 
         </Routes>
       {!hideComponents && <Footer/>}
