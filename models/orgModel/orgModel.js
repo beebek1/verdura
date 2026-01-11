@@ -7,9 +7,15 @@ const OrgInfo = sequelize.define(
     {
         org_id: {
             type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+
+        user_id: {
+            type: DataTypes.INTEGER,
             references : {
                 model: Register,
-                key: "id"
+                key: "user_id"
             },
             onDelete: "CASCADE",
             allowNull: false
@@ -68,10 +74,5 @@ const OrgInfo = sequelize.define(
         timestamps: true
     }
 );
-
-//associations for better queries
-
-OrgInfo.belongsTo(Register, {foreignKey: "org_id", onDelete : "CASCADE"});
-Register.hasOne(OrgInfo, {foreignKey: "org_id", onDelete : "CASCADE"});
 
 module.exports = OrgInfo;

@@ -1,23 +1,17 @@
-const router = require('express').Router();
+const router = require("express").Router();
 
-const {registerUser, userLogin, deleteUser, forgotPassword} = require('../controllers/authController');
-const {verifyEmail} = require('../helpers/verifyEmail');
-const resetPassword = require("../helpers/resetPassword");
+const authMiddleware = require("../helpers/authMiddleware");
+const roleMiddleware = require("../helpers/roleMiddleware");
+const {blogPost, getAllBlog} = require("../controllers/orgControllers/blogController");
+const {campaignPost, getCampaignDetails} = require("../controllers/orgControllers/campaignController");
 
-//for all users
+//org request
+router.post('/blogpost',authMiddleware,roleMiddleware("organization"), blogPost);
+router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campaignPost);
 
-//post request
-router.post('/register', registerUser);
-router.post('/login', userLogin);
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPassword);
+//for getting blogs
+router.get('/get-all-blogs', getAllBlog);
+router.get('/campaigns', getAllBlog);
 
-//get request
-router.get('/verify-email', verifyEmail);
-router.get("/")
+module.exports = router
 
-//delete request
-router.delete('/delete', authMiddleware, deleteUser);
-
-
-module.exports = router;

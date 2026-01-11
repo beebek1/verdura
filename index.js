@@ -1,17 +1,19 @@
+const cors = require("cors")
 const express = require("express");
 const app = express();
 const { sequelize, connectDB } = require("./db/database");
 
-//models
-require("./models/userModel");
-require("./models/indModel/indModel");
-require("./models/orgModel/orgModel");
-require("./models/orgModel/createBlogModel");
+app.use(cors({
+  origin: "http://localhost:5173",  // frontend URL
+  credentials: true                  // allow cookies, auth headers
+}));
 
 //middleware
 app.use(express.json());
 
+
 //userRoutes and productRoutes
+app.use("/api/auth", require('./routes/authRoute'));
 app.use("/api/user", require('./routes/userRoute'));
 
 app.get("/",(req,res) =>{
@@ -21,7 +23,7 @@ app.get("/",(req,res) =>{
 //start server
 const startServer = async () => {
     const PORT = process.env.PORT || 3000;
-    await connectDB();
+    await connectDB(); 
     await sequelize.sync({alter: true});              //force and sync
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);

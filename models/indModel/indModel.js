@@ -9,7 +9,7 @@ const IndInfo = sequelize.define(
             type: DataTypes.INTEGER,
             references :{
                 model: Register,
-                key : "id"
+                key : "user_id"
             }
         },
 
@@ -33,9 +33,4 @@ const IndInfo = sequelize.define(
         timestamps : true
     }
 )
-
-//associations for better queries
-IndInfo.belongsTo(Register, { foreignKey: "ind_id", onDelete: "CASCADE"});
-Register.hasOne(IndInfo,{foreignKey: "ind_id", onDelete: "CASCADE"});
-
 module.exports = IndInfo;

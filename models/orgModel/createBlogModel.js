@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../db/database");
-const Register = require("../userModel");
+const OrgInfo = require("./orgModel");
 
 const CreateBlog = sequelize.define(
     "OrgCreateBlog",
@@ -14,8 +14,8 @@ const CreateBlog = sequelize.define(
         org_id:{
             type:DataTypes.INTEGER,
             references : {
-                model : Register,
-                key : "id"
+                model : OrgInfo,
+                key : "org_id"
             },
             onDelete : "CASCADE",
             allowNull: false
@@ -50,9 +50,9 @@ const CreateBlog = sequelize.define(
             allowNull:false
         },
         
-        views: {
-            type: DataTypes.INTEGER,
-            defaultValue: 0,
+        badge: {
+            type: DataTypes.STRING,
+            defaultValue: "Blog",
             allowNull:false,
         }
     },

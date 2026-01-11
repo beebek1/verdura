@@ -1,6 +1,4 @@
-const RegisterUser = require("../models/userModel");
-const OrgInfo = require("../models/orgModel/orgModel");
-const IndInfo = require("../models/indModel/indModel");
+const {Register, OrgInfo, IndInfo} = require("../models/associations")
 
 const {emailSender} = require("../helpers/verifyEmail");
 const verifyEmailTemplate = require("../utils/emailTemplates/verifyEmailTemplate");
@@ -37,7 +35,7 @@ const registerUser = async(req, res) =>{
     }
 
     //check whether the email already exists
-    const user = await RegisterUser.findOne({where:{email : email}});
+    const user = await Register.findOne({where:{email : email}});
     if(user){
         return res.status(400).json({
             message: `${username} already exists`
@@ -51,8 +49,8 @@ const registerUser = async(req, res) =>{
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     //passing data to model
-    const currentUser = await RegisterUser.create({
-        role: role === "org" ?"org" : "ind",
+    const currentUser = await Register.create({
+        role: role === "organization" ?"organization" : "individual",
         username,
         email,
         password : hashedPassword,
@@ -60,11 +58,11 @@ const registerUser = async(req, res) =>{
         verificationTokenExpires
     });
 
-    if(role === "org" && orgDetails){
-        await OrgInfo.create({org_id : currentUser.id, ...orgDetails});
+    if(role === "organization" && orgDetails){
+        await OrgInfo.create({user_id : currentUser.user_id, ...orgDetails});
         
-    }else if(role === "ind" && indDetails){
-        await IndInfo.create({ind_id: currentUser.id, ...indDetails});
+    }else if(role === "individual" && indDetails){
+        await IndInfo.create({user_id: currentUser.user_id, ...indDetails});
 
     }else{
         console.log("data filled in main user table but not in subTables", currentUser.id)
@@ -79,6 +77,7 @@ const registerUser = async(req, res) =>{
     emailSender(html, "Verify your email" ,email);
 
     return res.status(201).json({
+        success : true,
         message: "user captured but unverified email sent",
         user:{
             username: currentUser.username,
@@ -98,7 +97,7 @@ const forgotPassword = async(req, res) =>{
             })
         }
 
-        const user = await RegisterUser.findOne({where:{email: email}});
+        const user = await Register.findOne({where:{email: email}});
         if(!user){
             return res.status(400).json({
                 message : "unregistered email"
@@ -148,7 +147,7 @@ const userLogin = async (req, res) =>{
         })
     }
 
-    const user = await RegisterUser.findOne({where:{email: email}});
+    const user = await Register.findOne({where:{email: email}});
 
     //if there is no user
     if(!user){
@@ -168,7 +167,7 @@ const userLogin = async (req, res) =>{
         //for JWT login token
         const token = jwt.sign(
             {
-                id: user.id,
+                id: user.user_id,
                 role: user.role
             },
             process.env.JWT_SECRET,
@@ -177,7 +176,8 @@ const userLogin = async (req, res) =>{
             }
         );
 
-        return res.status(201).json({
+        return res.status(200).json({
+            success: true,
             message : "login successful",
             token : token
         })
@@ -194,7 +194,7 @@ const deleteUser = async(req, res) =>{
 
     try{
         const id=req.user.id
-        const user= await RegisterUser.findByPk(id)
+        const user= await Register.findByPk(id)
 
         if (!user){
             return res.json({

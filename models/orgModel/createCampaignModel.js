@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const {sequelize} = require("../../db/database");
-const Register = require("../userModel");
+const OrgInfo = require("./orgModel");
 
 const CreateCampaign = sequelize.define(
     "CreateCampaign",
@@ -14,8 +14,8 @@ const CreateCampaign = sequelize.define(
         org_id:{
             type:DataTypes.INTEGER,
             references : {
-                model : Register,
-                key : "id"
+                model : OrgInfo,
+                key : "org_id"
             },
             onDelete : "CASCADE",
             allowNull: false
