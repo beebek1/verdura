@@ -16,10 +16,10 @@ const BlogDetail = () => {
     badgeColor,
     title,
     date,
-    views,
     content,
     tags,
     upvotes,
+    coverImage
   } = state
 
   console.log(content)
@@ -63,10 +63,6 @@ const BlogDetail = () => {
               <Calendar size={14} />
               {date}
             </span>
-            <span className="text-gray-400 text-sm flex items-center gap-1">
-              <Eye size={14} />
-              {views} views
-            </span>
           </div>
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -91,9 +87,13 @@ const BlogDetail = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <article className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           {/* Featured Image */}
-          <div className="w-full h-96 bg-gradient-to-br from-teal-100 to-blue-100 rounded-lg mb-8 flex items-center justify-center">
-            <span className="text-gray-400 text-lg">Featured Image</span>
-          </div>
+          {coverImage ? (
+            <img src={coverImage} alt="Cover" className="w-full h-96 object-cover rounded-lg mb-8" />
+          ) : (
+            <div className="w-full h-96 bg-gradient-to-br from-teal-100 to-blue-100 rounded-lg mb-8 flex items-center justify-center">
+              <span className="text-gray-400 text-lg">No Cover Image Available</span>
+            </div>
+          )}
 
           {/* Article Content */}
           <div className="prose max-w-none">

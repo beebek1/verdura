@@ -1,58 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import BlogCard from '../components/BlogCard';
 import BlogOrg from './organization/BlogOrg';
 import authRole from '../pages/protect/authRole';
+import { getAllBlogs } from '../services/api';
 
 const Blogs = () => {
 
   const role = authRole()
-  const blogs = [
-    {
-      id: 1,
-      author: "Greenorc Unite",
-      authorImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
-      badge: "Spotlight",
-      badgeColor: "bg-slate-600",
-      title: "Importance of Evolution",
-      content: "A blog is a website or a part of a website that is updated regularly with new content, known as posts, displayed in reverse chronological order with the newest articles appearing first. It is a platform for sharing information, thoughts. With over 600 million on the internet, you've likely encountered one or two blogs you've even on one right now ......",
-      date: "31th Dec",
-    },
-    {
-      id: 2,
-      author: "Greenorc Unite",
-      authorImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
-      badge: "News",
-      badgeColor: "bg-gray-500",
-      title: "Importance of Evolution",
-      content: "A blog is a website or a part of a website that is updated regularly with new content, known as posts, displayed in reverse chronological order with the newest articles appearing first. It is a platform for sharing information, thoughts. With over 600 million on the internet, you've likely encountered one or two blogs you've even on one right now ......",
-      date: "31th Dec",
-    },
-    {
-      id: 3,
-      author: "Greenorc Unite",
-      authorImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
-      badge: "News",
-      badgeColor: "bg-gray-500",
-      title: "Importance of Evolution",
-      content: "A blog is a website or a part of a website that is updated regularly with new content, known as posts, displayed in reverse chronological order with the newest articles appearing first. It is a platform for sharing information, thoughts. With over 600 million on the internet, you've likely encountered one or two blogs you've even on one right now ......",
-      date: "31th Dec",
-      views: "670"
-    },
-    {
-      id: 4,
-      author: "Greenorc Unite",
-      authorImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
-      badge: "Blog",
-      badgeColor: "bg-gray-600",
-      title: "Importance of Evolution",
-      content: "A blog is a website or a part of a website that is updated regularly with new content, known as posts, displayed in reverse chronological order with the newest articles appearing first. It is a platform for sharing information, thoughts. With over 600 million on the internet, you've likely encountered one or two blogs you've even on one right now ......",
-      date: "31th Dec",
-    }
-  ];
+  // const blogs = getAllBlogs();
+
+  const[blogs, setBlogs] = useState([])
+  const[loading, setLoading] = useState(true)
+
+  const formattedDate =(date)=> new Date(date).toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "short"
+  });
+
+  useEffect(()=>{
+    const fetchBlogs = async()=>{
+      try{
+        const data = await getAllBlogs();
+        setBlogs(data);
+      }catch(error){
+        console.error("Failed to fetch blogs", error);
+      }finally{
+        setLoading(false)
+      }
+    };
+
+    fetchBlogs();
+  },[]);
+
+  if(loading){
+    return(
+      <div className="min-h-screen flex items-center justify-center">
+          Loading blogs...
+        </div>
+    )
+  }
+
+  console.log(blogs)
+  console.log(role)
 
   return (
     <>
-    {role === "organization" && <BlogOrg/>}
+    {/* {role === "organization" && <BlogOrg/>} */}
     {role === "individual" &&
 
       <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -64,16 +57,16 @@ const Blogs = () => {
           <div className="space-y-4">
             {blogs.map((blog) => (
               <BlogCard
-                key ={blog.id}
-                id={blog.id}
-                author={blog.author}
-                authorImage={blog.authorImage}
+                key ={blog.blog_id}
+                id={blog.blog_id}
+                author={blog.username}
+                authorImage={blog.logo_path}
                 badge={blog.badge}
-                badgeColor={blog.badgeColor}
                 title={blog.title}
                 content={blog.content}
-                date={blog.date}
-                views={blog.views}
+                date={formattedDate(blog.createdAt)}
+                upvotes={blog.upvotes}
+                coverImage={blog.cover_image}
               />
             ))}
           </div>

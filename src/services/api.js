@@ -24,4 +24,8 @@ const config ={
 }
 export const createUserApi =(data) => Api.post("/api/auth/register",data)
 export const loginUserApi =(data) => Api.post("/api/auth/login",data)
-export const getAllBlogs =() => Api.get("/api/user/get-all-blogs");
+
+export const getAllBlogs =async() => { 
+    const res = await Api.get("/api/user/get-all-blogs") 
+    return res.data.blogs
+    };

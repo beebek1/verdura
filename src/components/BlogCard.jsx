@@ -1,18 +1,34 @@
 import { Link } from 'react-router-dom';
+import  { ArrowBigUpDash } from 'lucide-react'
 
 const BlogCard = ({
   id,
   author,
   authorImage,
   badge,
-  badgeColor,
   title,
   content,
   date,
   tags,
   upvotes,
-  views
+  coverImage
+
 }) => {
+
+  //setting badge color according to the badge
+
+  const getBadgeColor = () =>{
+    if(badge.trim() === "News"){
+       return "bg-gray-500"
+    }
+    if(badge.trim()=== "Spotlight" ){
+      return "bg-slate-600"
+    }
+    if(badge.trim()==="Blog"){
+      return "bg-gray-600"
+    }
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
@@ -24,7 +40,7 @@ const BlogCard = ({
           />
           <div className="flex flex-col">
             <span className="font-semibold text-gray-900 text-sm">{author}</span>
-            <span className={`${badgeColor} text-white text-xs px-2 py-0.5 rounded mt-1 inline-block w-fit`}>
+            <span className={`${getBadgeColor()} text-white text-xs px-2 py-0.5 rounded mt-1 inline-block w-fit`}>
               {badge}
             </span>
           </div>
@@ -40,8 +56,8 @@ const BlogCard = ({
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-gray-500 text-sm">
-          <span>👁</span>
-          <span>{views}</span>
+          <ArrowBigUpDash size={18} />
+          <span className='font-bold'>{upvotes}</span>
         </div>
 
         <Link to={`/blogs/${id}`} className='bg-teal-600 hover:bg-teal-700 text-white text-sm px-4 py-2 rounded transition-colors'
@@ -50,13 +66,13 @@ const BlogCard = ({
             author,
             authorImage,
             badge,
-            badgeColor,
+            badgeColor : getBadgeColor(),
             title,
             date,
-            views,
             content,
             tags,
-            upvotes
+            upvotes,
+            coverImage
           }}>
         See More
         </Link>
