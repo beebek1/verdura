@@ -3,13 +3,13 @@ import  { ArrowBigUpDash } from 'lucide-react'
 
 const BlogCard = ({
   id,
-  author,
-  authorImage,
+  author,   //this
+  authorImage,  //this
   badge,
   title,
   content,
   date,
-  tags,
+  tags,  //this
   upvotes,
   coverImage
 
@@ -28,6 +28,10 @@ const BlogCard = ({
       return "bg-gray-600"
     }
   }
+
+    // console.log(authorImage)
+    console.log(author)
+
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">

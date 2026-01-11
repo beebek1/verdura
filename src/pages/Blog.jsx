@@ -7,16 +7,17 @@ import { getAllBlogs } from '../services/api';
 const Blogs = () => {
 
   const role = authRole()
-  // const blogs = getAllBlogs();
 
   const[blogs, setBlogs] = useState([])
   const[loading, setLoading] = useState(true)
 
+  //for formatted date
   const formattedDate =(date)=> new Date(date).toLocaleDateString("en-GB", {
   day: "2-digit",
   month: "short"
   });
 
+  //showing blogs through api
   useEffect(()=>{
     const fetchBlogs = async()=>{
       try{
@@ -40,8 +41,7 @@ const Blogs = () => {
     )
   }
 
-  console.log(blogs)
-  console.log(role)
+  // console.log(blogs)
 
   return (
     <>
@@ -59,8 +59,8 @@ const Blogs = () => {
               <BlogCard
                 key ={blog.blog_id}
                 id={blog.blog_id}
-                author={blog.username}
-                authorImage={blog.logo_path}
+                author={blog.OrgInfo?.User?.username}
+                authorImage={blog.OrgInfo?.logo_path}   
                 badge={blog.badge}
                 title={blog.title}
                 content={blog.content}
