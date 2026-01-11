@@ -1,8 +1,6 @@
 import coverpic from '../assets/coverpic.png'
 import BtnCompo from '../components/BtnCompo'
 import ImageFormat from '../components/ImageFormat'
-import IndDashboard from './individual/IndDashboard'
-import OrgDashboard from './organization/OrgDashboard'
 
 const Home = () => {
   
@@ -10,12 +8,8 @@ const Home = () => {
   const role = "individual";
 
   return (
-    <>
-    {role === "organization" && <OrgDashboard/>}
-    {role === "individual" && <IndDashboard/>}
-    {!role &&
         <div className='relative'>
-
+          
           {/* background image */}
           <img 
               src={coverpic} 
@@ -64,8 +58,6 @@ const Home = () => {
               </div>   
           </div>
         </div>
-      }
-    </>
   )
 }
 

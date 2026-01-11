@@ -721,37 +721,6 @@ export default function UserProfile() {
                 </div>
               </div>
 
-              {/* Privacy Settings */}
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
-                <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center shadow-md">
-                      <Shield className="w-5 h-5 text-white" />
-                    </div>
-                    <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
-                      Privacy
-                    </h2>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-                      <label className="block text-gray-800 font-medium mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        Profile Visibility
-                      </label>
-                      <select 
-                        value={preferences.profileVisibility}
-                        onChange={(e) => setPreferences({...preferences, profileVisibility: e.target.value})}
-                        className="w-full bg-white border border-gray-300 text-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
-                        style={{ fontFamily: "'Inter', sans-serif" }}
-                      >
-                        <option value="public">Public</option>
-                        <option value="friends">Friends Only</option>
-                        <option value="private">Private</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               {/* Danger Zone */}
               <div className="relative group">

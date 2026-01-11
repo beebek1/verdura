@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import {Toaster} from 'react-hot-toast';
 
 
-import Profile from './pages/organization/profileOrg.jsx';
+import Profile from './pages/organization/profile.jsx';
 import ForgetPassword from './pages/auth/ForgetPassword.jsx';
 import SignUpInd from './pages/auth/Signup.jsx';
 import Login from './pages/auth/Login.jsx';
@@ -12,6 +12,7 @@ import Navbar from './components/Navbar.jsx';
 import Blog from './pages/Blog.jsx';
 import Footer from './components/Footer.jsx';
 import CreateBlog from './pages/organization/CreateBlog.jsx';
+import Climate from './pages/climate.jsx';
 
 import Campaign from './pages/individual/JoinCampaign.jsx'
 
@@ -34,6 +35,7 @@ function AppWrapper(){
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/campaigns' element={<Campaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
+            <Route path='/climate' element={<Climate/>}/>
 
         </Routes>
       {!hideComponents && <Footer/>}
