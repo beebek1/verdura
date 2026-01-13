@@ -1,27 +1,18 @@
-const router = require('express').Router();
-
-const {registerUser, userLogin } = require('../controllers/userController');
-const verifyEmail = require('../controllers/verifyEmail');
+const router = require("express").Router();
 
 const authMiddleware = require("../helpers/authMiddleware");
 const roleMiddleware = require("../helpers/roleMiddleware");
-const blogController = require("../controllers/BlogController");
+const {blogPost, getAllBlog, upvoteBlog} = require("../controllers/orgControllers/blogController");
+const {campaignPost, getAllCampaigns} = require("../controllers/orgControllers/campaignController");
 
+//org request
+router.post('/blogpost',authMiddleware,roleMiddleware("organization"), blogPost);
+router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campaignPost);
 
-//for all user
-router.post('/register', registerUser);
-router.post('/login', userLogin);
-router.get('/verify-email', verifyEmail);
+//for getting blogs
+router.get('/get-all-blogs', getAllBlog);
+router.get('/get-all-campaigns', getAllCampaigns);
+router.patch('/upvote/:blog_id', upvoteBlog);
 
-//for orgs
-router.get('/blogpost',authMiddleware,roleMiddleware("org"), blogController);
+module.exports = router
 
-// app.get(
-//   "/admin",
-//   authMiddleware,
-//   roleMiddleware("admin"),
-//   adminController
-// );
-
-
-module.exports = router;

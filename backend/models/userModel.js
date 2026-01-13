@@ -4,16 +4,16 @@ const { sequelize } = require("../db/database");
 const Register = sequelize.define(
     "Users",
     {
-        id: {
+        user_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
 
         role: {
-            type: DataTypes.ENUM("ind", "org"),
+            type: DataTypes.ENUM("individual", "organization"),
             allowNull: false,
-            defaultValue: "ind"
+            defaultValue: "individual"
         },
 
         username: {
@@ -35,7 +35,7 @@ const Register = sequelize.define(
 
         isVerified: {
             type: DataTypes.BOOLEAN,
-            defaultValue:false
+            defaultValue:true
         },
 
         verificationToken: {
