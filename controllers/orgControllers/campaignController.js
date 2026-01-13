@@ -23,7 +23,7 @@ const campaignPost = async(req, res) =>{
     })
 }
 
-const getCampaignDetails = async(req, res) =>{
+const getAllCampaigns = async(req, res) =>{
     
     try{
         const campaigns = CreateCampaigns.findAll({
@@ -48,4 +48,4 @@ const getCampaignDetails = async(req, res) =>{
 }
 
 
-module.exports = {campaignPost, getCampaignDetails};    
+module.exports = {campaignPost, getAllCampaigns};    

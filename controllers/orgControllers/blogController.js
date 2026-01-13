@@ -66,5 +66,36 @@ const getAllBlog = async(req, res) =>{
 }
 
 
+const upvoteBlog = async (req, res) => {
+    try {
+        const { blog_id } = req.params;
 
-module.exports = {blogPost, getAllBlog}
+        // Find the blog and increment the upvotes by 1
+        const blog = await CreateBlog.findByPk(blog_id);
+
+        if (!blog) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+
+        // Sequelize utility to increment a specific field
+        await blog.increment('upvotes', { by: 1 });
+
+        // Reload the blog to get the updated count
+        await blog.reload();
+
+        return res.status(200).json({
+            message: "Upvoted successfully",
+            currentUpvotes: blog.upvotes
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error updating upvotes",
+            error: error.message
+        });
+    }
+};
+
+
+
+module.exports = {blogPost, getAllBlog, upvoteBlog}

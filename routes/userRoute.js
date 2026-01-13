@@ -2,8 +2,8 @@ const router = require("express").Router();
 
 const authMiddleware = require("../helpers/authMiddleware");
 const roleMiddleware = require("../helpers/roleMiddleware");
-const {blogPost, getAllBlog} = require("../controllers/orgControllers/blogController");
-const {campaignPost, getCampaignDetails} = require("../controllers/orgControllers/campaignController");
+const {blogPost, getAllBlog, upvoteBlog} = require("../controllers/orgControllers/blogController");
+const {campaignPost, getAllCampaigns} = require("../controllers/orgControllers/campaignController");
 
 //org request
 router.post('/blogpost',authMiddleware,roleMiddleware("organization"), blogPost);
@@ -11,7 +11,8 @@ router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campa
 
 //for getting blogs
 router.get('/get-all-blogs', getAllBlog);
-router.get('/campaigns', getAllBlog);
+router.get('/get-all-campaigns', getAllCampaigns);
+router.patch('/upvote/:blog_id', upvoteBlog);
 
 module.exports = router
 
