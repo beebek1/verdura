@@ -3,8 +3,8 @@ import  { ArrowBigUpDash } from 'lucide-react'
 
 const BlogCard = ({
   id,
-  author,   //this
-  authorImage,  //this
+  author,   
+  authorImage,  
   badge,
   title,
   content,
@@ -35,7 +35,7 @@ const BlogCard = ({
 
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow w-full max-w-3xl">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <img 
