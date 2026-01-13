@@ -52,7 +52,7 @@ export default function ClimateDashboard() {
     try {
       setLoading(true);
 
-      const response = await getLatestWeather("ilam");
+      const response = await getLatestWeather("damak");
       const current = response.data.current;
       const air = current.air_quality;
 
