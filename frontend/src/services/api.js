@@ -34,6 +34,11 @@ export const getAllBlogs =async() => {
     return res.data.blogs
     };
 
+export const getAllCampaigns =async() => { 
+    const res = await Api.get("/api/user/get-all-campaigns") 
+    return res.data.blogs
+    };
+
 const WeatherApi = axios.create({
     baseURL: import.meta.env.VITE_WEATHER_API_URL
 });
