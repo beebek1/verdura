@@ -26,13 +26,20 @@ const campaignPost = async(req, res) =>{
 const getAllCampaigns = async(req, res) =>{
     
     try{
-        const campaigns = CreateCampaigns.findAll({
+        const campaigns = await CreateCampaigns.findAll({
             attributes: ["campaign_id", "title", "description", "volunteer", "status", "category", "start_date", "end_date"],
             include: {
                 model:OrgInfo,
                 attributes: ["org_id", "description", "logo_path"]
             }
         })
+
+        if(campaigns.length ===0){
+            return res.status(404).json({
+                success: false,
+                message:" no camapaigns found"
+            })
+        }
 
         return res.status(201).json({
                 message: "campaigns fetched succesfully",
