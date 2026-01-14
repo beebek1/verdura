@@ -48,7 +48,8 @@ const getAllBlog = async(req, res) =>{
         });
 
         if(blogs.length ===0){
-            return res.status(500).json({
+            return res.status(404).json({
+                success: false,
                 message:" no blog found"
             })
         }
