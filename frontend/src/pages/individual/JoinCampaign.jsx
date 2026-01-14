@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getAllCampaigns } from '../../services/api';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const CampaignCard = ({ id, title, status, volunteers, currentVolunteers, description, location, date }) => {
   const [isJoined, setIsJoined] = useState(false);
@@ -152,9 +154,14 @@ const CampaignCard = ({ id, title, status, volunteers, currentVolunteers, descri
 };
 
 const JoinCampaign = () => {
+
   const [toasts, setToasts] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
+  const [error, setError] = useState([]);
+  const[loading, setLoading] = useState(true)
   
-  React.useEffect(() => {
+  
+  useEffect(() => {
     window.showToast = (message, type = 'success') => {
       const id = Date.now();
       setToasts(prev => [...prev, { id, message, type }]);
@@ -165,48 +172,23 @@ const JoinCampaign = () => {
     };
   }, []);
 
-  const campaigns = [
-    {
-      id: 1,
-      title: 'Tree Plantation Drive',
-      status: 'Active',
-      volunteers: 20,
-      currentVolunteers: 12,
-      description: 'Join us in planting 500 trees across the city to combat climate change and improve air quality. This initiative aims to create greener spaces and raise environmental awareness in our community.',
-      location: 'Central Park, Kathmandu',
-      date: 'January 15, 2026'
-    },
-    {
-      id: 2,
-      title: 'Beach Cleanup Initiative',
-      status: 'Active',
-      volunteers: 15,
-      currentVolunteers: 8,
-      description: 'Help us clean up the local beaches and protect marine life from plastic pollution. Together we can make our waterways cleaner and safer for everyone.',
-      location: 'Pokhara Lakeside',
-      date: 'January 20, 2026'
-    },
-    {
-      id: 3,
-      title: 'Food Distribution Drive',
-      status: 'Upcoming',
-      volunteers: 25,
-      currentVolunteers: 18,
-      description: 'Distribute food packages to underprivileged families in rural areas. Your participation will help ensure no family goes hungry during these challenging times.',
-      location: 'Various locations in Bagmati',
-      date: 'January 25, 2026'
-    },
-    {
-      id: 4,
-      title: 'Education for All',
-      status: 'Active',
-      volunteers: 30,
-      currentVolunteers: 22,
-      description: 'Teach basic literacy and numeracy skills to children in remote villages. Make a lasting impact by empowering the next generation through education.',
-      location: 'Sindhupalchok District',
-      date: 'Ongoing'
-    }
-  ];
+  //showing blogs through api
+  useEffect(()=>{
+    const fetchBlogs = async()=>{
+      try{
+        const data = await getAllCampaigns();
+        setCampaigns(data);
+      }catch(error){
+        console.error("Failed to fetch campaigns", error);
+        setError(true)
+
+      }finally{
+        setLoading(false)
+      }
+    };
+    
+    fetchBlogs();
+  },[]);
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 w-full">
@@ -236,6 +218,15 @@ const JoinCampaign = () => {
               Discover environmental initiatives around you
             </p>
           </div>
+
+          {error === true &&         
+            <DotLottieReact className='mt-40'
+              src="https://lottie.host/efa320a0-9ce4-4a24-92b2-b095a507db98/wcFkvgbOOK.lottie"
+              loop
+              autoplay
+              style={{ width: '30px', height: '30px' }}
+            />
+          }
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {campaigns.map(campaign => (
