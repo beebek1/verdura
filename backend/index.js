@@ -2,6 +2,7 @@ const cors = require("cors")
 const express = require("express");
 const app = express();
 const { sequelize, connectDB } = require("./db/database");
+const path = require('path');
 
 app.use(cors({
   origin: "http://localhost:5173",  // frontend URL
@@ -10,6 +11,9 @@ app.use(cors({
 
 //middleware
 app.use(express.json());
+
+//make uploads folder public
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 //userRoutes and productRoutes

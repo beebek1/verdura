@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, Mail, MapPin, Calendar, CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
 import { useEffect } from 'react';
 import { getUserById } from '../../services/api';
+import tempImage from '../../assets/pollution.png'
 
 // Mock organization data - would come from backend
 const orgData = {
@@ -201,6 +202,103 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
   );
 };
 
+//document update
+
+const DocumentUploader = ({ legalDocString, onUpdate }) => {
+  // 1. Convert the single string from DB into an array of 2 slots
+  // Example: "path1.jpg path2.jpg" -> ["path1.jpg", "path2.jpg"]
+  // const docArray = legalDocString ? legalDocString.trim().split(/\s+/) : ["", ""];
+  const docArray = ["/dog.jpeg", "/crying.png"];
+
+  const handleAction = (index, newValue) => {
+    const updatedArray = [...docArray];
+    
+    // Ensure we always have 2 slots
+    while(updatedArray.length < 2) updatedArray.push("");
+    
+    updatedArray[index] = newValue;
+    
+    // 2. Join back with a single space and send to parent state/API
+    // onUpdate(updatedArray.join(' ').trim());
+  };
+
+  const onFileSelect = (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Create local URL for immediate preview
+      const localUrl = URL.createObjectURL(file);
+      handleAction(index, localUrl);
+      
+      // Note: You would typically trigger your actual API upload here 
+      // and then replace the localUrl with the real server path.
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {[0, 1].map((index) => {
+        const hasFile = docArray[index] && docArray[index].trim() !== "";
+
+        return (
+          <div key={index} className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700">
+              {index === 0 ? "Registration Document" : "PAN / Tax Document"}
+            </label>
+
+            <div className="relative h-52 w-full">
+              {hasFile ? (
+                /* --- PREVIEW MODE --- */
+                <div className="group relative h-full w-full rounded-xl border-2 border-gray-200 overflow-hidden bg-gray-50">
+                  <img
+                    src={docArray[index]}
+                    alt="Document Preview"
+                    className="h-full w-full object-contain p-2"
+                  />
+                  {/* Overlay on Hover */}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-4">
+                    <button
+                      onClick={() => handleAction(index, "")}
+                      className="flex  p-3 text-white  shadow-lg transform hover:scale-110 transition-all"
+                      title="Remove Document"
+                    >
+                      <p>Upload</p>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* --- UPLOAD MODE --- */
+                <>
+                  <label
+                    htmlFor={`doc-upload-${index}`}
+                    className="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-white hover:bg-emerald-50/50 hover:border-emerald-400 transition-all group"
+                  >
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <div className="mb-3 rounded-full bg-emerald-100 p-3 group-hover:scale-110 transition-transform">
+                        <Upload className="h-6 w-6 text-emerald-600" />
+                      </div>
+                      <p className="mb-1 text-sm text-gray-700 font-medium">
+                        Click to upload
+                      </p>
+                      <p className="text-xs text-gray-500">PNG, JPG or PDF</p>
+                    </div>
+                    <input
+                      id={`doc-upload-${index}`}
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={(e) => onFileSelect(e, index)}
+                    />
+                  </label>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const StatsCard = ({ icon: Icon, label, value, sublabel, color = "from-emerald-500 to-teal-500" }) => (
   <div className="relative group">
     <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -339,6 +437,8 @@ export default function OrganizationProfile() {
   const city = parts[2]
   const street = parts[3]
 
+  // const docPaths = orgDetail.OrgInfo.legal_documents ? formData.legalDocs.split(' ') : [];
+
   console.log(country, state, city, street)
 
   const togglePreference = (key) => {
@@ -366,7 +466,7 @@ export default function OrganizationProfile() {
     { id: 'overview', label: 'Overview', icon: TrendingUp },
     { id: 'profile', label: 'Organization Info', icon: User },
     { id: 'dangerZone', label: 'Danzer Zone', icon: Settings }
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50/30 to-teal-50/30">
@@ -396,7 +496,7 @@ export default function OrganizationProfile() {
                   <Icon className="w-5 h-5" />
                   {tab.label}
                 </button>
-              );
+              )
             })}
           </div>
 
@@ -632,24 +732,10 @@ export default function OrganizationProfile() {
                         <label className="block text-sm font-semibold text-gray-700 mb-3">
                           Legal Documents
                         </label>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                          {[1, 2].map((item) => (
-                            <div
-                              key={item}
-                              className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center cursor-pointer hover:border-[#2d5f4d] hover:bg-gray-50 transition-all"
-                            >
-                              <div className="w-16 h-16 mx-auto mb-4 bg-blue-50 rounded-lg flex items-center justify-center">
-                                <Upload className="w-8 h-8 text-blue-300" />
-                              </div>
-                              <p className="text-gray-600 text-sm">
-                                Drop your image here, or{' '}
-                                <span className="text-[#2d5f4d] font-semibold cursor-pointer hover:underline">
-                                  Browse
-                                </span>
-                              </p>
-                            </div>
-                          ))}
-                        </div>
+
+                        <DocumentUploader 
+                          legalDocString={orgDetail.OrgInfo.legal_documents}
+                        />
                       </div>
 
                       {/* Save Button */}
@@ -684,7 +770,6 @@ export default function OrganizationProfile() {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </div>

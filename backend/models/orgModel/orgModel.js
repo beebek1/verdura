@@ -42,7 +42,11 @@ const OrgInfo = sequelize.define(
             type: DataTypes.STRING,
             allowNull:false
         },
-        
+
+        legal_documents: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
 
         address: {
             type: DataTypes.STRING,
