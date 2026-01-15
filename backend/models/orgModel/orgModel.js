@@ -31,7 +31,6 @@ const OrgInfo = sequelize.define(
             allowNull:false
         },
         
-
         verification_status: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
@@ -61,8 +60,14 @@ const OrgInfo = sequelize.define(
             defaultValue: 0,
             allowNull:false
         },
+
+        total_volunteers: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull:false
+        },
         
-        total_views: {
+        total_campaigns: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             allowNull:false,

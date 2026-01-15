@@ -3,7 +3,7 @@ const {sequelize} = require("../../db/database");
 const OrgInfo = require("./orgModel");
 
 const CreateCampaign = sequelize.define(
-    "CreateCampaign",
+    "Campaigns",
     {
         campaign_id:{
             type: DataTypes.INTEGER,

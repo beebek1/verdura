@@ -24,7 +24,7 @@ app.get("/",(req,res) =>{
 const startServer = async () => {
     const PORT = process.env.PORT || 3000;
     await connectDB(); 
-    await sequelize.sync({force: true});              //force and sync
+    await sequelize.sync({alter: true});              //force and sync
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
     });

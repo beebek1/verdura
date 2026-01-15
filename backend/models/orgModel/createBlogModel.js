@@ -3,7 +3,7 @@ const { sequelize } = require("../../db/database");
 const OrgInfo = require("./orgModel");
 
 const CreateBlog = sequelize.define(
-    "OrgCreateBlog",
+    "Blogs",
     {
         blog_id:{
             type:DataTypes.INTEGER,
