@@ -332,6 +332,15 @@ export default function OrganizationProfile() {
     setIsEditing(false);
   };
 
+    //for splitting address
+  const parts = orgDetail.OrgInfo.address.split(" ");
+  const country = parts[0]
+  const state = parts[1]
+  const city = parts[2]
+  const street = parts[3]
+
+  console.log(country, state, city, street)
+
   const togglePreference = (key) => {
     setPreferences(prev => ({ ...prev, [key]: !prev[key] }));
   };
@@ -540,7 +549,7 @@ export default function OrganizationProfile() {
                             </label>
                             <textarea
                               name="bio"
-                              value={formData.bio}
+                              value={orgDetail.OrgInfo.description}
                               onChange={handleInputChange}
                               placeholder="Tell us about your organization..."
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent resize-none h-24"
@@ -554,7 +563,7 @@ export default function OrganizationProfile() {
                             <input
                               type="email"
                               name="email"
-                              value={formData.email}
+                              value={orgDetail.email}
                               onChange={handleInputChange}
                               placeholder="e.g necessary cleaner"
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -568,22 +577,11 @@ export default function OrganizationProfile() {
                             <input
                               type="text"
                               name="orgName"
-                              value={formData.orgName}
+                              value={orgDetail.username}
                               onChange={handleInputChange}
                               placeholder="e.g necessary cleaner"
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
                             />
-                          </div>
-                        </div>
-
-                        {/* Right Side - Profile Picture */}
-                        <div className="flex flex-col items-center">
-                          <label className="block text-sm font-semibold text-gray-700 mb-3">
-                            Profile Picture
-                          </label>
-                          <div className="w-36 h-36 rounded-full bg-gradient-to-br from-[#c8b899] to-[#a89968] flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform">
-                            <p className="text-gray-600 text-xs text-center px-2">Upload Profile Picture</p>
-                            <p className="text-gray-500 text-sm italic mt-1">Pseudocide SafCore</p>
                           </div>
                         </div>
                       </div>
@@ -597,7 +595,7 @@ export default function OrganizationProfile() {
                           <input
                             type="text"
                             name="country"
-                            value={formData.country}
+                            value={country}
                             onChange={handleInputChange}
                             placeholder="Country"
                             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -605,7 +603,7 @@ export default function OrganizationProfile() {
                           <input
                             type="text"
                             name="state"
-                            value={formData.state}
+                            value={state}
                             onChange={handleInputChange}
                             placeholder="State"
                             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -613,7 +611,7 @@ export default function OrganizationProfile() {
                           <input
                             type="text"
                             name="city"
-                            value={formData.city}
+                            value={city}
                             onChange={handleInputChange}
                             placeholder="City"
                             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -622,7 +620,7 @@ export default function OrganizationProfile() {
                         <input
                           type="text"
                           name="street"
-                          value={formData.street}
+                          value={street}
                           onChange={handleInputChange}
                           placeholder="Street"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
