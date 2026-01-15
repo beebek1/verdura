@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { User, Mail, MapPin, Calendar, TrendingUp, Settings, Bell, Shield, Camera, Edit2, Save, X, Leaf, Target, Clock, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
+import { User, Mail, MapPin, Calendar, CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
+import { useEffect } from 'react';
+import { getUserById } from '../../services/api';
 
 // Mock organization data - would come from backend
 const orgData = {
@@ -15,7 +17,7 @@ const orgData = {
       city: "Pātan",
       street: ""
     },
-    orgType: "Non-Profit"
+    orgType: "Verified"
   },
   stats: {
     campaignsCreated: 12,
@@ -25,38 +27,6 @@ const orgData = {
     totalImpact: 8500,
     hoursGenerated: 2400
   },
-  ongoingCampaigns: [
-    {
-      id: 1,
-      title: "Tree Plantation Drive 2025",
-      volunteers: 127,
-      hoursContributed: 450,
-      progress: 68,
-      startDate: "Jan 15, 2025",
-      status: "Active",
-      nextMilestone: "Plant 1000 trees"
-    },
-    {
-      id: 2,
-      title: "Community Cleanup Initiative",
-      volunteers: 89,
-      hoursContributed: 280,
-      progress: 45,
-      startDate: "Jan 10, 2025",
-      status: "Active",
-      nextMilestone: "Collect 500kg waste"
-    },
-    {
-      id: 3,
-      title: "Ocean Restoration Project",
-      volunteers: 65,
-      hoursContributed: 180,
-      progress: 30,
-      startDate: "Jan 20, 2025",
-      status: "Active",
-      nextMilestone: "Clean 10km coastline"
-    }
-  ],
   recentBlogs: [
     { 
       id: 1, 
@@ -111,6 +81,8 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
     setLocalProfile(prev => ({ ...prev, [field]: value }));
   };
 
+  // console.log("consolel fuck",profile)
+
   const handleSave = () => {
     onSave(localProfile);
   };
@@ -128,10 +100,11 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
               onMouseLeave={() => setImageHover(false)}
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {profile.avatar ? (
-                <img src={profile.avatar} alt={profile.name} className="w-full h-full object-cover rounded-2xl" />
+{              console.log(profile)
+}              {profile.OrgInfo.logo_path ? (
+                <img src={profile.OrgInfo.logo_path} alt="image" className="w-full h-full object-cover rounded-2xl" />
               ) : (
-                profile.name.substring(0, 2).toUpperCase()
+                profile.username.substring(0, 2).toUpperCase()
               )}
               {imageHover && (
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300">
@@ -158,26 +131,38 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                   />
                 ) : (
                   <h1 className="text-3xl font-bold text-gray-800 mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    {profile.name}
+                    {profile.username}
                   </h1>
                 )}
                 
                 <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-3">
-                  <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200 font-medium">
-                    <Briefcase className="w-4 h-4" />
-                    {profile.orgType}
-                  </span>
+                  {profile.OrgInfo.verification_status === true ? (
+                    <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200 font-medium">
+                      <ShieldCheck className="w-4 h-4" />
+                      <p>Verified</p>
+                    </span> ) : (
+                    <span className="flex items-center gap-1.5 px-3 py-1 bg-rose-100 text-rose-700 rounded-full border border-rose-200 font-medium">
+                      <ShieldX className="w-4 h-4" />
+                      <p>Unverified</p>
+                    </span>
+                    )
+                  
+                  }
+
                   <span className="flex items-center gap-1.5">
                     <Mail className="w-4 h-4 text-emerald-600" />
                     {profile.email}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-emerald-600" />
-                    {profile.location.city}, {profile.location.country}
+                    {profile.OrgInfo.address}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-4 h-4 text-emerald-600" />
-                    Founded {profile.foundedDate}
+                    Founded {new Date(profile.createdAt).toLocaleDateString("en-GB", {
+                        month: "short",
+                        year: "numeric"
+                        })}
                   </span>
                 </div>
 
@@ -191,35 +176,22 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                   />
                 ) : (
                   <p className="text-gray-600 text-sm leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    {profile.bio}
+                    {profile.OrgInfo.description}
                   </p>
                 )}
               </div>
 
               <div className="flex gap-2">
-                {!isEditing ? (
                   <button
-                    onClick={onEdit}
+                    onClick={ () => {
+                      navigator.clipboard.writeText(window.location.href);
+                      alert("link copied")
+                    }}
                     className="p-2.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-all duration-300 hover:scale-105"
                   >
-                    <Edit2 className="w-5 h-5 text-emerald-600" />
+                    <Link className="w-5 h-5 text-emerald-600" />
                   </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={handleSave}
-                      className="p-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 rounded-lg transition-all duration-300 hover:scale-105 shadow-md"
-                    >
-                      <Save className="w-5 h-5 text-white" />
-                    </button>
-                    <button
-                      onClick={onCancel}
-                      className="p-2.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg transition-all duration-300 hover:scale-105"
-                    >
-                      <X className="w-5 h-5 text-red-500" />
-                    </button>
-                  </>
-                )}
+
               </div>
             </div>
           </div>
@@ -251,18 +223,6 @@ const StatsCard = ({ icon: Icon, label, value, sublabel, color = "from-emerald-5
   </div>
 );
 
-const ProgressBar = ({ progress }) => (
-  <div className="relative">
-    <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-      <div 
-        className="h-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-700 ease-out relative shadow-sm"
-        style={{ width: `${progress}%` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent animate-pulse" />
-      </div>
-    </div>
-  </div>
-);
 
 const CampaignCard = ({ campaign }) => (
   <div className="relative group">
@@ -276,35 +236,31 @@ const CampaignCard = ({ campaign }) => (
           <div className="grid grid-cols-2 gap-3 text-sm text-gray-600 mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
             <span className="flex items-center gap-1.5">
               <Users className="w-4 h-4 text-emerald-600" />
-              {campaign.volunteers} volunteers
+              {campaign.volunteer} volunteers
             </span>
             <span className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-emerald-600" />
-              {campaign.hoursContributed} hours
+              <AlignEndVertical className="w-4 h-4 text-emerald-600" />
+              {campaign.category}
             </span>
             <span className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-emerald-600" />
-              Started {campaign.startDate}
+              <CalendarCheck className="w-4 h-4 text-emerald-600" />
+              Started   {new Date(campaign.start_date).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short"
+                      })}
             </span>
             <span className="flex items-center gap-1.5">
-              <Target className="w-4 h-4 text-emerald-600" />
-              {campaign.nextMilestone}
+              <CalendarX className="w-4 h-4 text-emerald-600" />
+              End Date   {new Date(campaign.end_date).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short"
+                      })}
             </span>
-          </div>
-          <div className="flex items-center gap-3 text-xs mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
-            <span className="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200 font-medium">
-              {campaign.status}
-            </span>
-            <span className="text-gray-600">Progress: {campaign.progress}%</span>
           </div>
         </div>
       </div>
-      <ProgressBar progress={campaign.progress} />
       <div className="flex gap-2 mt-4">
-        <button className="flex-1 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 shadow-md" style={{ fontFamily: "'Inter', sans-serif" }}>
-          View Details
-        </button>
-        <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <button className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
           Edit
         </button>
       </div>
@@ -312,65 +268,64 @@ const CampaignCard = ({ campaign }) => (
   </div>
 );
 
-const BlogCard = ({ blog }) => (
-  <div className="relative group">
-    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-    <div className="relative bg-white rounded-xl p-5 border border-gray-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300">
-      <h3 className="text-base font-semibold text-gray-800 mb-3 line-clamp-2" style={{ fontFamily: "'Inter', sans-serif" }}>
-        {blog.title}
-      </h3>
-      <div className="flex items-center justify-between text-sm text-gray-600 mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
-        <span className="flex items-center gap-1.5">
-          <Eye className="w-4 h-4 text-emerald-600" />
-          {blog.views}
-        </span>
-        <span className="flex items-center gap-1.5">
-          <Heart className="w-4 h-4 text-red-500" />
-          {blog.likes}
-        </span>
-        <span className="flex items-center gap-1.5">
-          <MessageCircle className="w-4 h-4 text-blue-500" />
-          {blog.comments}
-        </span>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-gray-500" style={{ fontFamily: "'Inter', sans-serif" }}>
-          {blog.date}
-        </span>
-        <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-          Edit
-        </button>
-      </div>
-    </div>
-  </div>
-);
 
-const AchievementBadge = ({ achievement }) => (
-  <div className={`relative group ${!achievement.earned && 'opacity-40'}`}>
-    <div className={`absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg transition-opacity duration-500 ${achievement.earned ? 'opacity-50 group-hover:opacity-100' : 'opacity-0'}`} />
-    <div className="relative bg-white rounded-xl p-4 border border-gray-200 hover:border-emerald-300 hover:shadow-md transition-all duration-300 text-center">
-      <div className="text-4xl mb-2">{achievement.icon}</div>
-      <div className="text-sm font-semibold text-gray-800 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-        {achievement.name}
-      </div>
-      {achievement.earned ? (
-        <div className="text-xs text-emerald-600 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-          {achievement.date}
-        </div>
-      ) : (
-        <div className="text-xs text-gray-400" style={{ fontFamily: "'Inter', sans-serif" }}>
-          Locked
-        </div>
-      )}
-    </div>
-  </div>
-);
+//for calculating impact score
+const calculateImpactScore = (data) => {
+  const { total_blogs, total_campaigns, total_upvotes, total_volunteers, verification_status} = data;
+
+  // 1. Assign raw points based on weights
+  const rawPoints = 
+    (total_campaigns * 500) + 
+    (total_volunteers * 50) + 
+    (total_blogs * 100) + 
+    (total_upvotes * 5);
+
+  // 2. The "Saturation" Formula
+  // This ensures the score approaches 10,000 but never exceeds it.
+  // We use a constant (k) to determine how "hard" it is to reach the limit.
+  const limit = 10000;
+  const k = 5000; // Adjust this to make it harder or easier to gain points
+  
+  let score = limit * (rawPoints / (rawPoints + k));
+
+  console.log("score", score)
+  // 3. Verification Bonus (e.g., +10% boost for verified orgs)
+  if (verification_status) {
+    score = score + (limit - score) * 0.1; 
+  }
+
+  return Math.round(score);
+};
+
 
 export default function OrganizationProfile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
   const [preferences, setPreferences] = useState(orgData.preferences);
   const [formData, setFormData] = useState(orgData.profile);
+  const [orgDetail, setOrgDetail] =useState(null);
+  const [loading, setLoading] = useState(true)
+
+  useEffect(()=>{
+    const fetchOrganizationDetail = async() =>{
+
+      try{
+        const res = await getUserById();
+
+        setOrgDetail(res.data.organization)
+
+      }catch(err){
+        console.log("failed to fetch organization detail", err)
+      }finally{
+        setLoading(false)
+      }
+    }
+    fetchOrganizationDetail();
+    
+  }, []);
+
+  if(loading) return <div><p>loading wait a min</p></div>
+  if(!orgDetail) return <div><p>didn't get any data</p></div>
 
   const handleSaveProfile = (updatedProfile) => {
     console.log('Saving profile:', updatedProfile);
@@ -401,7 +356,7 @@ export default function OrganizationProfile() {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
     { id: 'profile', label: 'Organization Info', icon: User },
-    { id: 'settings', label: 'Settings', icon: Settings }
+    { id: 'dangerZone', label: 'Danzer Zone', icon: Settings }
   ];
 
   return (
@@ -409,9 +364,7 @@ export default function OrganizationProfile() {
       <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           <ProfileHeader 
-            profile={orgData.profile}
-            isEditing={isEditing}
-            onEdit={() => setIsEditing(true)}
+            profile={orgDetail}
             onSave={handleSaveProfile}
             onCancel={() => setIsEditing(false)}
           />
@@ -446,43 +399,43 @@ export default function OrganizationProfile() {
                 <StatsCard 
                   icon={Target} 
                   label="Campaigns" 
-                  value={orgData.stats.campaignsCreated}
+                  value={orgDetail.OrgInfo.total_campaigns}
                   sublabel="Created"
                   color="from-emerald-500 to-teal-500"
                 />
                 <StatsCard 
                   icon={Leaf} 
                   label="Active" 
-                  value={orgData.stats.activeCampaigns}
+                  value='4'
                   sublabel="Running Now"
                   color="from-teal-500 to-emerald-600"
                 />
                 <StatsCard 
                   icon={Users} 
                   label="Volunteers" 
-                  value={orgData.stats.totalVolunteers}
+                  value={orgDetail.OrgInfo.total_volunteers}
                   sublabel="Total"
                   color="from-emerald-600 to-teal-500"
                 />
                 <StatsCard 
                   icon={FileText} 
                   label="Blogs" 
-                  value={orgData.stats.blogsPublished}
+                  value={orgDetail.OrgInfo.total_blogs}
                   sublabel="Published"
                   color="from-teal-600 to-emerald-500"
                 />
                 <StatsCard 
                   icon={BarChart3} 
                   label="Impact" 
-                  value={orgData.stats.totalImpact}
+                  value={calculateImpactScore(orgDetail.OrgInfo)}
                   sublabel="Score"
                   color="from-emerald-500 to-teal-600"
                 />
                 <StatsCard 
-                  icon={Clock} 
-                  label="Hours" 
-                  value={orgData.stats.hoursGenerated}
-                  sublabel="Generated"
+                  icon={ArrowBigUp} 
+                  label="Upvotes" 
+                  value={orgDetail.OrgInfo.total_upvotes}
+                  sublabel="Gained"
                   color="from-teal-500 to-emerald-500"
                 />
               </div>
@@ -501,8 +454,8 @@ export default function OrganizationProfile() {
                       </button>
                     </div>
                     <div className="space-y-4">
-                      {orgData.ongoingCampaigns.slice(0, 2).map(campaign => (
-                        <CampaignCard key={campaign.id} campaign={campaign} />
+                      {orgDetail.OrgInfo.Campaigns.slice(0, 2).map(campaign => (
+                        <CampaignCard key={campaign.campaign_id} campaign={campaign} />
                       ))}
                     </div>
                   </div>
@@ -545,7 +498,7 @@ export default function OrganizationProfile() {
                       <div className="space-y-4">
                         <div className="text-center">
                           <div className="text-5xl font-bold text-white mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
-                            {orgData.stats.totalImpact}
+                            {calculateImpactScore(orgDetail.OrgInfo)}
                           </div>
                           <p className="text-emerald-100 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
                             Total Impact Score
@@ -553,29 +506,14 @@ export default function OrganizationProfile() {
                         </div>
                         <div className="border-t border-white/20 pt-4">
                           <div className="flex justify-between text-emerald-50 text-sm mb-2">
-                            <span style={{ fontFamily: "'Inter', sans-serif" }}>Volunteers Engaged</span>
-                            <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{orgData.stats.totalVolunteers}</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif" }}>Campaigns Launched</span>
+                            <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{orgDetail.OrgInfo.total_campaigns}</span>
                           </div>
                           <div className="flex justify-between text-emerald-50 text-sm">
-                            <span style={{ fontFamily: "'Inter', sans-serif" }}>Hours Generated</span>
-                            <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{orgData.stats.hoursGenerated}</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif" }}>Volunteers Engaged</span>
+                            <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{orgDetail.OrgInfo.total_volunteers}</span>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Achievements */}
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
-                    <div className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-                      <h2 className="text-lg font-bold text-gray-800 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        Achievements
-                      </h2>
-                      <div className="grid grid-cols-2 gap-3">
-                        {orgData.achievements.map(achievement => (
-                          <AchievementBadge key={achievement.id} achievement={achievement} />
-                        ))}
                       </div>
                     </div>
                   </div>
@@ -730,28 +668,7 @@ export default function OrganizationProfile() {
                 </div>
               )};
 
-          {activeTab === 'settings' && (
-            <div className="bg-white rounded-xl p-6 border border-gray-200 space-y-4">
-              <h2 className="text-2xl font-bold text-gray-800">Settings</h2>
-
-              <label className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={preferences.emailNotifications}
-                  onChange={() => togglePreference('emailNotifications')}
-                />
-                Email Notifications
-              </label>
-
-              <label className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={preferences.weeklyReport}
-                  onChange={() => togglePreference('weeklyReport')}
-                />
-                Weekly Report
-              </label>
-
+          {activeTab === 'dangerZone' && (
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-red-100/50 to-orange-100/50 rounded-2xl blur-xl" />
               <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-red-200">
@@ -768,7 +685,6 @@ export default function OrganizationProfile() {
                 </div>
               </div>
             </div>
-          </div>
           )}
 
         </div>
