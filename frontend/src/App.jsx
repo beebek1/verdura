@@ -15,6 +15,8 @@ import Footer from './components/Footer.jsx';
 import CreateBlog from './pages/organization/CreateBlog.jsx';
 import Climate from './pages/climate.jsx';
 
+import IndProfile from './pages/individual/profile.jsx'
+
 import Campaign from './pages/individual/JoinCampaign.jsx'
 
 
@@ -28,7 +30,7 @@ function AppWrapper(){
       {!hideComponents && <Navbar/>}
         <Routes>
           
-            <Route path='/profileind' element={<Profile/>}/>
+            <Route path='/profile' element={<Profile/>}/>
             <Route path='/blogs' element={<Blog/>}/>
             <Route path='/blogs/:blogId' element={<BlogDetails/>}/>
             <Route path='/reset-password' element={<ForgetPassword/>}/>
@@ -38,6 +40,7 @@ function AppWrapper(){
             <Route path='/campaigns' element={<Campaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
             <Route path='/climate' element={<Climate/>}/>
+            <Route path='/temp' element={<IndProfile/>}/>
 
         </Routes>
       {!hideComponents && <Footer/>}
