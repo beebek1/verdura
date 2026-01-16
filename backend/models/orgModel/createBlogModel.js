@@ -41,7 +41,7 @@ const CreateBlog = sequelize.define(
         },
 
         cover_image: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
         },
         
         upvotes: {

@@ -6,7 +6,7 @@ const {blogPost, getAllBlog, upvoteBlog} = require("../controllers/orgController
 const {campaignPost, getAllCampaigns} = require("../controllers/orgControllers/campaignController");
 
 //org request
-router.post('/blogpost',authMiddleware,roleMiddleware("organization"), blogPost);
+router.post('/create-blog',authMiddleware,roleMiddleware("organization"), blogPost);
 router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campaignPost);
 
 //for getting blogs

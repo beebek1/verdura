@@ -9,7 +9,8 @@ app.use(cors({
 }));
 
 //middleware
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({ limit: '50mb', extended: true })); 
 
 
 //userRoutes and productRoutes
@@ -24,7 +25,7 @@ app.get("/",(req,res) =>{
 const startServer = async () => {
     const PORT = process.env.PORT || 3000;
     await connectDB(); 
-    await sequelize.sync({force: true});              //force and sync
+    await sequelize.sync({alter: true});              //force and sync
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
     });
