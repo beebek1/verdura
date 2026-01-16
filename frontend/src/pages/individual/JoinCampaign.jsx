@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getAllCampaigns } from '../../services/api';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import CreateBlog from '../organization/CreateCampaign';
+import getUserRole from '../protect/authRole';
 
 const CampaignCard = ({ id, title, status, volunteers, currentVolunteers, description, location, date }) => {
   const [isJoined, setIsJoined] = useState(false);
@@ -159,6 +161,9 @@ const JoinCampaign = () => {
   const [campaigns, setCampaigns] = useState([]);
   const [error, setError] = useState([]);
   const[loading, setLoading] = useState(true)
+
+
+  const role = getUserRole();
   
   
   useEffect(() => {
@@ -191,67 +196,72 @@ const JoinCampaign = () => {
   },[]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 w-full">
-      {/* Toast Container */}
-      <div className="fixed top-4 right-4 z-50 space-y-2">
-        {toasts.map(toast => (
-          <div
-            key={toast.id}
-            className={`${
-              toast.type === 'warning' ? 'bg-slate-600' : 'bg-emerald-600'
-            } text-white px-6 py-3 rounded-lg shadow-lg animate-slide-in flex items-center gap-3`}
-          >
-            <span className="text-xl">{toast.type === 'warning' ? '⚠️' : '✓'}</span>
-            <p className="font-semibold">{toast.message}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Main Content */}
-      <main className="flex-grow px-4 sm:px-8 py-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-semibold text-slate-800 mb-2">
-              Nearby Campaigns
-            </h2>
-            <p className="text-slate-600 text-base">
-              Discover environmental initiatives around you
-            </p>
-          </div>
-
-          {error === true &&         
-            <DotLottieReact className='mt-40'
-              src="https://lottie.host/efa320a0-9ce4-4a24-92b2-b095a507db98/wcFkvgbOOK.lottie"
-              loop
-              autoplay
-              style={{ width: '30px', height: '30px' }}
-            />
-          }
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {campaigns.map(campaign => (
-              <CampaignCard key={campaign.id} {...campaign} />
-            ))}
-          </div>
+    <>
+    {role === "organization" && <CreateCampaign/>}
+    {role === "individual" &&
+      <div className="flex flex-col min-h-screen bg-slate-50 w-full">
+        {/* Toast Container */}
+        <div className="fixed top-4 right-4 z-50 space-y-2">
+          {toasts.map(toast => (
+            <div
+              key={toast.id}
+              className={`${
+                toast.type === 'warning' ? 'bg-slate-600' : 'bg-emerald-600'
+              } text-white px-6 py-3 rounded-lg shadow-lg animate-slide-in flex items-center gap-3`}
+            >
+              <span className="text-xl">{toast.type === 'warning' ? '⚠️' : '✓'}</span>
+              <p className="font-semibold">{toast.message}</p>
+            </div>
+          ))}
         </div>
-      </main>
 
-      <style>{`
-        @keyframes slide-in {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
+        {/* Main Content */}
+        <main className="flex-grow px-4 sm:px-8 py-12">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-semibold text-slate-800 mb-2">
+                Nearby Campaigns
+              </h2>
+              <p className="text-slate-600 text-base">
+                Discover environmental initiatives around you
+              </p>
+            </div>
+
+            {error === true &&         
+              <DotLottieReact className='mt-40'
+                src="https://lottie.host/efa320a0-9ce4-4a24-92b2-b095a507db98/wcFkvgbOOK.lottie"
+                loop
+                autoplay
+                style={{ width: '30px', height: '30px' }}
+              />
+            }
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {campaigns.map(campaign => (
+                <CampaignCard key={campaign.id} {...campaign} />
+              ))}
+            </div>
+          </div>
+        </main>
+
+        <style>{`
+          @keyframes slide-in {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
           }
-          to {
-            transform: translateX(0);
-            opacity: 1;
+          .animate-slide-in {
+            animation: slide-in 0.3s ease-out;
           }
-        }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
-      `}</style>
-    </div>
+        `}</style>
+      </div>
+    }
+    </>
   )
 }
 
