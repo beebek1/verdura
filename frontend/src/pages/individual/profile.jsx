@@ -63,10 +63,6 @@ const orgData = {
       progress: 40
     }
   ],
-  articles: [
-    { title: "How Tree Plantation Improves Air Quality", upvotes: 152 },
-    { title: "Volunteer Stories from the Field", upvotes: 98 }
-  ],
   recentContributions: [
     {
       id: 1,
@@ -233,106 +229,6 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
   );
 };
 
-//document update
-
-const DocumentUploader = ({ legalDocString, onUpdate }) => {
-  // 1. Convert the single string from DB into an array of 2 slots
-  // Example: "path1.jpg path2.jpg" -> ["path1.jpg", "path2.jpg"]
-  // const docArray = legalDocString ? legalDocString.trim().split(/\s+/) : ["", ""];
-  const docArray = ["/dog.jpeg", "/crying.png"];
-
-  const handleAction = (index, newValue) => {
-    const updatedArray = [...docArray];
-    
-    // Ensure we always have 2 slots
-    while(updatedArray.length < 2) updatedArray.push("");
-    
-    updatedArray[index] = newValue;
-    
-    // 2. Join back with a single space and send to parent state/API
-    // onUpdate(updatedArray.join(' ').trim());
-  };
-
-  const onFileSelect = (e, index) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Create local URL for immediate preview
-      const localUrl = URL.createObjectURL(file);
-      handleAction(index, localUrl);
-      
-      // Note: You would typically trigger your actual API upload here 
-      // and then replace the localUrl with the real server path.
-    }
-  };
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {[0, 1].map((index) => {
-        const hasFile = docArray[index] && docArray[index].trim() !== "";
-
-        return (
-          <div key={index} className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
-              {index === 0 ? "Registration Document" : "PAN / Tax Document"}
-            </label>
-
-            <div className="relative h-52 w-full">
-              {hasFile ? (
-                /* --- PREVIEW MODE --- */
-                <div className="group relative h-full w-full rounded-xl border-2 border-gray-200 overflow-hidden bg-gray-50">
-                  <img
-                    src={docArray[index]}
-                    alt="Document Preview"
-                    className="h-full w-full object-contain p-2"
-                  />
-                  {/* Overlay on Hover */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-4">
-                    <button
-                      onClick={() => handleAction(index, "")}
-                      className="flex  p-3 text-white  shadow-lg transform hover:scale-110 transition-all"
-                      title="Remove Document"
-                    >
-                      <p>Upload</p>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* --- UPLOAD MODE --- */
-                <>
-                  <label
-                    htmlFor={`doc-upload-${index}`}
-                    className="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-white hover:bg-emerald-50/50 hover:border-emerald-400 transition-all group"
-                  >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <div className="mb-3 rounded-full bg-emerald-100 p-3 group-hover:scale-110 transition-transform">
-                        <Upload className="h-6 w-6 text-emerald-600" />
-                      </div>
-                      <p className="mb-1 text-sm text-gray-700 font-medium">
-                        Click to upload
-                      </p>
-                      <p className="text-xs text-gray-500">PNG, JPG or PDF</p>
-                    </div>
-                    <input
-                      id={`doc-upload-${index}`}
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={(e) => onFileSelect(e, index)}
-                    />
-                  </label>
-                </>
-              )}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-const ProgressBar = () =>{
-  console.log("shi yawrr")
-}
 
 const StatsCard = ({ icon: Icon, label, value, sublabel, color = "from-emerald-500 to-teal-500" }) => (
   <div className="relative group">
@@ -726,17 +622,6 @@ export default function IndividualProfile() {
                           onChange={handleInputChange}
                           placeholder="Street"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
-                        />
-                      </div>
-
-                      {/* Legal Documents Section */}
-                      <div className="mb-10">
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">
-                          Legal Documents
-                        </label>
-
-                        <DocumentUploader 
-                          legalDocString={orgDetail.OrgInfo.legal_documents}
                         />
                       </div>
 

@@ -60,6 +60,10 @@ const orgData = {
     { id: 3, name: "Community Leader", icon: "👥", earned: true, date: "Jun 2024" },
     { id: 4, name: "1000 Volunteers", icon: "⭐", earned: false, date: null }
   ],
+  articles: [
+    { title: "How Tree Plantation Improves Air Quality", upvotes: 152 },
+    { title: "Volunteer Stories from the Field", upvotes: 98 }
+  ],
   recentActivity: [
     { id: 1, action: "Published new blog: 'Tree Plantation Guide'", date: "2 days ago", icon: "📝" },
     { id: 2, action: "Launched Ocean Restoration Project", date: "5 days ago", icon: "🌊" },
@@ -208,10 +212,11 @@ const DocumentUploader = ({ legalDocString, onUpdate }) => {
   // 1. Convert the single string from DB into an array of 2 slots
   // Example: "path1.jpg path2.jpg" -> ["path1.jpg", "path2.jpg"]
   // const docArray = legalDocString ? legalDocString.trim().split(/\s+/) : ["", ""];
-  const docArray = ["/dog.jpeg", "/crying.png"];
+  const docArray = [];
 
   const handleAction = (index, newValue) => {
     const updatedArray = [...docArray];
+    
     
     // Ensure we always have 2 slots
     while(updatedArray.length < 2) updatedArray.push("");
@@ -423,7 +428,7 @@ export default function OrganizationProfile() {
   }, []);
 
   if(loading) return <div><p>loading wait a min</p></div>
-  if(!orgDetail) return <div><p>didn't get any data</p></div>
+  if(!orgDetail) return <div><p>backend isn't loading data</p></div>
 
   const handleSaveProfile = (updatedProfile) => {
     console.log('Saving profile:', updatedProfile);
@@ -626,6 +631,32 @@ export default function OrganizationProfile() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Articles Upvoted */}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                    <div className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                      <h2 className="text-lg font-bold text-gray-800 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        Articles You Upvoted
+                      </h2>
+                      <div className="space-y-3">
+                        {orgData.articles.map((article, idx) => (
+                          <div 
+                            key={idx} 
+                            className="flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-300 group/article cursor-pointer"
+                          >
+                            <p className="text-sm font-medium text-gray-800 flex-1 group-hover/article:text-emerald-700 transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>
+                              {article.title}
+                            </p>
+                            <span className="text-sm text-emerald-600 ml-3 font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                              ▲ {article.upvotes}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>

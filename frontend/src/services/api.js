@@ -41,11 +41,6 @@ export const getAllCampaigns =async() => {
     return res.data.campaigns
     };
 
-
-
-
-
-
 const WeatherApi = axios.create({
     baseURL: import.meta.env.VITE_WEATHER_API_URL
 });
