@@ -20,6 +20,10 @@ const Api =axios.create({
 
 
 
+
+
+
+
 const config ={
     headers:{
         'authorization':`Bearer ${localStorage.getItem("token")}`
@@ -34,10 +38,16 @@ export const getAllBlogs =async() => {
     return res.data.blogs
     };
 
+
 export const getAllCampaigns =async() => { 
     const res = await Api.get("/api/user/get-all-campaigns") 
     return res.data.blogs
     };
+///
+export const createBlog = async (data) => {
+    const res = await Api.post("/api/user/create-blog", data,config); 
+    return res.data;
+};
 
 const WeatherApi = axios.create({
     baseURL: import.meta.env.VITE_WEATHER_API_URL

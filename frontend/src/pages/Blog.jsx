@@ -8,7 +8,8 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Blogs = () => {
 
-  const role = authRole()
+  
+  const role = "organization"
 
   const[blogs, setBlogs] = useState([])
   const[loading, setLoading] = useState(true)
@@ -49,7 +50,7 @@ const Blogs = () => {
   return (
     <>
 
-    {/* {role === "organization" && <BlogOrg/>} */}
+    {role === "organization" && <BlogOrg/>}
     {role === "individual" &&
 
       <div className="min-h-screen bg-gray-50 py-8 px-4">
