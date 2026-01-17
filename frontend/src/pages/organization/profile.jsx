@@ -209,92 +209,88 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
 //document update
 
 const DocumentUploader = ({ legalDocString, onUpdate }) => {
-  // 1. Convert the single string from DB into an array of 2 slots
-  // Example: "path1.jpg path2.jpg" -> ["path1.jpg", "path2.jpg"]
-  // const docArray = legalDocString ? legalDocString.trim().split(/\s+/) : ["", ""];
-  const docArray = [];
+  // 1. Split the string into an array. If empty, start with 2 empty slots.
+  const docArray = legalDocString && legalDocString.trim() !== "" 
+    ? legalDocString.split(/\s+/) 
+    : ["", ""];
+
+  // Ensure we always handle 2 boxes
+  while (docArray.length < 2) docArray.push("");
 
   const handleAction = (index, newValue) => {
     const updatedArray = [...docArray];
-    
-    
-    // Ensure we always have 2 slots
-    while(updatedArray.length < 2) updatedArray.push("");
-    
     updatedArray[index] = newValue;
     
-    // 2. Join back with a single space and send to parent state/API
-    // onUpdate(updatedArray.join(' ').trim());
+    // 2. Send the updated string (containing the local blob URL) back to parent
+    // This is what triggers the "Preview" to show up instantly.
+    onUpdate(updatedArray.join(' ').trim());
   };
 
   const onFileSelect = (e, index) => {
     const file = e.target.files[0];
     if (file) {
-      // Create local URL for immediate preview
-      const localUrl = URL.createObjectURL(file);
-      handleAction(index, localUrl);
-      
-      // Note: You would typically trigger your actual API upload here 
-      // and then replace the localUrl with the real server path.
+      // THIS IS THE KEY: It generates a local temporary path for the image preview
+      const localPreviewUrl = URL.createObjectURL(file);
+      handleAction(index, localPreviewUrl);
     }
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {[0, 1].map((index) => {
-        const hasFile = docArray[index] && docArray[index].trim() !== "";
+        const fileValue = docArray[index];
+        const hasFile = fileValue && fileValue.trim() !== "";
 
         return (
-          <div key={index} className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div key={index} className="flex flex-col">
+            <label className="block text-gray-700 font-medium mb-2">
               {index === 0 ? "Registration Document" : "PAN / Tax Document"}
             </label>
-
-            <div className="relative h-52 w-full">
+            
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center h-64 bg-gray-50 overflow-hidden">
               {hasFile ? (
-                /* --- PREVIEW MODE --- */
-                <div className="group relative h-full w-full rounded-xl border-2 border-gray-200 overflow-hidden bg-gray-50">
-                  <img
-                    src={docArray[index]}
-                    alt="Document Preview"
-                    className="h-full w-full object-contain p-2"
+                /* --- PREVIEW MODE (Logic from your Cover Image reference) --- */
+                <div className="relative w-full h-full">
+                  <img 
+                    src={fileValue} 
+                    alt="Document preview" 
+                    className="w-full h-full object-cover rounded-lg"
                   />
-                  {/* Overlay on Hover */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-4">
-                    <button
-                      onClick={() => handleAction(index, "")}
-                      className="flex  p-3 text-white  shadow-lg transform hover:scale-110 transition-all"
-                      title="Remove Document"
-                    >
-                      <p>Upload</p>
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleAction(index, "")}
+                    className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition-colors shadow-md"
+                  >
+                    Remove
+                  </button>
                 </div>
               ) : (
-                /* --- UPLOAD MODE --- */
-                <>
-                  <label
-                    htmlFor={`doc-upload-${index}`}
-                    className="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-white hover:bg-emerald-50/50 hover:border-emerald-400 transition-all group"
+                /* --- UPLOAD MODE (Logic from your Cover Image reference) --- */
+                <div className="text-center">
+                  <svg 
+                    className="w-16 h-16 mx-auto mb-4 text-gray-400" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
                   >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <div className="mb-3 rounded-full bg-emerald-100 p-3 group-hover:scale-110 transition-transform">
-                        <Upload className="h-6 w-6 text-emerald-600" />
-                      </div>
-                      <p className="mb-1 text-sm text-gray-700 font-medium">
-                        Click to upload
-                      </p>
-                      <p className="text-xs text-gray-500">PNG, JPG or PDF</p>
-                    </div>
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                    />
+                  </svg>
+                  <p className="text-gray-500 mb-2">Drop document here or</p>
+                  <label className="text-teal-600 hover:text-teal-700 cursor-pointer font-medium">
+                    Browse
                     <input
-                      id={`doc-upload-${index}`}
                       type="file"
-                      className="hidden"
                       accept="image/*"
                       onChange={(e) => onFileSelect(e, index)}
+                      className="hidden"
                     />
                   </label>
-                </>
+                </div>
               )}
             </div>
           </div>
@@ -408,6 +404,8 @@ export default function OrganizationProfile() {
   const [formData, setFormData] = useState(orgData.profile);
   const [orgDetail, setOrgDetail] =useState(null);
   const [loading, setLoading] = useState(true)
+  const [legalDoc, setLegalDoc] = useState(null);
+  
 
   useEffect(()=>{
     const fetchOrganizationDetail = async() =>{
@@ -766,6 +764,15 @@ export default function OrganizationProfile() {
 
                         <DocumentUploader 
                           legalDocString={orgDetail.OrgInfo.legal_documents}
+                          onUpdate={(newDocString) =>{
+                            setOrgDetail(prev => ({
+                              ...prev,
+                              OrgInfo : {
+                                ...prev.OrgInfo,
+                                legal_documents : newDocString
+                              }
+                            }));
+                          }}
                         />
                       </div>
 
