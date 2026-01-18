@@ -1,41 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAllBlogs } from '../../services/api';
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function BlogList() {
+  const[blogs, setBlogs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
-  const blogs = [
-    {
-      id: 1,
-      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=400&fit=crop',
-      title: 'Why do we need to plant trees ?',
-      excerpt: 'Trees are vital to a sign of a healthy climate. In a certified regulatory anti-case content, decent as posts, designed in reverse chronological order with the newest entries appearing first. It is a platform for sharing information, thoughts...',
-      views: 1653,
-      upvotes: 26,
-      tags: ['like', 'nature', 'tree']
-    },
-    {
-      id: 2,
-      image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=400&fit=crop',
-      title: 'Importance of Evolution',
-      excerpt: 'Evolution is the process through which species change over time, driven by natural selection and genetic variation. Understanding evolution helps us comprehend biodiversity and our place in nature...',
-      views: 2341,
-      upvotes: 45,
-      tags: ['science', 'nature', 'evolution']
-    },
-    {
-      id: 3,
-      image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&h=400&fit=crop',
-      title: 'Ocean Conservation Matters',
-      excerpt: 'Our oceans are facing unprecedented challenges from pollution, overfishing, and climate change. Learn why protecting our marine ecosystems is crucial for the planet and future generations...',
-      views: 1876,
-      upvotes: 38,
-      tags: ['ocean', 'conservation', 'marine']
-    }
-  ];
+  useEffect(() =>{
+    const fetchBlogs = async () => {
+        try{
+        const data = await getAllBlogs();
+
+        const mappedBlogs = data.map(blog => ({
+        id: blog.blog_id,
+        title: blog.title,
+        content: blog.content,
+        excerpt: blog.content?.slice(0, 150), // optional short excerpt
+        image: blog.cover_image || "https://via.placeholder.com/400x250",
+        upvotes: blog.upvotes,
+        badge: blog.badge,
+        views: Math.floor(Math.random() * 1000), // placeholder views
+        tags: blog.category ? [blog.category] : ["General"], // always an array
+      }));
+        setBlogs(mappedBlogs);
+      }catch(err){
+        toast.error(response?.data?.error || "Failed to fetch blogs");
+        setError("Failed to load blogs");
+      }finally{
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  },[]);
+
+  
+
+
+  // const blogs = [
+  //   {
+  //     id: 1,
+  //     image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=400&fit=crop',
+  //     title: 'Why do we need to plant trees ?',
+  //     excerpt: 'Trees are vital to a sign of a healthy climate. In a certified regulatory anti-case content, decent as posts, designed in reverse chronological order with the newest entries appearing first. It is a platform for sharing information, thoughts...',
+  //     views: 1653,
+  //     upvotes: 26,
+  //     tags: ['like', 'nature', 'tree']
+  //   },
+  //   {
+  //     id: 2,
+  //     image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=400&fit=crop',
+  //     title: 'Importance of Evolution',
+  //     excerpt: 'Evolution is the process through which species change over time, driven by natural selection and genetic variation. Understanding evolution helps us comprehend biodiversity and our place in nature...',
+  //     views: 2341,
+  //     upvotes: 45,
+  //     tags: ['science', 'nature', 'evolution']
+  //   },
+  //   {
+  //     id: 3,
+  //     image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&h=400&fit=crop',
+  //     title: 'Ocean Conservation Matters',
+  //     excerpt: 'Our oceans are facing unprecedented challenges from pollution, overfishing, and climate change. Learn why protecting our marine ecosystems is crucial for the planet and future generations...',
+  //     views: 1876,
+  //     upvotes: 38,
+  //     tags: ['ocean', 'conservation', 'marine']
+  //   }
+  // ];
 
   const handleSearch = () => {
     console.log('Searching for:', searchQuery);
@@ -49,6 +84,7 @@ export default function BlogList() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toaster/>
       {/* Hero Section */}
       <div 
         className="relative h-64 bg-cover bg-center flex items-center"
@@ -126,20 +162,20 @@ export default function BlogList() {
       {/* Blog Cards */}
       <div className="container mx-auto px-8 py-8">
         <div className="space-y-6">
-          {blogs.map((blog) => (
+          {blogs?.map((blog) => (
             <div key={blog.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
               <div className="flex flex-col md:flex-row">
                 {/* Blog Image */}
-                <div className="md:w-2/5">
-                  <img 
-                    src={blog.image} 
+                <div className="md:w-1/5 h-64 overflow-hidden">
+                  <img
+                    src={blog.image}
                     alt={blog.title}
-                    className="w-full h-64 object-cover"
+                    className="w-full h-full object-cover object-center"
                   />
                 </div>
 
                 {/* Blog Content */}
-                <div className="md:w-3/5 p-6">
+                <div className="md:w-1/5 p-6">
                   <h3 className="text-2xl font-bold text-gray-900 mb-3">
                     {blog.title}
                   </h3>

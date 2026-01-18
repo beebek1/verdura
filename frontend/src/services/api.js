@@ -34,7 +34,7 @@ export const loginUserApi =(data) => Api.post("/api/auth/login",data)
 export const upVoteBlog =(blog_id) => Api.patch(`/api/user/upvote/${blog_id}`)
 
 export const getAllBlogs =async() => { 
-    const res = await Api.get("/api/user/get-all-blogs") 
+    const res = await Api.get("/api/user/get-all-blogs",config) 
     return res.data.blogs
     };
 
@@ -48,6 +48,7 @@ export const createBlog = async (data) => {
     const res = await Api.post("/api/user/create-blog", data,config); 
     return res.data;
 };
+
 
 const WeatherApi = axios.create({
     baseURL: import.meta.env.VITE_WEATHER_API_URL
