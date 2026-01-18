@@ -10,7 +10,7 @@ router.post('/create-blog',authMiddleware,roleMiddleware("organization"), blogPo
 router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campaignPost);
 
 //for getting blogs
-router.get('/get-all-blogs', getAllBlog);
+router.get('/get-all-blogs',authMiddleware,roleMiddleware("organization"), getAllBlog);
 router.get('/get-all-campaigns', getAllCampaigns);
 router.patch('/upvote/:blog_id', upvoteBlog);
 

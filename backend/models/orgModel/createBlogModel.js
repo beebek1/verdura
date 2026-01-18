@@ -27,7 +27,7 @@ const CreateBlog = sequelize.define(
         },
 
         status: {
-            type: DataTypes.ENUM("DRAFT", "PUBLISHED"),
+            type: DataTypes.ENUM("DRAFT", "PUBLISHED", "ARCHIVED"),
             defaultValue:"DRAFT",
             allowNull:false
         },
