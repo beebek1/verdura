@@ -27,7 +27,7 @@ const CreateBlog = sequelize.define(
         },
 
         status: {
-            type: DataTypes.ENUM("DRAFT", "PUBLISHED"),
+            type: DataTypes.ENUM("DRAFT", "PUBLISHED", "ARCHIVED"),
             defaultValue:"DRAFT",
             allowNull:false
         },
@@ -41,7 +41,7 @@ const CreateBlog = sequelize.define(
         },
 
         cover_image: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
         },
         
         upvotes: {

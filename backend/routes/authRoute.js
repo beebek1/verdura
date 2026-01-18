@@ -3,6 +3,7 @@ const router = require('express').Router();
 const {registerUser, userLogin, deleteUser, forgotPassword} = require('../controllers/authController');
 const {verifyEmail} = require('../helpers/verifyEmail');
 const resetPassword = require("../helpers/resetPassword");
+const { blogPost } = require('../controllers/orgControllers/blogController');
 const authMiddleware = require("../helpers/authMiddleware");
 
 //for all users
@@ -12,6 +13,7 @@ router.post('/register', registerUser);
 router.post('/login', userLogin);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+
 
 //get request
 router.get('/verify-email', verifyEmail);

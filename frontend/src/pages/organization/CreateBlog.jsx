@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { createBlog } from '../../services/api';//
+import { useNavigate } from 'react-router-dom';//
 
 export default function CreateBlog() {
+  const navigate = useNavigate();//
   const [formData, setFormData] = useState({
     title: '',
     status: '',
@@ -8,6 +11,8 @@ export default function CreateBlog() {
     content: ''
   });
   const [coverImage, setCoverImage] = useState(null);
+    const [loading, setLoading] = useState(false); // 
+  const [error, setError] = useState(''); //
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,9 +33,35 @@ export default function CreateBlog() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Blog created:', formData, coverImage);
+  const handleSubmit = async () => {
+    if(!formData.title || !formData.content){
+      setError("title and content are required");
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try{
+      const response = await createBlog({
+        title: formData.title,
+        content: formData.content,
+        status: formData.status || 'DRAFT',
+        category: formData.tags,
+        cover_image: coverImage || ''
+      });
+      console.log("Bolg created successfullt:", response)
+      alert('Bolg created successfully');
+
+      handleCancel();
+
+      navigate('/blogs');
+    }catch(error){
+      console.error("failed to create blog:", error);
+      setError(error.response?.data?.message || 'failed to create blog. Please try again')
+    }finally{
+      setLoading(false);
+    }
   };
+
 
   const handleCancel = () => {
     setFormData({
@@ -40,6 +71,7 @@ export default function CreateBlog() {
       content: ''
     });
     setCoverImage(null);
+    setError('');//
   };
 
   return (
@@ -77,6 +109,15 @@ export default function CreateBlog() {
       {/* Form Section */}
       <div className="container mx-auto px-8 py-12">
         <h3 className="text-2xl font-semibold text-gray-700 mb-8">Create New Blog</h3>
+        //
+        {/* Error Box */}
+        {
+          error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {error}
+            </div>
+          )
+        }
         
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -85,7 +126,7 @@ export default function CreateBlog() {
               {/* Blog Title */}
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  Blog Title
+                  Blog Title <span className="text-red-500">*</span>//
                 </label>
                 <input
                   type="text"
@@ -109,9 +150,9 @@ export default function CreateBlog() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 bg-white text-gray-500"
                 >
                   <option value="">Select Status</option>
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="archived">Archived</option>
+                  <option value="DRAFT">Draft</option>
+                  <option value="PUBLISHED">Published</option>
+                  <option value="ARCHIVED">Archived</option>
                 </select>
               </div>
 
@@ -133,7 +174,7 @@ export default function CreateBlog() {
               {/* Content */}
               <div>
                 <label className="block text-gray-700 font-medium mb-2">
-                  Content
+                  Content <span className="text-red-500">*</span>//
                 </label>
                 <textarea
                   name="content"
@@ -194,16 +235,18 @@ export default function CreateBlog() {
           {/* Buttons */}
           <div className="flex justify-end gap-4 mt-8">
             <button
-              onClick={handleCancel}
-              className="px-8 py-3 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors uppercase text-sm"
-            >
-              Cancel
-            </button>
+                onClick={handleCancel}
+                disabled={loading}
+                className="px-8 py-3 bg-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-400 transition-colors uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-3 bg-teal-800 text-white font-semibold rounded-lg hover:bg-teal-900 transition-colors uppercase text-sm"
+              disabled={loading}
+              className="px-8 py-3 bg-teal-800 text-white font-semibold rounded-lg hover:bg-teal-900 transition-colors uppercase text-sm disabled:bg-teal-600 disabled:cursor-not-allowed"
             >
-              Submit
+              {loading ? 'Creating...' : 'Submit'}
             </button>
           </div>
         </div>

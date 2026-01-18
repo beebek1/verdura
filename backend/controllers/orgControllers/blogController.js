@@ -10,19 +10,27 @@ const blogPost = async(req, res) =>{
         });
     }
 
-    await CreateBlog.create({
+    const org = await OrgInfo.findOne({ where: { user_id: req.user.id } });
+
+    if (!org) {
+      return res.status(400).json({ message: "Organization not found for this user" });
+    }
+
+    const blog = await CreateBlog.create({
         title,
         content,
         status,
         category,
         cover_image,
-        org_id: req.user.id
+        org_id: org.org_id
     });
+    console.log("Blog created:", blog);
 
     return res.status(201).json({
         message: "blog created success"
     })
     }catch(error){
+       console.error("Error creating blog:", error);
         return res.status(500).json({
             message: "server side error",
             error : error.message

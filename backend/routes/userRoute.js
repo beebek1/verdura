@@ -8,11 +8,11 @@ const getOrganizationDetails = require("../controllers/orgControllers/orgControl
 
 //org request
 router.get('/get-user', authMiddleware, roleMiddleware("organization"), getOrganizationDetails);
-router.post('/blogpost',authMiddleware,roleMiddleware("organization"), blogPost);
+router.post('/create-blog',authMiddleware,roleMiddleware("organization"), blogPost);
 router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campaignPost);
 
 //for getting blogs
-router.get('/get-all-blogs', getAllBlog);
+router.get('/get-all-blogs',authMiddleware,roleMiddleware("organization"), getAllBlog);
 router.get('/get-all-campaigns', getAllCampaigns);
 router.patch('/upvote/:blog_id',authMiddleware, roleMiddleware("individual"),upvoteBlog);
 
