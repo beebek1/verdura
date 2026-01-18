@@ -1,11 +1,15 @@
 import { ArrowLeft, Eye, Calendar, Tag } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { upVoteBlog } from '../services/api';
+import { useState, useEffect } from 'react';
 
 const BlogDetail = () => {
 
   const navigate = useNavigate();
   const {state} = useLocation();
+
+  const[blogUpvotes, setBlogUpvotes] = useState(0) 
+  const[hasUpvoted, sethasUpvoted] = useState(false) 
 
   const{
     id,
@@ -21,6 +25,12 @@ const BlogDetail = () => {
     coverImage
   } = state
 
+  //for setting up votes
+  useEffect(() => {
+  if (upvotes !== undefined) {
+    setBlogUpvotes(upvotes);
+  }
+}, [upvotes]);
 
   const handleShare = () => {
     if (navigator.share) {
@@ -39,12 +49,24 @@ const BlogDetail = () => {
 
   //handles upvotes
   const handleUpVotes = async(id) => {
-    const response = await upVoteBlog(id);
-
-    if(response.status === 200){
-      console.log("yess new upvote")
+    
+    if(!hasUpvoted){
+      setBlogUpvotes(blogUpvotes+1)
+      sethasUpvoted(true)
+    }else{
+      setBlogUpvotes(blogUpvotes-1)
+      sethasUpvoted(false)
     }
 
+    try{
+      const response = await upVoteBlog(id);
+
+      if(response.status === 200){
+        console.log("yess new upvote")
+      }
+    }catch(err){
+      console.error("Sync Failed, reverting UI ....");
+    }
   }
 
   //navigate to the all blogs
@@ -126,15 +148,15 @@ const BlogDetail = () => {
 
         {/* Share & Actions */}
         <div className="mt-6 flex items-center gap-3">
-          <button className="flex items-center gap-3 bg-white hover:bg-gray-50 border border-gray-200 rounded-lg px-5 py-3 transition-all hover:border-teal-300 hover:shadow-sm group">
+          <button className="flex items-center gap-3 bg-white hover:bg-gray-50 border border-gray-200 rounded-lg px-5 py-3 transition-all hover:border-teal-300 hover:shadow-sm group " onClick={() =>{handleUpVotes(id)}}>
             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 group-hover:bg-teal-100 transition-colors">
               <svg className="w-5 h-5 text-gray-600 group-hover:text-teal-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
               </svg>
             </div>
             <div className="flex flex-col items-start">
-              <span className="text-xs text-gray-500 group-hover:text-teal-600 transition-colors" >Upvote</span>
-              <span className="text-lg font-semibold text-gray-900">{upvotes}</span>
+              <div className="text-xs text-gray-500 group-hover:text-teal-600 transition-colors" >Upvote</div>
+              <span className="text-lg font-semibold text-gray-900">{blogUpvotes}</span>
             </div>
           </button>
           

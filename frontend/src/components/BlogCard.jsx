@@ -29,11 +29,6 @@ const BlogCard = ({
     }
   }
 
-  const handleUpVotes = () =>{
-
-  }
-
-
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow w-full max-w-3xl">
       <div className="flex items-center justify-between mb-4">
@@ -61,7 +56,7 @@ const BlogCard = ({
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-gray-500 text-sm">
-          <ArrowBigUpDash size={18} onClick={handleUpVotes}/>
+          <ArrowBigUpDash size={18}/>
           <span className='font-bold'>{upvotes}</span>
         </div>
 

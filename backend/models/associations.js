@@ -41,14 +41,16 @@ CreateBlog.belongsTo(OrgInfo, {
   foreignKey: "org_id"
 });
 
-IndInfo.belongsToMany(CreateBlog,{
+Register.belongsToMany(CreateBlog,{
   through : UpvotesModel,
-  foreignKey : "ind_id"
+  foreignKey : "user_id",
+  as : "upvotedArticles"
 })
 
-CreateBlog.belongsToMany(IndInfo,{
+CreateBlog.belongsToMany(Register,{
   through : UpvotesModel,
-  foreignKey : "blog_id"
+  foreignKey : "blog_id",
+  as : "upvoters"
 })
 
 module.exports = {

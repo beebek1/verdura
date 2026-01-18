@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../db/database");
 
 const UpvotesModel = sequelize.define(
-    "UpvotesModel",
+    "upvote",
     {
         upvotes_id : {
             type : DataTypes.INTEGER,

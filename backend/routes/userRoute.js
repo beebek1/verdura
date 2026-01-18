@@ -14,7 +14,7 @@ router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campa
 //for getting blogs
 router.get('/get-all-blogs', getAllBlog);
 router.get('/get-all-campaigns', getAllCampaigns);
-router.patch('/upvote/:blog_id', upvoteBlog);
+router.patch('/upvote/:blog_id',authMiddleware, roleMiddleware("individual"),upvoteBlog);
 
 
 module.exports = router

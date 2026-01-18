@@ -25,9 +25,10 @@ const config ={
         'authorization':`Bearer ${localStorage.getItem("token")}`
     }
 }
+
 export const createUserApi =(data) => Api.post("/api/auth/register",data)
 export const loginUserApi =(data) => Api.post("/api/auth/login",data)
-export const upVoteBlog =(blog_id) => Api.patch(`/api/user/upvote/${blog_id}`)
+export const upVoteBlog =(blog_id) => Api.patch(`/api/user/upvote/${blog_id}`,{}, config)
 
 export const getUserById =() => Api.get(`/api/user/get-user`, config)
 
