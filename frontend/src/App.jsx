@@ -19,6 +19,8 @@ import IndProfile from './pages/individual/profile.jsx'
 
 import Campaign from './pages/individual/JoinCampaign.jsx'
 
+import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
+
 
 function AppWrapper(){
 
@@ -41,6 +43,7 @@ function AppWrapper(){
             <Route path='/create-blog' element={<CreateBlog/>}/>
             <Route path='/climate' element={<Climate/>}/>
             <Route path='/temp' element={<IndProfile/>}/>
+            <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
 
         </Routes>
       {!hideComponents && <Footer/>}
