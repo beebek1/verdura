@@ -15,7 +15,7 @@ import Footer from './components/Footer.jsx';
 import CreateBlog from './pages/organization/CreateBlog.jsx';
 import Climate from './pages/climate.jsx';
 import Campaign from './pages/individual/JoinCampaign.jsx'
-import AboutUs from './pages/accessibilities/AboutUs.jsx'
+import AboutUs from './pages/accessibilities/HowItWork.jsx'
 
 
 
