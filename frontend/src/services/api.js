@@ -18,12 +18,6 @@ const Api =axios.create({
 
 })
 
-
-
-
-
-
-
 const config ={
     headers:{
         'authorization':`Bearer ${localStorage.getItem("token")}`
@@ -43,12 +37,17 @@ export const getAllBlogs =async() => {
 
 
 export const getAllCampaigns =async() => { 
-    const res = await Api.get("/api/user/get-all-campaigns") 
+    const res = await Api.get("/api/user/get-all-campaigns",config) 
     return res.data.campaigns
     };
 ///
 export const createBlog = async (data) => {
     const res = await Api.post("/api/user/create-blog", data,config); 
+    return res.data;
+};
+
+export const createCampaign = async (data) => {
+    const res = await Api.post("/api/user/campaignpost", data,config); 
     return res.data;
 };
 

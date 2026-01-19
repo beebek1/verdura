@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { createBlog } from '../../services/api';//
-import { useNavigate } from 'react-router-dom';//
+import { createBlog } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateBlog() {
-  const navigate = useNavigate();//
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     status: '',
@@ -11,8 +11,8 @@ export default function CreateBlog() {
     content: ''
   });
   const [coverImage, setCoverImage] = useState(null);
-    const [loading, setLoading] = useState(false); // 
-  const [error, setError] = useState(''); //
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(''); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +71,7 @@ export default function CreateBlog() {
       content: ''
     });
     setCoverImage(null);
-    setError('');//
+    setError('');
   };
 
   return (

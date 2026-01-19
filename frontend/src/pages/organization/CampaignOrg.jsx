@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Search, Edit } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function VerduraCampaign() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All Status');
+
+  const navigate = useNavigate();
 
   const campaigns = [
     {
