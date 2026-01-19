@@ -13,6 +13,7 @@ import Blog from './pages/Blog.jsx';
 import BlogDetails from './pages/BlogDetails.jsx';
 import Footer from './components/Footer.jsx';
 import CreateBlog from './pages/organization/CreateBlog.jsx';
+import CreateCampaign from './pages/organization/CreateCampaign.jsx';
 import Climate from './pages/climate.jsx';
 
 import IndProfile from './pages/individual/profile.jsx'
@@ -39,6 +40,7 @@ function AppWrapper(){
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/campaigns' element={<Campaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
+            <Route path='/create-campaign' element={<CreateCampaign/>}/>
             <Route path='/climate' element={<Climate/>}/>
             <Route path='/temp' element={<IndProfile/>}/>
 

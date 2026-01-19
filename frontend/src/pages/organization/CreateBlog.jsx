@@ -72,6 +72,9 @@ export default function CreateBlog() {
     });
     setCoverImage(null);
     setError('');
+
+    navigate('/blogs');
+    window.scrollTo(0, 0);
   };
 
   return (

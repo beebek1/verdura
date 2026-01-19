@@ -63,6 +63,10 @@ export default function CreateCampaign() {
       description: ''
     });
     setError('');
+
+    navigate('/campaigns');
+    window.scrollTo(0, 0);
+
   };
 
   return (
