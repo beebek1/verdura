@@ -21,6 +21,8 @@ import Campaign from './pages/individual/JoinCampaign.jsx'
 
 import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
 
+import TermsOfService from './pages/accessibilities/TermsOfService.jsx';
+
 
 function AppWrapper(){
 
@@ -44,6 +46,7 @@ function AppWrapper(){
             <Route path='/climate' element={<Climate/>}/>
             <Route path='/temp' element={<IndProfile/>}/>
             <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
+            <Route path='/terms' element={<TermsOfService/>}/>
 
         </Routes>
       {!hideComponents && <Footer/>}
