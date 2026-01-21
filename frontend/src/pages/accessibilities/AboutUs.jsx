@@ -4,12 +4,12 @@ const AboutUs = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-emerald-50 to-teal-50">
+      <section className="py-24 bg-gradient-to-br from-emerald-50 to-teal-50">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h1 className="text-5xl font-bold mb-6 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
-            About <span className="text-emerald-600">Verdu</span>
+          <h1 className="text-6xl font-bold mb-8 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+            About <span className="text-emerald-600">Verdura</span>
           </h1>
-          <p className="text-xl text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
             We're building the bridge between environmental awareness and real-world impact. 
             A platform where individual actions meet organizational campaigns, creating measurable change for our planet.
           </p>
@@ -17,49 +17,89 @@ const AboutUs = () => {
       </section>
 
       {/* Mission & Vision */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-8">
-          <div className="space-y-16">
-            <div>
-              <h2 className="text-3xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Our Mission
+      <section className="py-24">
+        <div className="max-w-5xl mx-auto px-8">
+          <div className="grid md:grid-cols-2 gap-16">
+            <div className="space-y-6">
+              <div className="inline-block px-4 py-2 bg-emerald-50 rounded-full">
+                <span className="text-emerald-600 text-sm font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  OUR MISSION
+                </span>
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+                Transforming Awareness Into Action
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-                We exist to transform environmental awareness into tangible action. By connecting conscious individuals with verified organizations and providing transparent impact tracking, we make climate action accessible, measurable, and meaningful. Our platform addresses the growing disconnect between personal environmental impact awareness and real-world climate action, creating a structured ecosystem where every contribution counts.
+                We exist to transform environmental awareness into tangible action. By connecting conscious individuals with verified organizations and providing transparent impact tracking, we make climate action accessible, measurable, and meaningful.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
+                Our platform addresses the growing disconnect between personal environmental impact awareness and real-world climate action, creating a structured ecosystem where every contribution counts.
               </p>
             </div>
             
-            <div>
-              <h2 className="text-3xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Our Vision
+            <div className="space-y-6">
+              <div className="inline-block px-4 py-2 bg-emerald-50 rounded-full">
+                <span className="text-emerald-600 text-sm font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  OUR VISION
+                </span>
+              </div>
+              <h2 className="text-4xl font-bold text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+                A Coordinated Climate Movement
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-                We envision a world where every person understands their environmental footprint and has the tools to reduce it. Where organizations can mobilize communities effectively, and where collective action creates visible, lasting change. Through data-driven insights and verified campaigns, we're building a movement that transforms abstract environmental concerns into actionable, trackable activities.
+                We envision a world where every person understands their environmental footprint and has the tools to reduce it. Where organizations can mobilize communities effectively, and where collective action creates visible, lasting change.
               </p>
-            </div>
-
-            <div>
-              <h2 className="text-3xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Our Approach
-              </h2>
               <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-                We combine individual footprint tracking with organization-led campaigns, verified environmental data, and real-time impact reporting. This creates a complete ecosystem where awareness leads to participation, and participation leads to measurable results. Our platform supports both individual users tracking their personal impact and verified organizations managing environmental initiatives, ensuring accountability and transparency at every level.
+                Through data-driven insights and verified campaigns, we're building a movement that transforms abstract environmental concerns into actionable, trackable activities.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* What We Do */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-8">
-          <h2 className="text-4xl font-bold text-center mb-12 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
-            What We Offer
-          </h2>
+      {/* Our Approach */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-2 bg-emerald-50 rounded-full mb-6">
+              <span className="text-emerald-600 text-sm font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                OUR APPROACH
+              </span>
+            </div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Data-Driven Environmental Engagement
+            </h2>
+            <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
+              We combine individual footprint tracking with organization-led campaigns, verified environmental data, and real-time impact reporting.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100">
+            <p className="text-lg text-gray-600 leading-relaxed mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+              This creates a complete ecosystem where awareness leads to participation, and participation leads to measurable results. Our platform supports both individual users tracking their personal impact and verified organizations managing environmental initiatives, ensuring accountability and transparency at every level.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Every interaction on Verdura is designed to connect personal responsibility with collective action, proving that individual choices matter when amplified through coordinated efforts.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* What We Offer */}
+      <section className="py-24">
+        <div className="max-w-5xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+              What We Offer
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Comprehensive tools for individuals and organizations to create meaningful environmental impact
+            </p>
+          </div>
           
           <div className="space-y-12">
-            <div>
-              <h3 className="text-2xl font-bold mb-3 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-10">
+              <h3 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 For Individuals
               </h3>
               <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -67,8 +107,8 @@ const AboutUs = () => {
               </p>
             </div>
 
-            <div>
-              <h3 className="text-2xl font-bold mb-3 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <div className="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-10">
+              <h3 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 For Organizations
               </h3>
               <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -76,8 +116,8 @@ const AboutUs = () => {
               </p>
             </div>
 
-            <div>
-              <h3 className="text-2xl font-bold mb-3 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-10">
+              <h3 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Data-Driven Impact
               </h3>
               <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -89,15 +129,21 @@ const AboutUs = () => {
       </section>
 
       {/* Our Commitment */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-8">
-          <h2 className="text-4xl font-bold text-center mb-12 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
-            Our Commitment
-          </h2>
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Our Commitment
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
+              The principles that guide everything we do
+            </p>
+          </div>
           
-          <div className="space-y-8">
-            <div className="border-l-4 border-emerald-600 pl-6">
-              <h3 className="text-xl font-bold mb-2 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-1 bg-emerald-600 mb-6"></div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Transparency First
               </h3>
               <p className="text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -105,8 +151,9 @@ const AboutUs = () => {
               </p>
             </div>
 
-            <div className="border-l-4 border-emerald-600 pl-6">
-              <h3 className="text-xl font-bold mb-2 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-1 bg-emerald-600 mb-6"></div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Verified Quality
               </h3>
               <p className="text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -114,8 +161,9 @@ const AboutUs = () => {
               </p>
             </div>
 
-            <div className="border-l-4 border-emerald-600 pl-6">
-              <h3 className="text-xl font-bold mb-2 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-1 bg-emerald-600 mb-6"></div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Community Power
               </h3>
               <p className="text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -123,6 +171,18 @@ const AboutUs = () => {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Closing Statement */}
+      <section className="py-24">
+        <div className="max-w-4xl mx-auto px-8 text-center">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+            Join Us in Creating Change
+          </h2>
+          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
+            Whether you're an individual looking to understand and reduce your environmental footprint, or an organization ready to mobilize communities for climate action, Verdura provides the tools, transparency, and community to make your efforts count. Together, we're proving that coordinated action creates measurable, lasting environmental change.
+          </p>
         </div>
       </section>
     </div>
