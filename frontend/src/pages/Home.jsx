@@ -1,12 +1,37 @@
-import coverPic from "../assets/coverpic.png";
-import forestImage from "../assets/footerImage.jpeg";
+import React from 'react';
 
-import BtnCompo from "../components/BtnCompo";
-import ImageFormat from "../components/ImageFormat";
+// Placeholder images - replace with your actual imports
+const coverPic = "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=1600&q=80";
+const forestImage = "https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&q=80";
+
+// Simple ImageFormat component (replace with your actual component)
+const ImageFormat = ({ src, alt, className, crop }) => (
+  <div className={className}>
+    <img 
+      src={src} 
+      alt={alt} 
+      className={`w-full h-24 object-cover ${crop ? 'opacity-50' : ''}`}
+    />
+  </div>
+);
 
 const Home = () => {
-  // TEMP: replace with backend role later
   const role = "individual";
+
+  const cards = [
+    {
+      image: "https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=800&q=80",
+      text: "Human activities are pushing countless species toward extinction"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80",
+      text: "The average person consumes nearly a credit card's worth of microplastics every week through food, water, and air"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&q=80",
+      text: "More deaths result from air pollution annually than from war and violence combined"
+    }
+  ];
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -45,7 +70,7 @@ const Home = () => {
           </h1>
 
           <button
-            className="mt-6 w-[180px] py-3 bg-[#ac7b06] text-white font-bold tracking-widest"
+            className="mt-6 w-[180px] py-3 bg-[#ac7b06] text-white font-bold tracking-widest hover:bg-[#8f6605] transition-colors"
             style={{ fontFamily: "Oswald" }}
           >
             GET START →
@@ -71,6 +96,29 @@ const Home = () => {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ================= DIVIDER LINE ================= */}
+      <div className="w-full h-px bg-gray-300"></div>
+
+      {/* ================= CARDS SECTION ================= */}
+      <section className="grid grid-cols-1 md:grid-cols-3">
+        {cards.map((card, index) => (
+          <div key={index} className="bg-white">
+            <div className="aspect-[4/3] overflow-hidden">
+              <img 
+                src={card.image} 
+                alt="" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="p-8">
+              <p className="text-gray-800 text-lg leading-relaxed">
+                {card.text}
+              </p>
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* ================= FOREST LOSS SECTION ================= */}
@@ -113,6 +161,11 @@ const Home = () => {
           className="w-full h-full object-cover"
         />
       </section>
+
+      {/* Font Import */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Oswald:wght@400;700&display=swap');
+      `}</style>
     </div>
   );
 };

@@ -39,7 +39,7 @@ function AppWrapper(){
             <Route path='/campaigns' element={<Campaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
             <Route path='/climate' element={<Climate/>}/>
-            <Route path='/aboutus' element={<AboutUs/>}/>
+            <Route path='/profile' element={<Profile/>}/>
 
         </Routes>
       {!hideComponents && <Footer/>}

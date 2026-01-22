@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { getIndById } from '../../services/api';
 import tempImage from '../../assets/pollution.png'
 
-// Mock organization data - would come from backend
+// Mock individual data - would come from backend
 const orgData = {
   profile: {
     name: "Aayush Kumar",
@@ -129,8 +129,8 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
 {              console.log(profile)
-}              {profile.OrgInfo.logo_path ? (
-                <img src={profile.OrgInfo.logo_path} alt="image" className="w-full h-full object-cover rounded-2xl" />
+}              {profile.IndividualInfo.logo_path ? (
+                <img src={profile.IndividualInfo.logo_path} alt="image" className="w-full h-full object-cover rounded-2xl" />
               ) : (
                 profile.username.substring(0, 2).toUpperCase()
               )}
@@ -164,7 +164,7 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                 )}
                 
                 <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-3">
-                  {profile.OrgInfo.verification_status === true ? (
+                  {profile.isVerified === true ? (
                     <span className="flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full border border-emerald-200 font-medium">
                       <ShieldCheck className="w-4 h-4" />
                       <p>Verified</p>
@@ -204,7 +204,7 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                   />
                 ) : (
                   <p className="text-gray-600 text-sm leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    {profile.OrgInfo.description}
+                    {profile.IndividualInfo.description}
                   </p>
                 )}
               </div>
@@ -301,8 +301,9 @@ const CampaignCard = ({ campaign }) => (
 export default function IndividualProfile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
-  const [preferences, setPreferences] = useState(orgData.preferences);
-  const [formData, setFormData] = useState(orgData.profile);
+  const [formData, setFormData] = useState({
+    
+  });
   const [indDetail, setindDetail] =useState(null);
   const [loading, setLoading] = useState(true)
 
@@ -315,7 +316,7 @@ export default function IndividualProfile() {
         setindDetail(res.data.individual)
 
       }catch(err){
-        console.log("failed to fetch organization detail", err)
+        console.log("failed to fetch individual detail", err)
       }finally{
         setLoading(false)
       }
@@ -368,7 +369,7 @@ export default function IndividualProfile() {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
-    { id: 'profile', label: 'Organization Info', icon: User },
+    { id: 'profile', label: 'individual Info', icon: User },
     { id: 'dangerZone', label: 'Danzer Zone', icon: Settings }
   ]
 
@@ -442,11 +443,22 @@ export default function IndividualProfile() {
                         View All <span>→</span>
                       </button>
                     </div>
-                    <div className="space-y-4">
-                      {indDetail?.IndividualInfo?.total_campaigns_joined?.slice(0, 2).map(campaign => (
-                        <CampaignCard key={campaign.campaign_id} campaign={campaign} />
-                      ))}
-                    </div>
+                      <div className="space-y-4">
+                        {/* Check if joinedCampaigns exists and has items */}
+                        {indDetail?.joinedCampaigns && indDetail.joinedCampaigns.length > 0 ? (
+                          indDetail.joinedCampaigns.slice(0, 2).map((campaign) => (
+                            <CampaignCard 
+                              key={campaign.campaign_id} 
+                              campaign={campaign} 
+                            />
+                          ))
+                        ) : (
+                          /* Fallback if no campaigns are joined */
+                          <div className="text-center py-4 text-gray-500">
+                            <p>No campaigns joined yet.</p>
+                          </div>
+                        )}
+                      </div>
                   </div>
 
                   {/* Recent Activity */}
@@ -510,7 +522,7 @@ export default function IndividualProfile() {
                         Articles You Upvoted
                       </h2>
                       <div className="space-y-3">
-                        {orgData.articles.map((article, idx) => (
+                        {indDetail.upvotedArticles.map((article, idx) => (
                           <div 
                             key={idx} 
                             className="flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-300 group/article cursor-pointer"
@@ -545,13 +557,13 @@ export default function IndividualProfile() {
                         <div className="flex-1 space-y-6">
                           <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Organization Bio
+                              Individual Bio
                             </label>
                             <textarea
                               name="bio"
-                              value={indDetail.OrgInfo.description}
+                              value={indDetail.IndividualInfo.description}
                               onChange={handleInputChange}
-                              placeholder="Tell us about your organization..."
+                              placeholder="Tell us about your individual..."
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent resize-none h-24"
                             />
                           </div>
@@ -572,7 +584,7 @@ export default function IndividualProfile() {
 
                           <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Organization Full Name
+                              individual Full Name
                             </label>
                             <input
                               type="text"
