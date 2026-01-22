@@ -1,120 +1,132 @@
-import coverPic from "../assets/coverpic.png";
-import forestImage from "../assets/footerImage.jpeg";
+import Image from "next/image";
+import { ArrowRight, Eye } from "lucide-react";
 
-import BtnCompo from "../components/BtnCompo";
-import ImageFormat from "../components/ImageFormat";
+const articles = [
+  {
+    image: "/images/pollution.jpg",
+    title: "Human activities are pushing countless species toward extinction",
+  },
+  {
+    image: "/images/ocean-plastic.jpg",
+    title: "The average person consumes nearly a credit card's worth of microplastics every week through food, water and air",
+  },
+  {
+    image: "/images/deforestation.jpg",
+    title: "More direct action needed to stop pollution and climate change",
+  },
+];
 
-const Home = () => {
-  // TEMP: replace with backend role later
-  const role = "individual";
+const stats = [
+  { value: "69 k+", label: "Trees Planted" },
+  { value: "8 +", label: "Rivers Cleaned" },
+  { value: "467kg +", label: "Trash Picked" },
+];
 
+export default function Page() {
   return (
-    <div className="relative w-full overflow-hidden">
-      {/* ================= HERO SECTION ================= */}
-      <section className="relative h-screen w-full">
-        {/* Background Image */}
-        <img
-          src={coverPic}
-          alt="Home page cover"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-
-        {/* Dark Gradient Overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%), linear-gradient(to right, rgba(0,0,0,0.7) 20%, transparent 90%)",
-          }}
-        />
-
-        {/* Hero Content */}
-        <div className="relative z-10 flex flex-col gap-6 pt-[17vh] pl-20 max-w-4xl">
-          <div className="border-b-2 border-r-2 border-[#dc9e0d] w-fit px-2">
-            <h1 className="text-white font-bold tracking-wide">ACT NOW</h1>
+    <main className="min-h-screen bg-white overflow-x-hidden">
+      {/* Hero Section with Overlapping Articles */}
+      <section className="relative">
+        {/* Hero Image Container */}
+        <div className="relative h-[85vh] w-full">
+          <Image
+            src="/images/elephants-hero.jpg"
+            alt="Elephants in African savanna"
+            fill
+            className="object-cover"
+            priority
+          />
+          {/* Left gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+          
+          {/* Hero Content */}
+          <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-12 lg:px-20 max-w-2xl">
+            <span className="inline-block w-fit px-3 py-1 mb-6 text-xs font-semibold tracking-wider text-black bg-amber-500 uppercase">
+              Act Now
+            </span>
+            
+            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white leading-tight mb-8">
+              This Earth Season, stand with nature and restore a planet rapidly losing its balance
+            </h1>
+            
+            <button className="flex items-center gap-2 w-fit px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-full transition-colors">
+              Get Started
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
-
-          <h1
-            className="text-white text-5xl font-bold leading-relaxed tracking-wide"
-            style={{ fontFamily: "Abril Fatface" }}
-          >
-            This Earth Season, stand <br />
-            with nature and restore <br />
-            a planet rapidly losing its <br />
-            balance
-          </h1>
-
-          <button
-            className="mt-6 w-[180px] py-3 bg-[#ac7b06] text-white font-bold tracking-widest"
-            style={{ fontFamily: "Oswald" }}
-          >
-            GET START →
-          </button>
         </div>
 
-        {/* ================= SEE MORE STRIP ================= */}
-        <div className="absolute bottom-20 left-20 right-0 z-10">
-          <div className="flex items-center gap-6 mb-6">
-            <h5 className="text-white font-bold">SEE MORE</h5>
-            <div className="flex-1 h-[1px] bg-white" />
+        {/* Overlapping Articles Section */}
+        <div className="relative -mt-32 z-10 px-6 md:px-12 lg:px-20">
+          {/* See More Label */}
+          <div className="flex items-center gap-2 text-white mb-4">
+            <Eye className="w-4 h-4" />
+            <span className="text-xs font-medium uppercase tracking-wider">See More</span>
           </div>
-
-          <div className="flex gap-4 overflow-hidden max-w-xl">
-            {[1, 2, 3, 4].map((_, i) => (
-              <ImageFormat
-                key={i}
-                src={coverPic}
-                alt={`preview-${i}`}
-                className="w-40 flex-shrink-0"
-                crop={i === 3}
-              />
+          
+          {/* Divider Line */}
+          <div className="w-full h-px bg-white/30 mb-6" />
+          
+          {/* Articles Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {articles.map((article, index) => (
+              <div key={index} className="group cursor-pointer">
+                <div className="relative h-48 w-full overflow-hidden rounded-lg mb-3">
+                  <Image
+                    src={article.image || "/placeholder.svg"}
+                    alt={article.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <p className="text-xs md:text-sm text-neutral-700 leading-relaxed">
+                  {article.title}
+                </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ================= FOREST LOSS SECTION ================= */}
-      <section className="py-20 px-16 bg-white">
-        <div className="max-w-7xl mx-auto flex items-center gap-16">
-          <div className="flex-1">
-            <p className="text-gray-500 uppercase tracking-wider mb-4 font-semibold">
-              ACT NOW
-            </p>
+      {/* Spacer */}
+      <div className="h-24" />
 
-            <h3 className="text-5xl font-bold text-green-800 mb-6 leading-tight">
-              We lose forests every single minute
-            </h3>
-
-            <p className="text-gray-700 text-lg mb-8">
-              An area of rainforest the size of 20 football fields disappears
-              every minute due to logging and agriculture.
-            </p>
-
-            <button className="bg-blue-400 hover:bg-blue-500 text-white px-8 py-3 rounded font-semibold transition">
-              Read More
-            </button>
-          </div>
-
-          <div className="flex-1">
-            <img
-              src="https://images.unsplash.com/photo-1574870111867-089730e5a72b?w=800"
-              alt="Deforestation"
-              className="w-full h-96 object-cover rounded-lg shadow-xl"
-            />
+      {/* Stats Section */}
+      <section className="relative h-[50vh] w-full">
+        <Image
+          src="/images/forest-stats.jpg"
+          alt="Forest conservation"
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-black/50" />
+        
+        <div className="absolute inset-0 flex items-center justify-start px-6 md:px-12 lg:px-20">
+          <div className="flex flex-wrap gap-12 md:gap-20">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-white">
+                <p className="font-serif text-4xl md:text-5xl lg:text-6xl text-amber-500 mb-2">
+                  {stat.value}
+                </p>
+                <p className="text-sm md:text-base font-medium">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ================= FULL FOREST IMAGE ================= */}
-      <section className="w-full h-[800px]">
-        <img
-          src={forestImage}
-          alt="Lush forest"
-          className="w-full h-full object-cover"
+      {/* Footer with Misty Image */}
+      <section className="relative h-[40vh] w-full">
+        <Image
+          src="/images/misty-landscape.jpg"
+          alt="Misty mountain landscape"
+          fill
+          className="object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
       </section>
-    </div>
+    </main>
   );
-};
-
-export default Home;
+}
