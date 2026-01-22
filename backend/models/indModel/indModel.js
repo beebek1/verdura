@@ -26,6 +26,10 @@ const IndInfo = sequelize.define(
         address: {
             type: DataTypes.STRING,
             allowNull:false
+        },
+
+        total_campaigns_joined : {
+            type : DataTypes.STRING
         }
     },
     {

@@ -35,7 +35,7 @@ const Register = sequelize.define(
 
         isVerified: {
             type: DataTypes.BOOLEAN,
-            defaultValue:true
+            defaultValue:false
         },
 
         verificationToken: {

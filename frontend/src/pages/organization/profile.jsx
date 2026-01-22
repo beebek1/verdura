@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { User, Mail, MapPin, Calendar, CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
 import { useEffect } from 'react';
-import { getUserById } from '../../services/api';
-import tempImage from '../../assets/pollution.png'
+import { getOrgById } from '../../services/api';
+import tempImage from '../../assets/pollution.png';
+import authRole from '../protect/authRole';
+import Profile from '../individual/profile';
 
 // Mock organization data - would come from backend
 const orgData = {
@@ -398,6 +400,13 @@ const calculateImpactScore = (data) => {
 
 
 export default function OrganizationProfile() {
+
+  const role = authRole();
+
+  if( role === "individual"){
+    return  <Profile/>
+  }
+  
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
   const [preferences, setPreferences] = useState(orgData.preferences);
@@ -405,13 +414,13 @@ export default function OrganizationProfile() {
   const [orgDetail, setOrgDetail] =useState(null);
   const [loading, setLoading] = useState(true)
   const [legalDoc, setLegalDoc] = useState(null);
-  
+
 
   useEffect(()=>{
     const fetchOrganizationDetail = async() =>{
 
       try{
-        const res = await getUserById();
+        const res = await getOrgById();
 
         setOrgDetail(res.data.organization)
 
@@ -472,344 +481,348 @@ export default function OrganizationProfile() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50/30 to-teal-50/30">
-      <div className="p-4 md:p-8">
-        <div className="max-w-7xl mx-auto">
-          <ProfileHeader 
-            profile={orgDetail}
-            onSave={handleSaveProfile}
-            onCancel={() => setIsEditing(false)}
-          />
+    <>
+    {role === "organization" &&
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50/30 to-teal-50/30">
+        <div className="p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            <ProfileHeader 
+              profile={orgDetail}
+              onSave={handleSaveProfile}
+              onCancel={() => setIsEditing(false)}
+            />
 
-          {/* Tabs */}
-          <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
-            {tabs.map(tab => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-emerald-300'
-                  }`}
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  <Icon className="w-5 h-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-
-          {/* Tab Content */}
-          {activeTab === 'overview' && (
-            <div className="space-y-6">
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <StatsCard 
-                  icon={Target} 
-                  label="Campaigns" 
-                  value={orgDetail.OrgInfo.total_campaigns}
-                  sublabel="Created"
-                  color="from-emerald-500 to-teal-500"
-                />
-                <StatsCard 
-                  icon={Leaf} 
-                  label="Active" 
-                  value='4'
-                  sublabel="Running Now"
-                  color="from-teal-500 to-emerald-600"
-                />
-                <StatsCard 
-                  icon={Users} 
-                  label="Volunteers" 
-                  value={orgDetail.OrgInfo.total_volunteers}
-                  sublabel="Total"
-                  color="from-emerald-600 to-teal-500"
-                />
-                <StatsCard 
-                  icon={FileText} 
-                  label="Blogs" 
-                  value={orgDetail.OrgInfo.total_blogs}
-                  sublabel="Published"
-                  color="from-teal-600 to-emerald-500"
-                />
-                <StatsCard 
-                  icon={BarChart3} 
-                  label="Impact" 
-                  value={calculateImpactScore(orgDetail.OrgInfo)}
-                  sublabel="Score"
-                  color="from-emerald-500 to-teal-600"
-                />
-                <StatsCard 
-                  icon={ArrowBigUp} 
-                  label="Upvotes" 
-                  value={orgDetail.OrgInfo.total_upvotes}
-                  sublabel="Gained"
-                  color="from-teal-500 to-emerald-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left Column */}
-                <div className="lg:col-span-2 space-y-6">
-                  {/* Recent Campaigns */}
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        Active Campaigns
-                      </h2>
-                      <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        View All <span>→</span>
-                      </button>
-                    </div>
-                    <div className="space-y-4">
-                      {orgDetail.OrgInfo.Campaigns.slice(0, 2).map(campaign => (
-                        <CampaignCard key={campaign.campaign_id} campaign={campaign} />
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Recent Activity */}
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
-                    <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-                      <h2 className="text-xl font-bold text-gray-800 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        Recent Activity
-                      </h2>
-                      <div className="space-y-4">
-                        {orgData.recentActivity.map(activity => (
-                          <div key={activity.id} className="flex items-start gap-4 pb-4 border-b border-gray-200 last:border-0 group/item hover:bg-gray-50 -mx-4 px-4 py-2 rounded-lg transition-colors duration-300">
-                            <div className="text-2xl">{activity.icon}</div>
-                            <div className="flex-1">
-                              <p className="font-semibold text-gray-800 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                {activity.action}
-                              </p>
-                              <p className="text-sm text-gray-600" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                {activity.date}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Column */}
-                <div className="space-y-6">
-                  {/* Impact Summary */}
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-200/60 to-teal-200/60 rounded-2xl blur-xl" />
-                    <div className="relative bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl p-8 shadow-lg">
-                      <h2 className="text-lg font-semibold text-white mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        Impact Summary
-                      </h2>
-                      <div className="space-y-4">
-                        <div className="text-center">
-                          <div className="text-5xl font-bold text-white mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
-                            {calculateImpactScore(orgDetail.OrgInfo)}
-                          </div>
-                          <p className="text-emerald-100 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
-                            Total Impact Score
-                          </p>
-                        </div>
-                        <div className="border-t border-white/20 pt-4">
-                          <div className="flex justify-between text-emerald-50 text-sm mb-2">
-                            <span style={{ fontFamily: "'Inter', sans-serif" }}>Campaigns Launched</span>
-                            <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{orgDetail.OrgInfo.total_campaigns}</span>
-                          </div>
-                          <div className="flex justify-between text-emerald-50 text-sm">
-                            <span style={{ fontFamily: "'Inter', sans-serif" }}>Volunteers Engaged</span>
-                            <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{orgDetail.OrgInfo.total_volunteers}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Articles Upvoted */}
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
-                    <div className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-                      <h2 className="text-lg font-bold text-gray-800 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        Articles You Upvoted
-                      </h2>
-                      <div className="space-y-3">
-                        {orgData.articles.map((article, idx) => (
-                          <div 
-                            key={idx} 
-                            className="flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-300 group/article cursor-pointer"
-                          >
-                            <p className="text-sm font-medium text-gray-800 flex-1 group-hover/article:text-emerald-700 transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>
-                              {article.title}
-                            </p>
-                            <span className="text-sm text-emerald-600 ml-3 font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
-                              ▲ {article.upvotes}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
+            {/* Tabs */}
+            <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+              {tabs.map(tab => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap ${
+                      activeTab === tab.id
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-emerald-300'
+                    }`}
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {tab.label}
+                  </button>
+                )
+              })}
             </div>
-          )}
 
-          {activeTab === 'profile' && (
+            {/* Tab Content */}
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
+                {/* Quick Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <StatsCard 
+                    icon={Target} 
+                    label="Campaigns" 
+                    value={orgDetail.OrgInfo.total_campaigns}
+                    sublabel="Created"
+                    color="from-emerald-500 to-teal-500"
+                  />
+                  <StatsCard 
+                    icon={Leaf} 
+                    label="Active" 
+                    value='4'
+                    sublabel="Running Now"
+                    color="from-teal-500 to-emerald-600"
+                  />
+                  <StatsCard 
+                    icon={Users} 
+                    label="Volunteers" 
+                    value={orgDetail.OrgInfo.total_volunteers}
+                    sublabel="Total"
+                    color="from-emerald-600 to-teal-500"
+                  />
+                  <StatsCard 
+                    icon={FileText} 
+                    label="Blogs" 
+                    value={orgDetail.OrgInfo.total_blogs}
+                    sublabel="Published"
+                    color="from-teal-600 to-emerald-500"
+                  />
+                  <StatsCard 
+                    icon={BarChart3} 
+                    label="Impact" 
+                    value={calculateImpactScore(orgDetail.OrgInfo)}
+                    sublabel="Score"
+                    color="from-emerald-500 to-teal-600"
+                  />
+                  <StatsCard 
+                    icon={ArrowBigUp} 
+                    label="Upvotes" 
+                    value={orgDetail.OrgInfo.total_upvotes}
+                    sublabel="Gained"
+                    color="from-teal-500 to-emerald-500"
+                  />
+                </div>
 
-                <div className="min-h-screen bg-gray-50">
-
-                  {/* Main Container */}
-                  <div className="max-w-4xl mx-auto px-4 py-10">
-                    <div className="bg-white rounded-lg shadow-md p-8">
-
-                      {/* Profile Section */}
-                      <div className="flex flex-col md:flex-row gap-8 mb-10">
-                        {/* Left Side - Form Fields */}
-                        <div className="flex-1 space-y-6">
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Organization Bio
-                            </label>
-                            <textarea
-                              name="bio"
-                              value={orgDetail.OrgInfo.description}
-                              onChange={handleInputChange}
-                              placeholder="Tell us about your organization..."
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent resize-none h-24"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Email Address
-                            </label>
-                            <input
-                              type="email"
-                              name="email"
-                              value={orgDetail.email}
-                              onChange={handleInputChange}
-                              placeholder="e.g necessary cleaner"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Organization Full Name
-                            </label>
-                            <input
-                              type="text"
-                              name="orgName"
-                              value={orgDetail.username}
-                              onChange={handleInputChange}
-                              placeholder="e.g necessary cleaner"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Address Section */}
-                      <div className="mb-10">
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">
-                          Address
-                        </label>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                          <input
-                            type="text"
-                            name="country"
-                            value={country}
-                            onChange={handleInputChange}
-                            placeholder="Country"
-                            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
-                          />
-                          <input
-                            type="text"
-                            name="state"
-                            value={state}
-                            onChange={handleInputChange}
-                            placeholder="State"
-                            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
-                          />
-                          <input
-                            type="text"
-                            name="city"
-                            value={city}
-                            onChange={handleInputChange}
-                            placeholder="City"
-                            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
-                          />
-                        </div>
-                        <input
-                          type="text"
-                          name="street"
-                          value={street}
-                          onChange={handleInputChange}
-                          placeholder="Street"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
-                        />
-                      </div>
-
-                      {/* Legal Documents Section */}
-                      <div className="mb-10">
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">
-                          Legal Documents
-                        </label>
-
-                        <DocumentUploader 
-                          legalDocString={orgDetail.OrgInfo.legal_documents}
-                          onUpdate={(newDocString) =>{
-                            setOrgDetail(prev => ({
-                              ...prev,
-                              OrgInfo : {
-                                ...prev.OrgInfo,
-                                legal_documents : newDocString
-                              }
-                            }));
-                          }}
-                        />
-                      </div>
-
-                      {/* Save Button */}
-                      <div className="flex justify-end mb-8">
-                        <button
-                          onClick={handleSaveProfile}
-                          className="px-8 py-3 bg-[#2d5f4d] text-white font-semibold rounded-md hover:bg-[#1f4035] transition-colors"
-                        >
-                          SAVE CHANGES
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Left Column */}
+                  <div className="lg:col-span-2 space-y-6">
+                    {/* Recent Campaigns */}
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          Active Campaigns
+                        </h2>
+                        <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          View All <span>→</span>
                         </button>
                       </div>
+                      <div className="space-y-4">
+                        {orgDetail.OrgInfo.Campaigns.slice(0, 2).map(campaign => (
+                          <CampaignCard key={campaign.campaign_id} campaign={campaign} />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Recent Activity */}
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                      <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
+                        <h2 className="text-xl font-bold text-gray-800 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          Recent Activity
+                        </h2>
+                        <div className="space-y-4">
+                          {orgData.recentActivity.map(activity => (
+                            <div key={activity.id} className="flex items-start gap-4 pb-4 border-b border-gray-200 last:border-0 group/item hover:bg-gray-50 -mx-4 px-4 py-2 rounded-lg transition-colors duration-300">
+                              <div className="text-2xl">{activity.icon}</div>
+                              <div className="flex-1">
+                                <p className="font-semibold text-gray-800 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                  {activity.action}
+                                </p>
+                                <p className="text-sm text-gray-600" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                  {activity.date}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )};
 
-          {activeTab === 'dangerZone' && (
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-red-100/50 to-orange-100/50 rounded-2xl blur-xl" />
-              <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-red-200">
-                <h2 className="text-xl font-bold text-red-600 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Danger Zone
-                </h2>
-                <div className="space-y-3">
-                  <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Log Out
-                  </button>
-                  <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Delete Account
-                  </button>
+                  {/* Right Column */}
+                  <div className="space-y-6">
+                    {/* Impact Summary */}
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-200/60 to-teal-200/60 rounded-2xl blur-xl" />
+                      <div className="relative bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl p-8 shadow-lg">
+                        <h2 className="text-lg font-semibold text-white mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          Impact Summary
+                        </h2>
+                        <div className="space-y-4">
+                          <div className="text-center">
+                            <div className="text-5xl font-bold text-white mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>
+                              {calculateImpactScore(orgDetail.OrgInfo)}
+                            </div>
+                            <p className="text-emerald-100 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
+                              Total Impact Score
+                            </p>
+                          </div>
+                          <div className="border-t border-white/20 pt-4">
+                            <div className="flex justify-between text-emerald-50 text-sm mb-2">
+                              <span style={{ fontFamily: "'Inter', sans-serif" }}>Campaigns Launched</span>
+                              <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{orgDetail.OrgInfo.total_campaigns}</span>
+                            </div>
+                            <div className="flex justify-between text-emerald-50 text-sm">
+                              <span style={{ fontFamily: "'Inter', sans-serif" }}>Volunteers Engaged</span>
+                              <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{orgDetail.OrgInfo.total_volunteers}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Articles Upvoted */}
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
+                      <div className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                        <h2 className="text-lg font-bold text-gray-800 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          Articles You Upvoted
+                        </h2>
+                        <div className="space-y-3">
+                          {orgData.articles.map((article, idx) => (
+                            <div 
+                              key={idx} 
+                              className="flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-300 group/article cursor-pointer"
+                            >
+                              <p className="text-sm font-medium text-gray-800 flex-1 group-hover/article:text-emerald-700 transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                {article.title}
+                              </p>
+                              <span className="text-sm text-emerald-600 ml-3 font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                ▲ {article.upvotes}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {activeTab === 'profile' && (
+
+                  <div className="min-h-screen bg-gray-50">
+
+                    {/* Main Container */}
+                    <div className="max-w-4xl mx-auto px-4 py-10">
+                      <div className="bg-white rounded-lg shadow-md p-8">
+
+                        {/* Profile Section */}
+                        <div className="flex flex-col md:flex-row gap-8 mb-10">
+                          {/* Left Side - Form Fields */}
+                          <div className="flex-1 space-y-6">
+                            <div>
+                              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Organization Bio
+                              </label>
+                              <textarea
+                                name="bio"
+                                value={orgDetail.OrgInfo.description}
+                                onChange={handleInputChange}
+                                placeholder="Tell us about your organization..."
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent resize-none h-24"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Email Address
+                              </label>
+                              <input
+                                type="email"
+                                name="email"
+                                value={orgDetail.email}
+                                onChange={handleInputChange}
+                                placeholder="e.g necessary cleaner"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Organization Full Name
+                              </label>
+                              <input
+                                type="text"
+                                name="orgName"
+                                value={orgDetail.username}
+                                onChange={handleInputChange}
+                                placeholder="e.g necessary cleaner"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Address Section */}
+                        <div className="mb-10">
+                          <label className="block text-sm font-semibold text-gray-700 mb-3">
+                            Address
+                          </label>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <input
+                              type="text"
+                              name="country"
+                              value={country}
+                              onChange={handleInputChange}
+                              placeholder="Country"
+                              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
+                            />
+                            <input
+                              type="text"
+                              name="state"
+                              value={state}
+                              onChange={handleInputChange}
+                              placeholder="State"
+                              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
+                            />
+                            <input
+                              type="text"
+                              name="city"
+                              value={city}
+                              onChange={handleInputChange}
+                              placeholder="City"
+                              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
+                            />
+                          </div>
+                          <input
+                            type="text"
+                            name="street"
+                            value={street}
+                            onChange={handleInputChange}
+                            placeholder="Street"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
+                          />
+                        </div>
+
+                        {/* Legal Documents Section */}
+                        <div className="mb-10">
+                          <label className="block text-sm font-semibold text-gray-700 mb-3">
+                            Legal Documents
+                          </label>
+
+                          <DocumentUploader 
+                            legalDocString={orgDetail.OrgInfo.legal_documents}
+                            onUpdate={(newDocString) =>{
+                              setOrgDetail(prev => ({
+                                ...prev,
+                                OrgInfo : {
+                                  ...prev.OrgInfo,
+                                  legal_documents : newDocString
+                                }
+                              }));
+                            }}
+                          />
+                        </div>
+
+                        {/* Save Button */}
+                        <div className="flex justify-end mb-8">
+                          <button
+                            onClick={handleSaveProfile}
+                            className="px-8 py-3 bg-[#2d5f4d] text-white font-semibold rounded-md hover:bg-[#1f4035] transition-colors"
+                          >
+                            SAVE CHANGES
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )};
+
+            {activeTab === 'dangerZone' && (
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-red-100/50 to-orange-100/50 rounded-2xl blur-xl" />
+                <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-red-200">
+                  <h2 className="text-xl font-bold text-red-600 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    Danger Zone
+                  </h2>
+                  <div className="space-y-3">
+                    <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+                      Log Out
+                    </button>
+                    <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+                      Delete Account
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    }
+  </>
   );
 }

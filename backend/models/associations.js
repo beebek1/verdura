@@ -4,6 +4,7 @@ const CreateCampaigns = require("./orgModel/createCampaignModel");
 const CreateBlog = require("./orgModel/createBlogModel");
 const IndInfo = require("./indModel/indModel");
 const UpvotesModel = require("./indModel/upvotesModel");
+const CampaignVolunteer = require("./indModel/campaignVolunteer");
 
 // One user has one org info
 Register.hasOne(OrgInfo, {
@@ -52,6 +53,18 @@ CreateBlog.belongsToMany(Register,{
   foreignKey : "blog_id",
   as : "upvoters"
 })
+
+Register.belongsToMany(CreateCampaigns, {
+  through: CampaignVolunteer,
+  foreignKey: "user_id",
+  as: "joinedCampaigns" 
+});
+
+CreateCampaigns.belongsToMany(Register, {
+  through: CampaignVolunteer,
+  foreignKey: "campaign_id",
+  as: "participants"
+});
 
 module.exports = {
   Register,

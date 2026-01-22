@@ -9,7 +9,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 const Blogs = () => {
 
   
-  const role = "organization"
+  const role = authRole();
 
   const[blogs, setBlogs] = useState([])
   const[loading, setLoading] = useState(true)

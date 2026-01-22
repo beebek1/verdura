@@ -52,7 +52,7 @@ export default function ClimateDashboard() {
     try {
       setLoading(true);
 
-      const response = await getLatestWeather("siraha");
+      const response = await getLatestWeather("bhaktapur");
       const current = response.data.current;
       const air = current.air_quality;
 

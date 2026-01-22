@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, Mail, MapPin, Calendar,Clock, Award,  CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
 import { useEffect } from 'react';
-import { getUserById } from '../../services/api';
+import { getIndById } from '../../services/api';
 import tempImage from '../../assets/pollution.png'
 
 // Mock organization data - would come from backend
@@ -183,7 +183,7 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-emerald-600" />
-                    {profile.OrgInfo.address}
+                    {profile.address}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-4 h-4 text-emerald-600" />
@@ -303,16 +303,16 @@ export default function IndividualProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [preferences, setPreferences] = useState(orgData.preferences);
   const [formData, setFormData] = useState(orgData.profile);
-  const [orgDetail, setOrgDetail] =useState(null);
+  const [indDetail, setindDetail] =useState(null);
   const [loading, setLoading] = useState(true)
 
   useEffect(()=>{
-    const fetchOrganizationDetail = async() =>{
+    const fetchUserDetail = async() =>{
 
       try{
-        const res = await getUserById();
+        const res = await getIndById();
 
-        setOrgDetail(res.data.organization)
+        setindDetail(res.data.individual)
 
       }catch(err){
         console.log("failed to fetch organization detail", err)
@@ -320,26 +320,28 @@ export default function IndividualProfile() {
         setLoading(false)
       }
     }
-    fetchOrganizationDetail();
+    fetchUserDetail();
     
   }, []);
 
   if(loading) return <div><p>loading wait a min</p></div>
-  if(!orgDetail) return <div><p>didn't get any data</p></div>
+  if(!indDetail) return <div><p>didn't get any data for this individual</p></div>
 
   const handleSaveProfile = (updatedProfile) => {
     console.log('Saving profile:', updatedProfile);
     setIsEditing(false);
   };
 
+  // console.log(indDetail.name, indDetail.)
+
     //for splitting address
-  const parts = orgDetail.OrgInfo.address.split(" ");
+  const parts = indDetail.IndividualInfo.address.split(" ");
   const country = parts[0]
   const state = parts[1]
   const city = parts[2]
   const street = parts[3]
 
-  // const docPaths = orgDetail.OrgInfo.legal_documents ? formData.legalDocs.split(' ') : [];
+  // const docPaths = indDetail.OrgInfo.legal_documents ? formData.legalDocs.split(' ') : [];
 
   console.log(country, state, city, street)
 
@@ -375,7 +377,7 @@ export default function IndividualProfile() {
       <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           <ProfileHeader 
-            profile={orgDetail}
+            profile={indDetail}
             onSave={handleSaveProfile}
             onCancel={() => setIsEditing(false)}
           />
@@ -410,19 +412,19 @@ export default function IndividualProfile() {
                 <StatsCard 
                   icon={Leaf} 
                   label="Campaigns Joined" 
-                  value={orgDetail.OrgInfo.total_campaigns}
+                  value={indDetail.IndividualInfo.total_campaigns_joined}
                   color="from-emerald-500 to-teal-500"
                 />
                 <StatsCard 
                   icon={Clock} 
                   label="Hours Contributed" 
-                  value={orgDetail.OrgInfo.total_campaigns}
+                  value={indDetail.IndividualInfo.total_campaigns_joined}
                   color="from-teal-500 to-emerald-600"
                 />
                 <StatsCard 
                   icon={Award} 
                   label="Impact Score" 
-                  value={orgDetail.OrgInfo.total_campaigns}
+                  value={indDetail.IndividualInfo.total_campaigns_joined}
                   color="from-emerald-600 to-teal-500"
                 />
               </div>
@@ -441,7 +443,7 @@ export default function IndividualProfile() {
                       </button>
                     </div>
                     <div className="space-y-4">
-                      {orgDetail.OrgInfo.Campaigns.slice(0, 2).map(campaign => (
+                      {indDetail?.IndividualInfo?.total_campaigns_joined?.slice(0, 2).map(campaign => (
                         <CampaignCard key={campaign.campaign_id} campaign={campaign} />
                       ))}
                     </div>
@@ -547,7 +549,7 @@ export default function IndividualProfile() {
                             </label>
                             <textarea
                               name="bio"
-                              value={orgDetail.OrgInfo.description}
+                              value={indDetail.OrgInfo.description}
                               onChange={handleInputChange}
                               placeholder="Tell us about your organization..."
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent resize-none h-24"
@@ -561,7 +563,7 @@ export default function IndividualProfile() {
                             <input
                               type="email"
                               name="email"
-                              value={orgDetail.email}
+                              value={indDetail.email}
                               onChange={handleInputChange}
                               placeholder="e.g necessary cleaner"
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -575,7 +577,7 @@ export default function IndividualProfile() {
                             <input
                               type="text"
                               name="orgName"
-                              value={orgDetail.username}
+                              value={indDetail.username}
                               onChange={handleInputChange}
                               placeholder="e.g necessary cleaner"
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
