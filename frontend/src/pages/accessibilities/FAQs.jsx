@@ -12,20 +12,20 @@ const FAQ = () => {
       category: "Getting Started",
       questions: [
         {
-          question: "What is Verdu?",
-          answer: "Verdu is a web-based environmental engagement platform that connects individuals and organizations through data-driven environmental action. We help you track your personal environmental footprint, participate in verified campaigns, and see measurable impact from your efforts."
+          question: "What is Verdura?",
+          answer: "Verdura is a web-based environmental engagement platform that connects individuals and organizations through data-driven environmental action. We help you track your personal environmental footprint, participate in verified campaigns, and see measurable impact from your efforts."
         },
         {
           question: "How do I create an account?",
           answer: "Creating an account is simple. Choose whether you're registering as an individual or organization, provide your email address and basic information, then verify your email. Individual accounts give you access to footprint tracking and campaign participation, while organization accounts enable campaign creation and management."
         },
         {
-          question: "Is Verdu free to use?",
-          answer: "Yes, Verdu is free for individual users to track their footprint and participate in campaigns. Organizations can also register and create campaigns at no cost. Our mission is to make environmental action accessible to everyone."
+          question: "Is Verdura free to use?",
+          answer: "Yes, Verdura is free for individual users to track their footprint and participate in campaigns. Organizations can also register and create campaigns at no cost. Our mission is to make environmental action accessible to everyone."
         },
         {
-          question: "What makes Verdu different from other environmental platforms?",
-          answer: "Verdu uniquely combines personal footprint tracking with verified organizational campaigns and real environmental data. You can see exactly how your participation in campaigns reduces your calculated footprint, creating a transparent connection between awareness, action, and impact."
+          question: "What makes Verdura different from other environmental platforms?",
+          answer: "Verdura uniquely combines personal footprint tracking with verified organizational campaigns and real environmental data. You can see exactly how your participation in campaigns reduces your calculated footprint, creating a transparent connection between awareness, action, and impact."
         }
       ]
     },
@@ -108,7 +108,7 @@ const FAQ = () => {
       category: "Data & Privacy",
       questions: [
         {
-          question: "What environmental data does Verdu provide?",
+          question: "What environmental data does Verdura provide?",
           answer: "We integrate real-time environmental data including air pollution indices, climate indicators, and other environmental metrics relevant to your region and globally. This data helps contextualize your personal impact within broader environmental challenges."
         },
         {
@@ -117,7 +117,7 @@ const FAQ = () => {
         },
         {
           question: "Can I delete my account?",
-          answer: "Yes, you can delete your account at any time. Contact our support team at support@verdu.com and we'll process your request. Note that deleting your account will remove your participation history and impact data permanently."
+          answer: "Yes, you can delete your account at any time. Contact our support team at support@verdura.com and we'll process your request. Note that deleting your account will remove your participation history and impact data permanently."
         },
         {
           question: "Is my footprint data private?",
@@ -130,19 +130,19 @@ const FAQ = () => {
       questions: [
         {
           question: "What browsers are supported?",
-          answer: "Verdu works on all modern web browsers including Chrome, Firefox, Safari, and Edge. For the best experience, we recommend keeping your browser updated to the latest version."
+          answer: "Verdura works on all modern web browsers including Chrome, Firefox, Safari, and Edge. For the best experience, we recommend keeping your browser updated to the latest version."
         },
         {
           question: "I'm having trouble logging in. What should I do?",
-          answer: "First, ensure you've verified your email address. If you've forgotten your password, use the password reset option. If problems persist, contact our technical support team at support@verdu.com with details about the issue."
+          answer: "First, ensure you've verified your email address. If you've forgotten your password, use the password reset option. If problems persist, contact our technical support team at support@verdura.com with details about the issue."
         },
         {
           question: "How do I update my profile information?",
           answer: "Log into your account and navigate to your profile settings. You can update your personal information, lifestyle inputs for footprint tracking, and communication preferences. Changes are saved automatically."
         },
         {
-          question: "Can I access Verdu on mobile devices?",
-          answer: "Yes, Verdu is fully responsive and works on smartphones and tablets. Simply access the platform through your mobile browser for the same functionality you'd have on desktop."
+          question: "Can I access Verdura on mobile devices?",
+          answer: "Yes, Verdura is fully responsive and works on smartphones and tablets. Simply access the platform through your mobile browser for the same functionality you'd have on desktop."
         }
       ]
     }
@@ -153,25 +153,32 @@ const FAQ = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-emerald-50 to-teal-50">
+      <section className="py-24 bg-gradient-to-br from-emerald-50 to-teal-50">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <h1 className="text-5xl font-bold mb-6 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <h1 className="text-6xl font-bold mb-8 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
             Frequently Asked <span className="text-emerald-600">Questions</span>
           </h1>
-          <p className="text-xl text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-            Find answers to common questions about using Verdu, tracking your impact, and participating in environmental campaigns.
+          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
+            Find answers to common questions about using Verdura, tracking your impact, and participating in environmental campaigns.
           </p>
         </div>
       </section>
 
       {/* FAQ Categories */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-8">
+      <section className="py-24">
+        <div className="max-w-5xl mx-auto px-8">
           {faqs.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="mb-16">
-              <h2 className="text-3xl font-bold mb-8 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
-                {category.category}
-              </h2>
+            <div key={categoryIndex} className="mb-20">
+              <div className="text-center mb-12">
+                <div className="inline-block px-4 py-2 bg-emerald-50 rounded-full mb-4">
+                  <span className="text-emerald-600 text-sm font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    {category.category.toUpperCase()}
+                  </span>
+                </div>
+                <h2 className="text-4xl font-bold text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  {category.category}
+                </h2>
+              </div>
               
               <div className="space-y-4">
                 {category.questions.map((faq) => {
@@ -179,28 +186,30 @@ const FAQ = () => {
                   return (
                     <div
                       key={currentIndex}
-                      className="border border-gray-200 rounded-lg overflow-hidden transition-all duration-300"
+                      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300"
                     >
                       <button
                         onClick={() => toggleFAQ(currentIndex)}
-                        className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
+                        className="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
                       >
-                        <span className="text-lg font-semibold text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+                        <span className="text-xl font-semibold text-gray-900 pr-8" style={{ fontFamily: "'Inter', sans-serif" }}>
                           {faq.question}
                         </span>
-                        <span className="text-emerald-600 text-2xl ml-4 flex-shrink-0">
-                          {openIndex === currentIndex ? '−' : '+'}
-                        </span>
+                        <div className={`flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xl transition-transform duration-300 ${openIndex === currentIndex ? 'rotate-180' : ''}`}>
+                          <span>{openIndex === currentIndex ? '−' : '+'}</span>
+                        </div>
                       </button>
                       
                       <div
-                        className={`px-6 overflow-hidden transition-all duration-300 ${
-                          openIndex === currentIndex ? 'max-h-96 py-4 border-t border-gray-200' : 'max-h-0'
+                        className={`overflow-hidden transition-all duration-300 ${
+                          openIndex === currentIndex ? 'max-h-96 border-t border-gray-100' : 'max-h-0'
                         }`}
                       >
-                        <p className="text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-                          {faq.answer}
-                        </p>
+                        <div className="px-8 py-6 bg-gradient-to-br from-emerald-50/30 to-teal-50/30">
+                          <p className="text-lg text-gray-600 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
+                            {faq.answer}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   );
@@ -212,39 +221,44 @@ const FAQ = () => {
       </section>
 
       {/* Still Have Questions */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-8 text-center">
-          <h2 className="text-3xl font-bold mb-6 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
-            Still Have Questions?
-          </h2>
-          <p className="text-lg text-gray-600 mb-8" style={{ fontFamily: "'Inter', sans-serif" }}>
-            If you couldn't find the answer you were looking for, our support team is here to help.
-          </p>
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Still Have Questions?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
+              If you couldn't find the answer you were looking for, our support team is here to help.
+            </p>
+          </div>
           
-          <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="border-l-4 border-emerald-600 pl-6 text-left">
-              <h3 className="text-xl font-bold mb-2 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mb-6"></div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Email Support
               </h3>
-              <p className="text-gray-600" style={{ fontFamily: "'Inter', sans-serif" }}>
-                support@verdu.com
+              <p className="text-gray-600 text-lg" style={{ fontFamily: "'Inter', sans-serif" }}>
+                support@verdura.com
               </p>
             </div>
 
-            <div className="border-l-4 border-emerald-600 pl-6 text-left">
-              <h3 className="text-xl font-bold mb-2 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mb-6"></div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Response Time
               </h3>
-              <p className="text-gray-600" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-gray-600 text-lg" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Within 24-48 hours
               </p>
             </div>
 
-            <div className="border-l-4 border-emerald-600 pl-6 text-left">
-              <h3 className="text-xl font-bold mb-2 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+              <div className="w-12 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mb-6"></div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Contact Page
               </h3>
-              <p className="text-gray-600" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-gray-600 text-lg" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Visit our contact page
               </p>
             </div>
