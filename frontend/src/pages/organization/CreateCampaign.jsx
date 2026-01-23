@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+import { createCampaign } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function CreateCampaign() {
+   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     volunteersNeeded: 0,
@@ -10,6 +14,8 @@ export default function CreateCampaign() {
     category: '',
     description: ''
   });
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(''); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,8 +25,31 @@ export default function CreateCampaign() {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log('Campaign created:', formData);
+  const handleSubmit = async () => {
+    if(!formData.title || !formData.description || !formData.startDate || !formData.endDate){
+      toast.error("fill all required details");
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try{
+      const response = await createCampaign({
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          volunteer: formData.volunteersNeeded,
+          status: formData.status || "ACTIVE",
+          start_date: formData.startDate,
+          end_date: formData.endDate,
+      });
+      toast.success(response?.data?.message || "Campaign created successfully");
+      handleCancel();
+      navigate('/campaigns');
+    }catch(error){
+      toast.error(error?.response?.data?.error ||"Failed to create campaign");
+    }finally{
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -33,6 +62,11 @@ export default function CreateCampaign() {
       category: '',
       description: ''
     });
+    setError('');
+
+    navigate('/campaigns');
+    window.scrollTo(0, 0);
+
   };
 
   return (
@@ -145,9 +179,9 @@ export default function CreateCampaign() {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 bg-white"
               >
                 <option value="">Select Status</option>
-                <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
+                <option value="ACTIVE">Active</option>
+                <option value="UPCOMING">Upcomming</option>
+                <option value="CIMPLETED">Completed</option>
               </select>
             </div>
           </div>

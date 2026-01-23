@@ -40,7 +40,7 @@ export const getAllBlogs =async() => {
 
 
 export const getAllCampaigns =async() => { 
-    const res = await Api.get("/api/user/get-all-campaigns") 
+    const res = await Api.get("/api/user/get-all-campaigns",config) 
     return res.data.campaigns
     };
 ///
@@ -49,18 +49,10 @@ export const createBlog = async (data) => {
     return res.data;
 };
 
-export const updateIndProfile = async (data) => {
-    const res = await Api.put("/api/user/update-ind-profile", data,config); 
+export const createCampaign = async (data) => {
+    const res = await Api.post("/api/user/campaignpost", data,config); 
     return res.data;
 };
-
-
-
-
-
-
-
-
 
 
 const WeatherApi = axios.create({

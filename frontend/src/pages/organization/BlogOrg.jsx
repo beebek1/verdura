@@ -39,39 +39,6 @@ export default function BlogList() {
     fetchBlogs();
   },[]);
 
-  
-
-
-  // const blogs = [
-  //   {
-  //     id: 1,
-  //     image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=400&fit=crop',
-  //     title: 'Why do we need to plant trees ?',
-  //     excerpt: 'Trees are vital to a sign of a healthy climate. In a certified regulatory anti-case content, decent as posts, designed in reverse chronological order with the newest entries appearing first. It is a platform for sharing information, thoughts...',
-  //     views: 1653,
-  //     upvotes: 26,
-  //     tags: ['like', 'nature', 'tree']
-  //   },
-  //   {
-  //     id: 2,
-  //     image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=400&fit=crop',
-  //     title: 'Importance of Evolution',
-  //     excerpt: 'Evolution is the process through which species change over time, driven by natural selection and genetic variation. Understanding evolution helps us comprehend biodiversity and our place in nature...',
-  //     views: 2341,
-  //     upvotes: 45,
-  //     tags: ['science', 'nature', 'evolution']
-  //   },
-  //   {
-  //     id: 3,
-  //     image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&h=400&fit=crop',
-  //     title: 'Ocean Conservation Matters',
-  //     excerpt: 'Our oceans are facing unprecedented challenges from pollution, overfishing, and climate change. Learn why protecting our marine ecosystems is crucial for the planet and future generations...',
-  //     views: 1876,
-  //     upvotes: 38,
-  //     tags: ['ocean', 'conservation', 'marine']
-  //   }
-  // ];
-
   const handleSearch = () => {
     console.log('Searching for:', searchQuery);
   };

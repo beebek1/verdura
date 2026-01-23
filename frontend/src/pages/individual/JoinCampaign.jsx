@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getAllCampaigns, joinCampaignApi } from '../../services/api';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import CreateCampaign from '../organization/CreateCampaign';
+import CreateCampaign from '../organization/CampaignOrg';
 import getUserRole from '../protect/authRole';
 
 const CampaignCard = ({ campaign_id, title, status, volunteers, currentVolunteers, description, location, date }) => {

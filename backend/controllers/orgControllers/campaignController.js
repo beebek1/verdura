@@ -1,7 +1,7 @@
 const {CreateCampaigns, OrgInfo, Register, IndInfo} = require("../../models/associations");
 
 const campaignPost = async(req, res) =>{
-    const{title, description, category, start_date, end_date} = req.body;
+    const{title, description, category,volunteer, status,start_date, end_date} = req.body;
 
     if(!title || !description ||!start_date ||!end_date ){
         return res.status(400).json({
@@ -9,13 +9,21 @@ const campaignPost = async(req, res) =>{
         });
     }
 
-    await CreateCampaigns.create({
+    const org = await OrgInfo.findOne({ where: { user_id: req.user.id } });
+
+    if (!org) {
+      return res.status(400).json({ message: "Organization not found for this user" });
+    }
+
+    const campaign = await CreateCampaigns.create({
         title,
         description,
         category,
+        volunteer: volunteer || 0,
+        status: status || "ACTIVE",
         start_date : new Date(start_date),
         end_date: new Date(end_date),
-        org_id : req.user.id
+        org_id : org.org_id
     })
 
     return res.status(201).json({
@@ -32,7 +40,7 @@ const getAllCampaigns = async(req, res) =>{
                 model:OrgInfo,
                 attributes: ["org_id", "description", "logo_path"]
             }
-        })
+        });
 
         if(campaigns.length ===0){
             return res.status(404).json({
