@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Cloud, Wind, Droplets, Eye, Gauge, AlertTriangle, TrendingUp, ThermometerSun, Leaf, Factory, Car, Search, RefreshCw } from 'lucide-react';
-import { getLatestWeather } from '../services/api';
+import { getIndById, getLatestWeather } from '../services/api';
 
 
 const getAQIColor = (aqi) => {
@@ -44,15 +44,34 @@ const PollutantBar = ({ name, value, max, unit }) => {
 };
 
 export default function ClimateDashboard() {
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(null);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect( () =>{
+    const fetchUserAddress = async() =>{
+      const localResponse = await getIndById();
+      
+      const location = localResponse?.data?.individual?.IndividualInfo?.address;
+      // const location = localResponse?.data?.IndividualInfo?.address.split(" ")[2]|| "kathmandu"
+      setLocation(location);
+    }
+
+    fetchUserAddress();
+  }, [])
+
+  useEffect(() => {
+    if (location) {
+      getWeather();
+    }
+  }, [location]);
 
   const getWeather = async () => {
     try {
       setLoading(true);
 
-      const response = await getLatestWeather("bhaktapur");
+      if(!location) return "there is nothing bruh"
+      const response = await getLatestWeather(location.split(" ")[2]);
       const current = response.data.current;
       const air = current.air_quality;
 
@@ -78,9 +97,9 @@ export default function ClimateDashboard() {
 
       setData({
         location: {
-          city: "Kathmandu",
-          state: "Bagmati Province",
-          country: "Nepal",
+          city: location.split(" ")[2],
+          state: location.split(" ")[1],
+          country: location.split(" ")[0]
         },
         weather: {
           temperature: current.temp_c,
