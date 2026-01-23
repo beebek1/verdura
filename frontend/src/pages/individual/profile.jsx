@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, Mail, MapPin, Calendar,Clock, Award,  CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3, Zap } from 'lucide-react';
 import { useEffect } from 'react';
 import { getIndById, getIndRecentActivity, updateIndProfile } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 // Mock individual data - would come from backend
 const orgData = {
@@ -107,8 +108,6 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
   const handleChange = (field, value) => {
     setLocalProfile(prev => ({ ...prev, [field]: value }));
   };
-
-  // console.log("consolel fuck",profile)
 
   const handleSave = () => {
     onSave(localProfile);
@@ -253,7 +252,7 @@ const StatsCard = ({ icon: Icon, label, value, sublabel, color = "from-emerald-5
 );   
 
 
-const CampaignCard = ({ campaign }) => (
+const CampaignCard = ({ campaign, seeMoreHandler }) => (   
   <div className="relative group">
     <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     <div className="relative bg-white rounded-xl p-6 border border-gray-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300">
@@ -289,8 +288,8 @@ const CampaignCard = ({ campaign }) => (
         </div>
       </div>
       <div className="flex gap-2 mt-4">
-        <button className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-          Edit
+        <button className=" cursor-pointer flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold transition-all duration-300" onClick={seeMoreHandler} style={{ fontFamily: "'Inter', sans-serif" }}>
+          Learn More
         </button>
       </div>
     </div>
@@ -299,8 +298,12 @@ const CampaignCard = ({ campaign }) => (
 
 
 export default function IndividualProfile() {
+
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
+  const [sliceLimit, setSliceLimit] = useState(2);
   const [recentActivity, setRecentActivity] = useState(false);
   const [indDetail, setindDetail] =useState(null);
   const [loading, setLoading] = useState(true)
@@ -377,6 +380,10 @@ export default function IndividualProfile() {
     }))
   }
 
+  const seeMoreHandler = () => {
+    navigate('/campaigns')
+  }
+
   const tabs = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
     { id: 'profile', label: 'individual Info', icon: User },
@@ -449,15 +456,22 @@ export default function IndividualProfile() {
                       <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
                         Active Campaigns
                       </h2>
-                      <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        View All <span>→</span>
-                      </button>
+                        {sliceLimit === 2 ? (
+                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit(5)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                              View all <span>→</span>
+                            </button>
+                          ):(
+                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit(2)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                              View less <span>→</span>
+                            </button>
+                        )}
                     </div>
                       <div className="space-y-4">
                         {/* Check if joinedCampaigns exists and has items */}
                         {indDetail?.joinedCampaigns && indDetail.joinedCampaigns.length > 0 ? (
-                          indDetail.joinedCampaigns.slice(0, 2).map((campaign) => (
+                          indDetail.joinedCampaigns.slice(0, sliceLimit).map((campaign) => (
                             <CampaignCard 
+                              seeMoreHandler={seeMoreHandler}
                               key={campaign.campaign_id} 
                               campaign={campaign} 
                             />
@@ -466,23 +480,32 @@ export default function IndividualProfile() {
                           /* Fallback if no campaigns are joined */
                           <div className="text-center py-4 text-gray-500">
                             <p>No campaigns joined yet.</p>
-                          </div>
+                          </div>   
                         )}
                       </div>
                   </div>
 
                   {/* Recent Activity */}
-                  <div className="relative group">
+                  <div className="relative group py-5">
                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/40 to-teal-100/40 rounded-3xl blur-2xl" />
                     <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-100">
                       <div className="flex items-center justify-between mb-8">
                         <h2 className="text-xl font-bold text-gray-800 tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
                           Recent Activity
                         </h2>
+                        {sliceLimit === 2 ? (
+                          <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit(5)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                            View all <span>→</span>
+                          </button>
+                        ):(
+                          <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit(2)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                            View less <span>→</span>
+                          </button>
+                        )}
                       </div>
 
                       <div className="space-y-6">
-                        {recentActivity?.map((activity, index) => (
+                        {recentActivity?.slice(0, sliceLimit).map((activity, index) => (
                           <div key={activity.campaign_id} className="relative flex gap-6 group/item">
                             
                             {/* Timeline Connector Line */}
@@ -520,7 +543,7 @@ export default function IndividualProfile() {
                         ))}
 
                         {/* Empty State */}
-                        {(!recentActivity || recentActivity === 0) && (
+                        {(!recentActivity || recentActivity.length === 0) && (
                           <div className="text-center py-10">
                             <p className="text-gray-400 text-sm">No recent actions recorded yet.</p>
                           </div>
