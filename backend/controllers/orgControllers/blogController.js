@@ -9,6 +9,7 @@ const blogPost = async(req, res) =>{
             message: "title and content cannot be empty"
         });
     }
+    console.log(req.user.id)
 
     const org = await OrgInfo.findOne({ where: { user_id: req.user.id } });
 

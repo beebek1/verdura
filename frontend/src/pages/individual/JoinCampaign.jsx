@@ -1,28 +1,30 @@
 import { useEffect, useState } from 'react'
-import { getAllCampaigns } from '../../services/api';
+import { getAllCampaigns, joinCampaignApi } from '../../services/api';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import CreateCampaign from '../organization/CreateCampaign';
 import getUserRole from '../protect/authRole';
 
-const CampaignCard = ({ id, title, status, volunteers, currentVolunteers, description, location, date }) => {
+const CampaignCard = ({ campaign_id, title, status, volunteers, currentVolunteers, description, location, date }) => {
   const [isJoined, setIsJoined] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   
   const isActive = status === 'Active';
   
-  const handleJoin = () => {
+  const handleJoin = async() => {
     setIsJoined(true);
     showToast('Successfully joined the campaign!');
+    await joinCampaignApi(campaign_id)
   };
   
   const handleCancelClick = () => {
     setShowCancelModal(true);
   };
   
-  const confirmCancel = () => {
+  const confirmCancel = async() => {
     setIsJoined(false);
     setShowCancelModal(false);
+    await joinCampaignApi(campaign_id)
     showToast('Campaign participation cancelled', 'warning');
   };
   
@@ -103,7 +105,7 @@ const CampaignCard = ({ id, title, status, volunteers, currentVolunteers, descri
           
           {!isJoined ? (
             <button 
-              onClick={handleJoin}
+              onClick={()=>handleJoin()}
               className="flex-1 min-w-[120px] px-4 py-2.5 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition font-semibold text-sm"
             >
               Join Campaign
@@ -238,7 +240,7 @@ const JoinCampaign = () => {
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {campaigns.map(campaign => (
-                <CampaignCard key={campaign.id} {...campaign} />
+                <CampaignCard key={campaign.campaign_id} {...campaign} />
               ))}
             </div>
           </div>

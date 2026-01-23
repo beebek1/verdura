@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, DatabaseError } = require("sequelize");
 const {sequelize} = require("../../db/database");
 const OrgInfo = require("./orgModel");
 
@@ -55,6 +55,10 @@ const CreateCampaign = sequelize.define(
         end_date: {
             type:DataTypes.DATE,
             allowNull: false
+        },
+
+        image : {
+            type : DataTypes.STRING,
         }
     },
     {

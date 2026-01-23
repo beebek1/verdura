@@ -1,4 +1,4 @@
-const {CreateCampaigns, OrgInfo} = require("../../models/associations");
+const {CreateCampaigns, OrgInfo, Register, IndInfo} = require("../../models/associations");
 
 const campaignPost = async(req, res) =>{
     const{title, description, category, start_date, end_date} = req.body;
@@ -55,4 +55,46 @@ const getAllCampaigns = async(req, res) =>{
 }
 
 
-module.exports = {campaignPost, getAllCampaigns};    
+
+const joinCampaign = async (req, res) => {
+    try {
+        const { campaign_id } = req.params;
+        
+        // Find the user specifically
+        const user = await Register.findByPk(req.user.id);
+        const campaign = await CreateCampaigns.findByPk(campaign_id);
+
+        const Org_id = campaign.org_id;
+
+        if (!campaign) return res.status(404).json({ message: "Campaign not found" });
+
+        // Check if the upvote already exists
+        const hasJoined = await user.hasJoinedCampaign(campaign);
+
+        if (hasJoined) {
+            // Logic to "Un-upvote"
+            await user.removeJoinedCampaign(campaign);
+            await campaign.decrement('volunteer');
+            await OrgInfo.decrement('total_volunteers', { where :  { org_id : Org_id}})
+            await IndInfo.decrement('total_campaigns_joined', { where :  { user_id : user.user_id}})
+
+
+            return res.status(200).json({ message: "campaign unjoined" });
+        }
+
+        // Add the upvote
+        await user.addJoinedCampaign(campaign);
+        await campaign.increment('volunteer');
+        
+        await OrgInfo.increment('total_volunteers', { where :  { org_id : Org_id}})
+        await IndInfo.increment('total_campaigns_joined', { where :  { user_id : user.user_id}})
+
+        res.status(200).json({ message: "joined successfully" });
+    } catch (err) {
+        return res.status(500).json({ message: "join failed", error: err.message });
+    }
+};
+
+
+
+module.exports = {campaignPost, getAllCampaigns, joinCampaign};    

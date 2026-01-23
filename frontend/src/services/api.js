@@ -27,9 +27,11 @@ const config ={
 export const createUserApi =(data) => Api.post("/api/auth/register",data)
 export const loginUserApi =(data) => Api.post("/api/auth/login",data)
 export const upVoteBlog =(blog_id) => Api.patch(`/api/user/upvote/${blog_id}`,{}, config)
+export const joinCampaignApi =(campaign_id) => Api.patch(`/api/user/join-campaign/${campaign_id}`,{}, config)
 
 export const getOrgById =() => Api.get(`/api/user/get-org`, config)
 export const getIndById =() => Api.get(`/api/user/get-ind`, config)
+export const getIndRecentActivity =() => Api.get(`/api/user/get-recent-activity`, config)
 
 export const getAllBlogs =async() => { 
     const res = await Api.get("/api/user/get-all-blogs",config) 
@@ -46,6 +48,19 @@ export const createBlog = async (data) => {
     const res = await Api.post("/api/user/create-blog", data,config); 
     return res.data;
 };
+
+export const updateIndProfile = async (data) => {
+    const res = await Api.put("/api/user/update-ind-profile", data,config); 
+    return res.data;
+};
+
+
+
+
+
+
+
+
 
 
 const WeatherApi = axios.create({

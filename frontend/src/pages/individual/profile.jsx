@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { User, Mail, MapPin, Calendar,Clock, Award,  CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
+import { User, Mail, MapPin, Calendar,Clock, Award,  CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3, Zap } from 'lucide-react';
 import { useEffect } from 'react';
-import { getIndById } from '../../services/api';
-import tempImage from '../../assets/pollution.png'
+import { getIndById, getIndRecentActivity, updateIndProfile } from '../../services/api';
 
 // Mock individual data - would come from backend
 const orgData = {
@@ -129,10 +128,10 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
 {              console.log(profile)
-}              {profile.IndividualInfo.logo_path ? (
-                <img src={profile.IndividualInfo.logo_path} alt="image" className="w-full h-full object-cover rounded-2xl" />
+}              {profile?.IndividualInfo?.logo_path ? (
+                <img src={profile?.IndividualInfo?.logo_path} alt="image" className="w-full h-full object-cover rounded-2xl" />
               ) : (
-                profile.username.substring(0, 2).toUpperCase()
+                profile?.username?.substring(0, 2).toUpperCase()
               )}
               {imageHover && (
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300">
@@ -183,11 +182,12 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-emerald-600" />
-                    {profile.address}
+                    {console.log("this is inside profile ",profile)}
+                    {profile?.IndividualInfo?.address.split(" ", 2).join(" ") || "no address found"}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-4 h-4 text-emerald-600" />
-                    Founded {new Date(profile.createdAt).toLocaleDateString("en-GB", {
+                    Joined {new Date(profile.createdAt).toLocaleDateString("en-GB", {
                         month: "short",
                         year: "numeric"
                         })}
@@ -204,7 +204,7 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                   />
                 ) : (
                   <p className="text-gray-600 text-sm leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    {profile.IndividualInfo.description}
+                    {profile?.IndividualInfo?.description}
                   </p>
                 )}
               </div>
@@ -301,19 +301,28 @@ const CampaignCard = ({ campaign }) => (
 export default function IndividualProfile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    
-  });
+  const [recentActivity, setRecentActivity] = useState(false);
   const [indDetail, setindDetail] =useState(null);
   const [loading, setLoading] = useState(true)
+  const [formData, setFormData] = useState({
+    bio : "",
+    email : "",
+    indName : "",
+    country : "",
+    state : "",
+    city : "", 
+    street : ""
+  });
 
   useEffect(()=>{
     const fetchUserDetail = async() =>{
 
       try{
         const res = await getIndById();
+        const res2 = await getIndRecentActivity();
 
         setindDetail(res.data.individual)
+        setRecentActivity(res2.data.recentActivities.joinedCampaigns)
 
       }catch(err){
         console.log("failed to fetch individual detail", err)
@@ -325,47 +334,48 @@ export default function IndividualProfile() {
     
   }, []);
 
+  // for saving api data to usestate
+  useEffect(() => {
+    if (indDetail) {
+      const parts = indDetail.IndividualInfo?.address?.split(" ") || [];
+      setFormData({
+        bio: indDetail.IndividualInfo?.description || "",
+        email: indDetail.email || "",
+        indName: indDetail.username || "",
+        country: parts[0] || "",
+        state: parts[1] || "",
+        city: parts[2] || "",
+        street: parts[3] || ""
+      });
+    }
+}, [indDetail]);
+
   if(loading) return <div><p>loading wait a min</p></div>
   if(!indDetail) return <div><p>didn't get any data for this individual</p></div>
 
-  const handleSaveProfile = (updatedProfile) => {
-    console.log('Saving profile:', updatedProfile);
-    setIsEditing(false);
-  };
+  const validator = () =>{
+    if(!formData.bio || !formData.email || !formData.indName || !formData.country){
+      alert("all fields are required");
+      return false
+    }
+    return true
+  }
 
-  // console.log(indDetail.name, indDetail.)
+  const handleSaveProfile = () => {
+    if(!validator()) return
 
-    //for splitting address
-  const parts = indDetail.IndividualInfo.address.split(" ");
-  const country = parts[0]
-  const state = parts[1]
-  const city = parts[2]
-  const street = parts[3]
-
-  // const docPaths = indDetail.OrgInfo.legal_documents ? formData.legalDocs.split(' ') : [];
-
-  console.log(country, state, city, street)
-
-  const togglePreference = (key) => {
-    setPreferences(prev => ({ ...prev, [key]: !prev[key] }));
+    const res = updateIndProfile(formData);
+    console.log(res)
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+    const{name, value } = e.target;
 
-  const handleLocationChange = (field, value) => {
-    setFormData({
-      ...formData,
-      location: {
-        ...formData.location,
-        [field]: value
-      }
-    });
-  };
+    setFormData(prev =>({
+      ...prev, 
+      [name] : value
+    }))
+  }
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
@@ -413,19 +423,19 @@ export default function IndividualProfile() {
                 <StatsCard 
                   icon={Leaf} 
                   label="Campaigns Joined" 
-                  value={indDetail.IndividualInfo.total_campaigns_joined}
+                  value={indDetail?.IndividualInfo?.total_campaigns_joined}
                   color="from-emerald-500 to-teal-500"
                 />
                 <StatsCard 
                   icon={Clock} 
                   label="Hours Contributed" 
-                  value={indDetail.IndividualInfo.total_campaigns_joined}
+                  value={indDetail?.IndividualInfo?.total_campaigns_joined}
                   color="from-teal-500 to-emerald-600"
                 />
                 <StatsCard 
                   icon={Award} 
                   label="Impact Score" 
-                  value={indDetail.IndividualInfo.total_campaigns_joined}
+                  value={indDetail?.IndividualInfo?.total_campaigns_joined}
                   color="from-emerald-600 to-teal-500"
                 />
               </div>
@@ -463,29 +473,64 @@ export default function IndividualProfile() {
 
                   {/* Recent Activity */}
                   <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
-                    <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-                      <h2 className="text-xl font-bold text-gray-800 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        Recent Activity
-                      </h2>
-                      <div className="space-y-4">
-                        {orgData.recentActivity.map(activity => (
-                          <div key={activity.id} className="flex items-start gap-4 pb-4 border-b border-gray-200 last:border-0 group/item hover:bg-gray-50 -mx-4 px-4 py-2 rounded-lg transition-colors duration-300">
-                            <div className="text-2xl">{activity.icon}</div>
-                            <div className="flex-1">
-                              <p className="font-semibold text-gray-800 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                {activity.action}
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/40 to-teal-100/40 rounded-3xl blur-2xl" />
+                    <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-100">
+                      <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-xl font-bold text-gray-800 tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          Recent Activity
+                        </h2>
+                      </div>
+
+                      <div className="space-y-6">
+                        {recentActivity?.map((activity, index) => (
+                          <div key={activity.campaign_id} className="relative flex gap-6 group/item">
+                            
+                            {/* Timeline Connector Line */}
+                            {index !== recentActivity.length - 1 && (
+                              <div className="absolute left-[11px] top-8 w-[2px] h-full bg-gray-100 group-hover/item:bg-emerald-100 transition-colors" />
+                            )}
+
+                            {/* Cool Animated Icon Indicator */}
+                            <div className="relative z-10 flex-shrink-0 w-6 h-6 rounded-full bg-white border-2 border-emerald-500 flex items-center justify-center group-hover/item:scale-110 transition-transform duration-300">
+                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            </div>
+
+                            <div className="flex-1 pb-6 border-b border-gray-50 last:border-0">
+                              <div className="flex justify-between items-start mb-1">
+                                <p className="font-bold text-gray-800 group-hover/item:text-emerald-600 transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                  Joined {activity.title}
+                                </p>
+                                <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+                                  <Clock size={12} />
+                                  {new Date(activity.CampaignParticipant.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
+                                </div>
+                              </div>
+                              
+                              <p className="text-sm text-gray-500 line-clamp-1 italic" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                Category: {activity.category}
                               </p>
-                              <p className="text-sm text-gray-600" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                {activity.date}
-                              </p>
+
+                              {/* Status Tag */}
+                              <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-[10px] font-bold text-emerald-700">
+                                <Zap size={10} className="fill-emerald-700" />
+                                {activity.status}
+                              </div>
                             </div>
                           </div>
                         ))}
+
+                        {/* Empty State */}
+                        {(!recentActivity || recentActivity === 0) && (
+                          <div className="text-center py-10">
+                            <p className="text-gray-400 text-sm">No recent actions recorded yet.</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
+
+                    {/* { id: 3, action: "Reached 400 total volunteers", date: "1 week ago", icon: "👥" } */}
 
                 {/* right side cards */}
                 <div>
@@ -515,7 +560,7 @@ export default function IndividualProfile() {
 
 
                   {/* Articles Upvoted */}
-                  <div className="relative group">
+                  <div className="relative group py-10">
                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
                     <div className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
                       <h2 className="text-lg font-bold text-gray-800 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -535,6 +580,11 @@ export default function IndividualProfile() {
                             </span>
                           </div>
                         ))}
+                        {(!indDetail.upvotedArticles || indDetail.upvotedArticles.length === 0) && (
+                          <div className="text-left italic py-5">
+                            <p className="text-gray-400 text-sm">No any upvoted arcticles.</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -561,7 +611,7 @@ export default function IndividualProfile() {
                             </label>
                             <textarea
                               name="bio"
-                              value={indDetail.IndividualInfo.description}
+                              value={formData.bio}
                               onChange={handleInputChange}
                               placeholder="Tell us about your individual..."
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent resize-none h-24"
@@ -575,7 +625,7 @@ export default function IndividualProfile() {
                             <input
                               type="email"
                               name="email"
-                              value={indDetail.email}
+                              value={formData.email}
                               onChange={handleInputChange}
                               placeholder="e.g necessary cleaner"
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -588,8 +638,8 @@ export default function IndividualProfile() {
                             </label>
                             <input
                               type="text"
-                              name="orgName"
-                              value={indDetail.username}
+                              name="indName"
+                              value={formData.indName}
                               onChange={handleInputChange}
                               placeholder="e.g necessary cleaner"
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -607,7 +657,7 @@ export default function IndividualProfile() {
                           <input
                             type="text"
                             name="country"
-                            value={country}
+                            value={formData.country}
                             onChange={handleInputChange}
                             placeholder="Country"
                             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -615,7 +665,7 @@ export default function IndividualProfile() {
                           <input
                             type="text"
                             name="state"
-                            value={state}
+                            value={formData.state}
                             onChange={handleInputChange}
                             placeholder="State"
                             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -623,7 +673,7 @@ export default function IndividualProfile() {
                           <input
                             type="text"
                             name="city"
-                            value={city}
+                            value={formData.city}
                             onChange={handleInputChange}
                             placeholder="City"
                             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -632,7 +682,7 @@ export default function IndividualProfile() {
                         <input
                           type="text"
                           name="street"
-                          value={street}
+                          value={formData.street}
                           onChange={handleInputChange}
                           placeholder="Street"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -642,7 +692,7 @@ export default function IndividualProfile() {
                       {/* Save Button */}
                       <div className="flex justify-end mb-8">
                         <button
-                          onClick={handleSaveProfile}
+                          onClick={() => handleSaveProfile()}
                           className="px-8 py-3 bg-[#2d5f4d] text-white font-semibold rounded-md hover:bg-[#1f4035] transition-colors"
                         >
                           SAVE CHANGES

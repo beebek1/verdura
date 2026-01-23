@@ -1,16 +1,13 @@
 const {DataTypes} = require("sequelize");
 const {sequelize} = require("../../db/database");
-const Register = require("../userModel");
 
 const IndInfo = sequelize.define(
     "IndividualInfo",
     {
         ind_id:{
             type: DataTypes.INTEGER,
-            references :{
-                model: Register,
-                key : "user_id"
-            }
+            primaryKey : true,
+            autoIncrement : true
         },
 
         description: {
@@ -20,7 +17,7 @@ const IndInfo = sequelize.define(
 
         logo_path: {
             type: DataTypes.STRING,
-            allowNull:false
+            allowNull:true
         },
         
         address: {
@@ -29,7 +26,8 @@ const IndInfo = sequelize.define(
         },
 
         total_campaigns_joined : {
-            type : DataTypes.STRING
+            type : DataTypes.INTEGER,
+            defaultValue : 0
         }
     },
     {
