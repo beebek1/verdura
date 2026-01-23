@@ -25,9 +25,10 @@ const getIndividualDetails = async (req, res) => {
                 {
                     // This is your Many-to-Many relationship
                     model: CreateCampaigns, 
-                    as: 'joinedCampaigns', // Must match the 'as' in your associations.js
-                    through: { attributes: [] }, // This hides the bridge table (CampaignParticipant) data
-                    attributes: ['campaign_id', 'title', 'image', 'status'], // Only return what the frontend needs
+                    as: 'joinedCampaigns', 
+                    through: { attributes: [] }, 
+                    where :{ status : "ACTIVE"},
+                    attributes: ['campaign_id', 'title', 'image', 'status', 'volunteer', 'category', 'start_date', 'end_date'], // Only return what the frontend needs
                     required: false
                 },
                 {
