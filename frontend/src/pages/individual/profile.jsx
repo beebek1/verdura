@@ -5,103 +5,32 @@ import { getIndById, getIndRecentActivity, updateIndProfile } from '../../servic
 import { useNavigate } from 'react-router-dom';
 
 // Mock individual data - would come from backend
-const orgData = {
-  profile: {
-    name: "Aayush Kumar",
-    email: "aayush.kumar@example.com",
-    bio: "Passionate environmentalist dedicated to making a positive impact through community action and sustainable practices.",
-    avatar: null,
-    joinDate: "January 2024",
-    location: {
-      country: "Nepal",
-      state: "Bagmati Province",
-      city: "Pātan"
-    }
-  },
-  stats: {
-    campaignsJoined: 6,
-    hoursContributed: 42,
-    impactScore: 620,
-    goalProgress: {
-      current: 620,
-      target: 1000,
-      percentage: 62,
-      estimatedCO2Offset: 3.8,
-      aheadOfUsers: 78
-    }
-  },
-  currentRank: {
-    name: "Green Leaf",
-    icon: "🌿",
-    nextRank: "Forest Guardian",
-    progressToNext: 45,
-    rankLevels: ["Seedling", "Green Leaf", "Forest Guardian", "Tree Spirit", "Earth Champion"]
-  },
-  achievements: [
-    { id: 1, name: "First Campaign", icon: "🎯", earned: true, date: "Jan 2024" },
-    { id: 2, name: "Tree Warrior", icon: "🌳", earned: true, date: "Jan 2025" },
-    { id: 3, name: "Clean Ocean", icon: "🌊", earned: true, date: "Jan 2025" },
-    { id: 4, name: "100 Hours", icon: "⏰", earned: false, date: null },
-    { id: 5, name: "Community Leader", icon: "👥", earned: false, date: null },
-    { id: 6, name: "Carbon Crusher", icon: "💨", earned: false, date: null }
-  ],
-  campaigns: [
-    {
-      id: 1,
-      title: "Tree Plantation Drive",
-      hoursContributed: 9,
-      nextMilestone: "Plant 1000 trees",
-      status: "Active",
-      progress: 62
-    },
-    {
-      id: 2,
-      title: "Community Cleanup",
-      hoursContributed: 4,
-      nextMilestone: "Collect 500kg waste",
-      status: "Active",
-      progress: 40
-    }
-  ],
-  recentContributions: [
-    {
-      id: 1,
-      action: "Planted 5 saplings",
-      date: "Jan 20, 2025",
-      campaign: "Tree Plantation Drive"
-    },
-    {
-      id: 2,
-      action: "Joined Beach Cleanup",
-      date: "Jan 14, 2025",
-      campaign: "Coastal Cleanup"
-    },
-    {
-      id: 3,
-      action: "Upvoted 'Why Tree Planting Matters'",
-      date: "Jan 12, 2025",
-      campaign: null
-    }
-  ],
-  recentActivity: [
-    { id: 1, action: "Published new blog: 'Tree Plantation Guide'", date: "2 days ago", icon: "📝" },
-    { id: 2, action: "Launched Ocean Restoration Project", date: "5 days ago", icon: "🌊" },
-    { id: 3, action: "Reached 400 total volunteers", date: "1 week ago", icon: "👥" }
-  ],
-  quickStats: {
-    volunteers: 80,
-    description: "Snapshot of recent activity"
-  },
-  preferences: {
-    emailNotifications: true,
-    campaignUpdates: true,
-    weeklyDigest: false,
-    marketingEmails: false,
-    profileVisibility: "public"
-  }
-};
+const RANKS = [
+  { name: "Seedling", icon: "🌱", min: 0, description: "You are just starting, full of curiosity and potential." },
+  { name: "Sprout", icon: "🌿", min: 500, description: "Your small efforts begin to grow, reaching toward new possibilities." },
+  { name: "Tender Shoot", icon: "🌾", min: 1000, description: "Taking root in the world, learning how to make an impact." },
+  { name: "Budding Plant", icon: "🍀", min: 1500, description: "Your contributions are visible, bringing life and hope to surroundings." },
+  { name: "Young Sapling", icon: "🌳", min: 2000, description: "Standing tall, steadily growing and influencing the environment positively." },
+  { name: "Growing Tree", icon: "🌴", min: 2500, description: "Your actions strengthen, providing shade and support for others." },
+  { name: "Flowering Plant", icon: "🌸", min: 3000, description: "Beautiful results emerge from consistent effort and nurturing care." },
+  { name: "Harvest Bloom", icon: "🌻", min: 3500, description: "The fruits of your work start to appear and inspire many." },
+  { name: "Fruitful Branch", icon: "🍇", min: 4000, description: "Your contributions bear tangible results, sharing abundance with others." },
+  { name: "Golden Crop", icon: "🌾", min: 4500, description: "Your impact ripens, bringing prosperity and hope to your community." },
+  { name: "Mature Tree", icon: "🌲", min: 5000, description: "You stand strong, sheltering and supporting those who follow." },
+  { name: "Orchard Keeper", icon: "🍎", min: 5500, description: "Your careful guidance cultivates growth and spreads positive influence." },
+  { name: "Garden Master", icon: "🌺", min: 6000, description: "Your efforts bloom into beautiful results, admired by many people." },
+  { name: "Abundant Grove", icon: "🌳", min: 6500, description: "A thriving community grows around your consistent care and dedication." },
+  { name: "Golden Orchard", icon: "🍊", min: 7000, description: "Your work produces rewards and inspires others to take action." },
+  { name: "Harvest Guardian", icon: "🌾", min: 7500, description: "You protect and nurture growth, ensuring prosperity for all." },
+  { name: "Forest Elder", icon: "🌲", min: 8000, description: "Your wisdom guides others as a pillar of sustainable growth." },
+  { name: "Sunlit Canopy", icon: "☀️", min: 8500, description: "Your influence shines over many, providing light and encouragement." },
+  { name: "Nature Sage", icon: "🍃", min: 9000, description: "A true master of harmony, guiding growth and nurturing life." },
+  { name: "Earth Steward", icon: "🌍", min: 9500, description: "Your legacy impacts the world, leaving it flourishing and balanced." },
+];
 
-const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
+
+
+const ProfileHeader = ({ profile, isEditing}) => {
   const [localProfile, setLocalProfile] = useState(profile);
   const [imageHover, setImageHover] = useState(false);
 
@@ -109,8 +38,8 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
     setLocalProfile(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = () => {
-    onSave(localProfile);
+  const handleClick = () => {
+    console.log("this is shit")
   };
 
   return (
@@ -124,6 +53,7 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
               className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-5xl font-bold text-white shadow-lg shadow-emerald-500/30 cursor-pointer"
               onMouseEnter={() => setImageHover(true)}
               onMouseLeave={() => setImageHover(false)}
+              onClick={handleClick}
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
 {              console.log(profile)
@@ -136,7 +66,7 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300">
                   <Camera className="w-6 h-6 text-white" />
                   <span className="text-xs text-white font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Change Logo
+                    Change profile
                   </span>
                 </div>
               )}
@@ -228,7 +158,6 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
   );
 };
 
-
 const StatsCard = ({ icon: Icon, label, value, sublabel, color = "from-emerald-500 to-teal-500" }) => (
   <div className="relative group">
     <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -297,16 +226,83 @@ const CampaignCard = ({ campaign, seeMoreHandler }) => (
 );
 
 
+//for calculating impact score
+const calculateImpactScore = (individual) => {
+
+    if (!individual) return 0;
+
+  const total_campaigns = individual.joinedCampaigns?.length || 0;
+  const total_blogs = individual.upvotedArticles?.length || 0;
+  const total_upvotes = individual.upvotedArticles?.length || 0;
+
+  // Sum volunteers from joined campaigns
+  const total_volunteers = individual.joinedCampaigns?.reduce(
+    (sum, campaign) => sum + (campaign.volunteer || 0),
+    0
+  ) || 0;
+
+  const verification_status = individual.isVerified;
+
+  // 1. Raw points
+  const rawPoints =
+    (total_campaigns * 500) +
+    (total_volunteers * 50) +
+    (total_blogs * 100) +
+    (total_upvotes * 5);
+
+  // 2. Saturation formula
+  const limit = 10000;
+  const k = 5000;
+
+  let score = limit * (rawPoints / (rawPoints + k));
+
+  // 3. Verification bonus
+  if (verification_status) {
+    score = score + (limit - score) * 0.1;
+  }
+
+  return Math.round(score);
+};
+
+
+//get ranks using impact score
+const getRankFromScore = (score) => {
+  let currentRank = RANKS[0];
+
+  for (let i = 0; i < RANKS.length; i++) {
+    if (score >= RANKS[i].min) {
+      currentRank = RANKS[i];
+    }
+  }
+
+  const currentIndex = RANKS.indexOf(currentRank);
+  const nextRank = RANKS[currentIndex + 1] || null;
+
+  return {
+    ...currentRank,
+    nextRank: nextRank?.name || "Max Rank",
+  };
+};
+
+
+
+
 export default function IndividualProfile() {
 
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('overview');
+  const [impactScore, setImpactScore] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
-  const [sliceLimit, setSliceLimit] = useState(2);
+  const [sliceLimit1, setSliceLimit1] = useState(2);
+  const [sliceLimit2, setSliceLimit2] = useState(2);
   const [recentActivity, setRecentActivity] = useState(false);
   const [indDetail, setindDetail] =useState(null);
   const [loading, setLoading] = useState(true)
+  const [rank, setRank] = useState({
+    currentRank : "",
+    nextRank : ""
+  })
   const [formData, setFormData] = useState({
     bio : "",
     email : "",
@@ -351,10 +347,22 @@ export default function IndividualProfile() {
         street: parts[3] || ""
       });
     }
-}, [indDetail]);
+
+    const score = calculateImpactScore(indDetail);
+    setImpactScore(score);
+
+    const rank = getRankFromScore(score);
+    setRank(rank);
+  }, [indDetail]);
 
   if(loading) return <div><p>loading wait a min</p></div>
   if(!indDetail) return <div><p>didn't get any data for this individual</p></div>
+
+  const handleSaveProfile = () => {
+    if(!validator()) return
+
+    const res = updateIndProfile(formData);
+  };
 
   const validator = () =>{
     if(!formData.bio || !formData.email || !formData.indName || !formData.country){
@@ -363,13 +371,6 @@ export default function IndividualProfile() {
     }
     return true
   }
-
-  const handleSaveProfile = () => {
-    if(!validator()) return
-
-    const res = updateIndProfile(formData);
-    console.log(res)
-  };
 
   const handleInputChange = (e) => {
     const{name, value } = e.target;
@@ -442,7 +443,7 @@ export default function IndividualProfile() {
                 <StatsCard 
                   icon={Award} 
                   label="Impact Score" 
-                  value={indDetail?.IndividualInfo?.total_campaigns_joined}
+                  value={impactScore}
                   color="from-emerald-600 to-teal-500"
                 />
               </div>
@@ -456,12 +457,12 @@ export default function IndividualProfile() {
                       <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
                         Active Campaigns
                       </h2>
-                        {sliceLimit === 2 ? (
-                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit(5)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                        {sliceLimit2 === 2 ? (
+                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit2(5)} style={{ fontFamily: "'Inter', sans-serif" }}>
                               View all <span>→</span>
                             </button>
                           ):(
-                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit(2)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit2(2)} style={{ fontFamily: "'Inter', sans-serif" }}>
                               View less <span>→</span>
                             </button>
                         )}
@@ -469,7 +470,7 @@ export default function IndividualProfile() {
                       <div className="space-y-4">
                         {/* Check if joinedCampaigns exists and has items */}
                         {indDetail?.joinedCampaigns && indDetail.joinedCampaigns.length > 0 ? (
-                          indDetail.joinedCampaigns.slice(0, sliceLimit).map((campaign) => (
+                          indDetail.joinedCampaigns.slice(0, sliceLimit2).map((campaign) => (
                             <CampaignCard 
                               seeMoreHandler={seeMoreHandler}
                               key={campaign.campaign_id} 
@@ -493,19 +494,19 @@ export default function IndividualProfile() {
                         <h2 className="text-xl font-bold text-gray-800 tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
                           Recent Activity
                         </h2>
-                        {sliceLimit === 2 ? (
-                          <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit(5)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                        {sliceLimit1 === 2 ? (
+                          <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit1(5)} style={{ fontFamily: "'Inter', sans-serif" }}>
                             View all <span>→</span>
                           </button>
                         ):(
-                          <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit(2)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                          <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit1(2)} style={{ fontFamily: "'Inter', sans-serif" }}>
                             View less <span>→</span>
                           </button>
                         )}
                       </div>
 
                       <div className="space-y-6">
-                        {recentActivity?.slice(0, sliceLimit).map((activity, index) => (
+                        {recentActivity?.slice(0, sliceLimit1).map((activity, index) => (
                           <div key={activity.campaign_id} className="relative flex gap-6 group/item">
                             
                             {/* Timeline Connector Line */}
@@ -553,30 +554,28 @@ export default function IndividualProfile() {
                   </div>
                 </div>
 
-                    {/* { id: 3, action: "Reached 400 total volunteers", date: "1 week ago", icon: "👥" } */}
-
                 {/* right side cards */}
                 <div>
-                  {/* Current Rank Card */}
-                  <div className="relative group">
+                  <div className="relative group"> 
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-200/60 to-teal-200/60 rounded-2xl blur-xl" />
                     <div className="relative bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl p-8 shadow-lg">
                       <h2 className="text-lg font-semibold text-white mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
                         Current Rank
                       </h2>
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="text-6xl drop-shadow-lg">{orgData.currentRank.icon}</div>
+                        {console.log(rank)}
+                        <div className="text-6xl drop-shadow-lg">{rank.icon}</div>
                         <div>
                           <h3 className="text-2xl font-bold text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
-                            {orgData.currentRank.name}
+                            {rank.name}
                           </h3>
                           <p className="text-emerald-100 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
-                            Next: {orgData.currentRank.nextRank}
+                            Next: {rank.nextRank}
                           </p>
                         </div>
                       </div>
                       <p className="text-sm text-emerald-50" style={{ fontFamily: "'Inter', sans-serif" }}>
-                        Rank is based on your cumulative Impact Score.
+                        {rank.description}
                       </p>
                     </div>
                   </div>

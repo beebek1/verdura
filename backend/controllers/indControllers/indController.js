@@ -75,7 +75,6 @@ const updateIndividualDetails = async (req, res) => {
         // 2. Combine address parts into a single string for the database
         const fullAddress = `${country || ''} ${state || ''} ${city || ''} ${street || ''}`.trim();
 
-        console.log(fullAddress, user, indName,email,bio, "thi is the end")
         await Register.update(
             { 
                 username: indName, 
@@ -86,7 +85,7 @@ const updateIndividualDetails = async (req, res) => {
 
         // upsert ensures it creates the record if by some chance it doesn't exist
         await IndInfo.upsert({
-                user_id: id,
+                user_id : id,
                 description: bio,
                 address: fullAddress
             });
