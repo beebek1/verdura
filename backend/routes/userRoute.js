@@ -5,8 +5,9 @@ const roleMiddleware = require("../helpers/roleMiddleware");
 const {blogPost, getAllBlog, upvoteBlog} = require("../controllers/orgControllers/blogController");
 const {campaignPost, getAllCampaigns, joinCampaign} = require("../controllers/orgControllers/campaignController");
 const getOrganizationDetails = require("../controllers/orgControllers/orgController");
-const {getIndividualDetails, updateIndividualDetails, getRecentActivity} = require("../controllers/indControllers/indController");
+const {getIndividualDetails, updateIndividualDetails, getRecentActivity, updatePfp} = require("../controllers/indControllers/indController");
 
+const uploadImage = require('../helpers/multer');
 //org request
 router.get('/get-org', authMiddleware, roleMiddleware("organization"), getOrganizationDetails);
 
@@ -23,6 +24,7 @@ router.get('/get-all-campaigns', getAllCampaigns);
 
 //for individual
 router.get('/get-ind', authMiddleware, roleMiddleware("individual"), getIndividualDetails);
+router.put('/update-ind-pfp', authMiddleware, roleMiddleware("individual"), uploadImage, updatePfp);
 router.put('/update-ind-profile', authMiddleware, roleMiddleware("individual"), updateIndividualDetails);
 router.get('/get-recent-activity', authMiddleware, roleMiddleware("individual"), getRecentActivity);
 

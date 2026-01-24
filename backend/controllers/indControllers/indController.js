@@ -62,6 +62,35 @@ const getIndividualDetails = async (req, res) => {
     }
 }
 
+const updatePfp = async(req, res) =>{
+    try{
+        const { id } = req.user
+
+        const thumbnail = req.files?.thumbnail
+        ? `uploads/${req.files.thumbnail[0].filename}`
+        : null;
+
+        const images = req.files?.images
+        ? req.files.images.map(file => `uploads/${file.filename}`)
+        : [];
+
+        if(!thumbnail) return res.status(400).json("FilePath is empty");
+
+        await IndInfo.upsert({
+            user_id : id,
+            logo_path : thumbnail
+
+        })
+
+        return res.status(201).json("image uploaded successfully")
+    }catch(err){
+        return res.status(500).json({ 
+            message : "server side errorrrrr",
+            error : err.message
+        });
+    }
+}
+
 const updateIndividualDetails = async (req, res) => {
     try {
         const { id } = req.user; 
@@ -134,4 +163,4 @@ const getRecentActivity =async(req, res) => {
     })
 }
 
-module.exports = { getIndividualDetails, updateIndividualDetails, getRecentActivity};
+module.exports = { getIndividualDetails, updateIndividualDetails, getRecentActivity, updatePfp};
