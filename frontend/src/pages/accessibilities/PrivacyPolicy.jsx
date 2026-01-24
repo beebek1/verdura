@@ -189,16 +189,7 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        {/* Section 8: International Data Transfers */}
-        <Section
-          title="8. International Data Transfers"
-          expanded={expandedSection === 8}
-          onToggle={() => toggleSection(8)}
-        >
-          <p className="text-gray-700">
-            Your information may be transferred to and processed in countries other than your country of residence. These countries may have different data protection laws. By using our platform, you consent to the transfer of your information to our facilities and to third parties with whom we share it as described in this policy. We take appropriate measures to ensure your data receives adequate protection in accordance with applicable laws.
-          </p>
-        </Section>
+       
 
         {/* Section 9: Changes to This Policy */}
         <Section
