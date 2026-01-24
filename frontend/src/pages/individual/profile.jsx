@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useRef, useState } from "react";
 import { User, Mail, MapPin, Calendar,Clock, Award,  CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3, Zap } from 'lucide-react';
 import { useEffect } from 'react';
-import { getIndById, getIndRecentActivity, updateIndProfile } from '../../services/api';
+import { getIndById, getIndRecentActivity, updateIndPfp, updateIndProfile } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 
 // Mock individual data - would come from backend
@@ -33,13 +33,36 @@ const RANKS = [
 const ProfileHeader = ({ profile, isEditing}) => {
   const [localProfile, setLocalProfile] = useState(profile);
   const [imageHover, setImageHover] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleChange = (field, value) => {
     setLocalProfile(prev => ({ ...prev, [field]: value }));
   };
 
   const handleClick = () => {
-    console.log("this is shit")
+    fileInputRef.current?.click();
+  };
+
+  const handleImageChange = async(e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setPreviewImage(previewUrl);
+
+    const formData = new FormData();
+    formData.append("thumbnail", file);
+
+
+    try{
+      await updateIndPfp(formData)
+    }catch(err){
+      console.log("error : ", err)
+    }
+        // // console.log("this is image 1",previewUrl)
+    // // console.log("this is image 2",file)
+    // await updateIndPfp(file)
   };
 
   return (
@@ -47,31 +70,51 @@ const ProfileHeader = ({ profile, isEditing}) => {
       <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
       <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
         <div className="flex flex-col md:flex-row gap-8 items-start">
-          {/* Avatar */}
+
+          {/* avatar */}
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            hidden
+            onChange={handleImageChange}
+          />
           <div className="relative group/avatar">
-            <div 
+            <div
               className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-5xl font-bold text-white shadow-lg shadow-emerald-500/30 cursor-pointer"
               onMouseEnter={() => setImageHover(true)}
               onMouseLeave={() => setImageHover(false)}
               onClick={handleClick}
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-{              console.log(profile)
-}              {profile?.IndividualInfo?.logo_path ? (
-                <img src={profile?.IndividualInfo?.logo_path} alt="image" className="w-full h-full object-cover rounded-2xl" />
+              {previewImage ? (
+                <img
+                  src={previewImage}
+                  alt="profile preview"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              ) : profile?.IndividualInfo?.logo_path ? (
+                <img
+                  src={`${import.meta.env.VITE_API_BASE_URL}/${profile.IndividualInfo.logo_path}`}
+                  alt="profile"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
               ) : (
                 profile?.username?.substring(0, 2).toUpperCase()
               )}
+
               {imageHover && (
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300">
                   <Camera className="w-6 h-6 text-white" />
-                  <span className="text-xs text-white font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  <span className="text-xs text-white font-medium">
                     Change profile
                   </span>
                 </div>
               )}
             </div>
           </div>
+
 
           {/* Profile Info */}
           <div className="flex-1">
@@ -111,7 +154,6 @@ const ProfileHeader = ({ profile, isEditing}) => {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-emerald-600" />
-                    {console.log("this is inside profile ",profile)}
                     {profile?.IndividualInfo?.address.split(" ", 2).join(" ") || "no address found"}
                   </span>
                   <span className="flex items-center gap-1.5">

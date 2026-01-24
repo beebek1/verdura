@@ -43,9 +43,20 @@ export const getAllCampaigns =async() => {
     const res = await Api.get("/api/user/get-all-campaigns",config) 
     return res.data.campaigns
     };
-///
+
 export const createBlog = async (data) => {
     const res = await Api.post("/api/user/create-blog", data,config); 
+    return res.data;
+};
+
+
+export const updateIndProfile = async (data) => {
+    const res = await Api.put("/api/user/update-ind-profile", data,config); 
+    return res.data;
+};
+
+export const updateIndPfp = async (data) => {
+    const res = await ApiFormData.put("/api/user/update-ind-pfp", data,config); 
     return res.data;
 };
 
