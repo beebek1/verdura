@@ -2,84 +2,9 @@ import React, { useRef,useState } from 'react';
 import { User, Mail, MapPin, Calendar, CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
 import { useEffect } from 'react';
 import { getOrgById, getOrgRecentActivity, updateOrgPfp, updateOrgProfile } from '../../services/api';
-import tempImage from '../../assets/pollution.png';
 import authRole from '../protect/authRole';
 import Profile from '../individual/profile';
 import { useNavigate } from 'react-router-dom';
-
-// Mock organization data - would come from backend
-const orgData = {
-  profile: {
-    name: "Youth Climate Organization",
-    email: "contact@ycorg.com",
-    bio: "A community-driven environmental group focused on reforestation and waste reduction projects.",
-    avatar: null,
-    foundedDate: "January 2024",
-    location: {
-      country: "Nepal",
-      state: "Bagmati Province",
-      city: "Pātan",
-      street: ""
-    },
-    orgType: "Verified"
-  },
-  stats: {
-    campaignsCreated: 12,
-    activeCampaigns: 8,
-    totalVolunteers: 450,
-    blogsPublished: 28,
-    totalImpact: 8500,
-    hoursGenerated: 2400
-  },
-  recentBlogs: [
-    { 
-      id: 1, 
-      title: "How Tree Plantation Improves Air Quality", 
-      views: 1520, 
-      likes: 152,
-      comments: 24,
-      date: "Jan 18, 2025"
-    },
-    { 
-      id: 2, 
-      title: "Volunteer Stories from the Field", 
-      views: 980, 
-      likes: 98,
-      comments: 15,
-      date: "Jan 15, 2025"
-    },
-    { 
-      id: 3, 
-      title: "The Impact of Community Action", 
-      views: 756, 
-      likes: 76,
-      comments: 12,
-      date: "Jan 12, 2025"
-    }
-  ],
-  achievements: [
-    { id: 1, name: "First Campaign", icon: "🎯", earned: true, date: "Jan 2024" },
-    { id: 2, name: "Tree Champion", icon: "🌳", earned: true, date: "Mar 2024" },
-    { id: 3, name: "Community Leader", icon: "👥", earned: true, date: "Jun 2024" },
-    { id: 4, name: "1000 Volunteers", icon: "⭐", earned: false, date: null }
-  ],
-  articles: [
-    { title: "How Tree Plantation Improves Air Quality", upvotes: 152 },
-    { title: "Volunteer Stories from the Field", upvotes: 98 }
-  ],
-  recentActivity: [
-    { id: 1, action: "Published new blog: 'Tree Plantation Guide'", date: "2 days ago", icon: "📝" },
-    { id: 2, action: "Launched Ocean Restoration Project", date: "5 days ago", icon: "🌊" },
-    { id: 3, action: "Reached 400 total volunteers", date: "1 week ago", icon: "👥" }
-  ],
-  preferences: {
-    emailNotifications: true,
-    volunteerUpdates: true,
-    weeklyReport: true,
-    marketingEmails: false,
-    profileVisibility: "public"
-  }
-};
 
 const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
   const [localProfile, setLocalProfile] = useState(profile);
@@ -246,100 +171,62 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
 };
 
 //document update
+const DocumentUploader = ({ firstDoc, secondDoc, onUpdate }) => {
+  
+  const onFileSelect = async (e, index) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-const DocumentUploader = ({ legalDocString, onUpdate }) => {
-  // 1. Split the string into an array. If empty, start with 2 empty slots.
-  const docArray = legalDocString && legalDocString.trim() !== "" 
-    ? legalDocString.split(/\s+/) 
-    : ["", ""];
+    // 1. Create Preview & Update UI immediately
+    const localPreview = URL.createObjectURL(file);
+    onUpdate(index, localPreview);
 
-  // Ensure we always handle 2 boxes
-  while (docArray.length < 2) docArray.push("");
-
-  const handleAction = (index, newValue) => {
-    const updatedArray = [...docArray];
-    updatedArray[index] = newValue;
+    // 2. Map index to the field name your Multer backend expects
+    const fieldName = index === 0 ? "registration_doc" : "pan_doc";
     
-    // 2. Send the updated string (containing the local blob URL) back to parent
-    // This is what triggers the "Preview" to show up instantly.
-    onUpdate(updatedArray.join(' ').trim());
-  };
+    const formData = new FormData();
+    formData.append(fieldName, file);
 
-  const onFileSelect = async(e, index) => {
-    const file = e.target.files[0];
-    const file2 = e.target.files[1];
-    if (file) {
-      // THIS IS THE KEY: It generates a local temporary path for the image preview
-      const localPreviewUrl = URL.createObjectURL(file);
-      handleAction(index, localPreviewUrl);
-
-      const formData = new FormData();
-      formData.append("images", file);
-      formData.append("images", file2);
-
-      try{
-        await updateOrgPfp(formData)
-      }catch(err){
-        console.log("error : ", err)
-      }
-      
+    try {
+      await updateOrgPfp(formData);
+    } catch (err) {
+      console.error("Upload failed:", err);
+      // Optional: alert("Failed to upload document");
     }
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {[0, 1].map((index) => {
-        const fileValue = docArray[index];
-        const hasFile = fileValue && fileValue.trim() !== "";
+        const value = index === 0 ? firstDoc : secondDoc;
+        const label = index === 0 ? "Registration Document" : "PAN / Tax Document";
+        const hasFile = value && value.trim() !== "";
 
         return (
           <div key={index} className="flex flex-col">
-            <label className="block text-gray-700 font-medium mb-2">
-              {index === 0 ? "Registration Document" : "PAN / Tax Document"}
-            </label>
-            
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center h-64 bg-gray-50 overflow-hidden">
+            <label className="block text-gray-700 font-medium mb-2">{label}</label>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center h-64 bg-gray-50 overflow-hidden relative">
               {hasFile ? (
-                /* --- PREVIEW MODE (Logic from your Cover Image reference) --- */
                 <div className="relative w-full h-full">
                   <img 
-                    src={fileValue} 
-                    alt="Document preview" 
-                    className="w-full h-full object-cover rounded-lg"
+                    src={value.startsWith('blob') ? value : `http://localhost:3000/${value}`} 
+                    className="w-full h-full object-cover rounded-lg" 
+                    alt="preview" 
                   />
                   <button
                     type="button"
-                    onClick={() => handleAction(index, "")}
-                    className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition-colors shadow-md"
+                    onClick={() => onUpdate(index, "")}
+                    className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-lg text-sm"
                   >
                     Remove
                   </button>
                 </div>
               ) : (
-                /* --- UPLOAD MODE (Logic from your Cover Image reference) --- */
                 <div className="text-center">
-                  <svg 
-                    className="w-16 h-16 mx-auto mb-4 text-gray-400" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
-                    />
-                  </svg>
-                  <p className="text-gray-500 mb-2">Drop document here or</p>
-                  <label className="text-teal-600 hover:text-teal-700 cursor-pointer font-medium">
+                  <p className="text-gray-500 mb-2">Upload {label}</p>
+                  <label className="text-teal-600 cursor-pointer font-medium">
                     Browse
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => onFileSelect(e, index)}
-                      className="hidden"
-                    />
+                    <input type="file" accept="image/*" hidden onChange={(e) => onFileSelect(e, index)} />
                   </label>
                 </div>
               )}
@@ -457,7 +344,7 @@ export default function OrganizationProfile() {
   
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
-  const [preferences, setPreferences] = useState(orgData.preferences);
+  // const [preferences, setPreferences] = useState(orgData.preferences);
   const [orgDetail, setOrgDetail] =useState(null);
   const [loading, setLoading] = useState(true)
   const [legalDoc, setLegalDoc] = useState(null);
@@ -861,13 +748,15 @@ export default function OrganizationProfile() {
                           </label>
 
                           <DocumentUploader 
-                            legalDocString={orgDetail.OrgInfo.legal_documents}
-                            onUpdate={(newDocString) =>{
+                            firstDoc={orgDetail.OrgInfo.first_legal_document}
+                            secondDoc={orgDetail.OrgInfo.second_legal_document}
+                            onUpdate={(index, newValue) =>{
+                              const fieldName = index === 0 ? "first_legal_document" : "second_legal_document";
                               setOrgDetail(prev => ({
                                 ...prev,
                                 OrgInfo : {
                                   ...prev.OrgInfo,
-                                  legal_documents : newDocString
+                                  [fieldName]: newValue
                                 }
                               }));
                             }}
