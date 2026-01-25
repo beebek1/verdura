@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getAllBlogs, deleteBlog} from '../../services/api';
-import toast, { Toaster } from 'react-hot-toast'
+import { Link, useNavigate } from 'react-router-dom';
+import { getAllBlogs, deleteBlog,updateBlog} from '../../services/api';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function BlogList() {
   const[blogs, setBlogs] = useState([]);
@@ -56,11 +56,6 @@ export default function BlogList() {
   const handleCreateBlog = () => {
     navigate('/create-Blog');
     console.log("im here")
-  };
-
-  const handleEdit = (blogId) => {
-    console.log('Editing blog:', blogId);
-    // navigate to edit page
   };
 
   const handleDelete = async (blogId) => {
@@ -254,15 +249,22 @@ export default function BlogList() {
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => handleEdit(blog.id)}
+                      <Link to={`/create-blog/${blog.id}`}
                         className="px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium flex items-center gap-2 shadow-sm"
+                        state={{
+                          id: blog.id,
+                          title : blog.title,
+                          status : blog.status,
+                          tags : blog.tags,
+                          content : blog.content,
+                          coverImage : blog.image
+                        }}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                         Edit
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleDelete(blog.id)}
                         className="px-5 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium flex items-center gap-2 border border-red-200"

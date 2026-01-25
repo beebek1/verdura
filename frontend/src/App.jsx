@@ -33,6 +33,7 @@ function AppWrapper(){
             {/* <Route path='/profile' element={<Profile/>}/> */}
             <Route path='/blogs' element={<Blog/>}/>
             <Route path='/blogs/:blogId' element={<BlogDetails/>}/>
+            <Route path='/create-blog/:blogId' element={<CreateBlog/>}/>
             <Route path='/reset-password' element={<ForgetPassword/>}/>
             <Route path='/signin' element={<Login/>}/>
             <Route path='/signup' element={<SignUpInd/>}/>

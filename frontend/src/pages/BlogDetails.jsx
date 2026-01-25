@@ -137,7 +137,7 @@ const BlogDetail = () => {
             <div className="flex items-center gap-2 flex-wrap mt-8 pt-8 border-t border-gray-200">
               <Tag size={16} className="text-gray-400" />
               <span className="text-sm text-gray-500">Tags:</span>
-              {tags.map((tag, index) => (
+              {tags?.map((tag, index) => (
                 <span key={index} className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">
                   {tag}
                 </span>
