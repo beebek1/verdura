@@ -23,6 +23,8 @@ import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';
 
 import TermsOfService from './pages/accessibilities/TermsOfService.jsx';
 
+import CookiePolicy from './pages/accessibilities/CookiePolicy.jsx';
+
 
 function AppWrapper(){
 
@@ -47,6 +49,7 @@ function AppWrapper(){
             <Route path='/temp' element={<IndProfile/>}/>
             <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
             <Route path='/terms' element={<TermsOfService/>}/>
+            <Route path='/cookies' element={<CookiePolicy/>}/>
 
         </Routes>
       {!hideComponents && <Footer/>}
