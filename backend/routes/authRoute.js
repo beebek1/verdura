@@ -19,6 +19,6 @@ router.post('/reset-password', resetPassword);
 router.get('/verify-email', verifyEmail);
 
 //delete request
-router.delete('/delete', authMiddleware, deleteUser);
+router.delete('/delete-user', authMiddleware, deleteUser);
 
 module.exports = router;
