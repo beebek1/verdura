@@ -169,4 +169,53 @@ const deleteBlog = async (req, res) => {
 };
 
 
-module.exports = {blogPost, getAllBlog, upvoteBlog, deleteBlog};
+const getBlogById = async (req, res) => {
+    try {
+        const { blog_id } = req.params;
+        
+        const blog = await CreateBlog.findOne({
+            where: { blog_id },
+            attributes: ["blog_id", "title", "category", "content", "cover_image", "status", "upvotes", "badge", "createdAt"],
+            include: {
+                model: OrgInfo,
+                attributes: ["logo_path", "org_id"],
+                include: {
+                    model: Register,
+                    attributes: ["username"]
+                }
+            }
+        });
+
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: "Blog not found"
+            });
+        }
+
+        // Check if the blog belongs to this user's organization
+        const org = await OrgInfo.findOne({ where: { user_id: req.user.id } });
+        
+        if (!org || blog.OrgInfo.org_id !== org.org_id) {
+            return res.status(403).json({
+                success: false,
+                message: "You don't have permission to edit this blog"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            blog
+        });
+    } catch (error) {
+        console.error("Error fetching blog:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch blog",
+            error: error.message
+        });
+    }
+};
+
+// Update exports
+module.exports = { blogPost, getAllBlog, upvoteBlog, deleteBlog, getBlogById };
