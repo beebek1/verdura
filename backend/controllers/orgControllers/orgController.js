@@ -58,41 +58,42 @@ const getOrganizationDetails = async(req, res) =>{
     }
 }
 
-const updateOrgPfp = async(req, res) =>{
-    try{
-        const { id } = req.user
+const updateOrgPfp = async (req, res) => {
+    try {
+        const { id } = req.user;
+        const updateData = { user_id: id };
 
-        const thumbnail = req.files?.thumbnail
-        ? `uploads/${req.files.thumbnail[0].filename}`
-        : null;
-
-        const images = req.files?.images
-        ? req.files.images.map(file => `uploads/${file.filename}`)
-        : [];
-
-        if(thumbnail){
-            await OrgInfo.upsert({
-                user_id : id,
-                logo_path : thumbnail
-            })
+        // 1. Handle Logo
+        if (req.files?.thumbnail) {
+            updateData.logo_path = `uploads/${req.files.thumbnail[0].filename}`;
         }
-        else if(images){
-            await OrgInfo.upsert({
-                user_id : id,
-                legal_documents : thumbnail
-            })
-        }else{
-            return res.status(400).json("FilePath is empty");
-        }
-        return res.status(201).json("image uploaded successfully")
 
-    }catch(err){
-        return res.status(500).json({ 
-            message : "server side errorrrrr",
-            error : err.message
+        // 2. Handle Registration Document
+        if (req.files?.registration_doc) {
+            updateData.first_legal_document = `uploads/${req.files.registration_doc[0].filename}`;
+        }
+
+        // 3. Handle PAN Document
+        if (req.files?.pan_doc) {
+            updateData.second_legal_document = `uploads/${req.files.pan_doc[0].filename}`;
+        }
+
+        // Check if updateData has more than just the user_id
+        if (Object.keys(updateData).length <= 1) {
+            return res.status(400).json("No files provided for upload");
+        }
+
+        await OrgInfo.upsert(updateData);
+
+        return res.status(201).json({
+            message: "Upload successful",
+            updatedFields: Object.keys(updateData).filter(k => k !== 'user_id')
         });
+
+    } catch (err) {
+        return res.status(500).json({ message: "Server side error", error: err.message });
     }
-}
+};
 
 const getOrgRecentActivity = async (req, res) => {
     const { id } = req.user;

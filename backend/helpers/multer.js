@@ -26,7 +26,8 @@ const uploadImage = (req, res, next) =>{
         limits : { fileSize : 5 * 1024 * 1024}
     }).fields([
         { name: "thumbnail", maxCount: 1 },   // single image
-        { name: "images", maxCount: 10 },      // multiple images
+        { name: "registration_doc", maxCount: 1 },
+        { name: "pan_doc", maxCount: 1 },     // multiple images
     ]);
 
     upload(req, res, (err) =>{

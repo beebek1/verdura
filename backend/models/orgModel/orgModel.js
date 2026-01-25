@@ -40,7 +40,11 @@ const OrgInfo = sequelize.define(
             allowNull:true
         },
 
-        legal_documents: {
+        first_legal_document: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        second_legal_document: {
             type: DataTypes.STRING,
             allowNull: true
         },
