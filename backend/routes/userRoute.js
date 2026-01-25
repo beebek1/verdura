@@ -15,7 +15,7 @@ router.get('/get-org-recent-activity', authMiddleware, roleMiddleware("organizat
 router.put('/update-org-profile', authMiddleware, roleMiddleware("organization"), updateOrganizationDetails);
 
 //for getting blogs
-router.get('/get-all-blogs',authMiddleware,roleMiddleware("individual"), getAllBlog);
+router.get('/get-all-blogs',authMiddleware, getAllBlog);
 router.patch('/upvote/:blog_id',authMiddleware, roleMiddleware("individual"),upvoteBlog);
 router.post('/create-blog',authMiddleware,roleMiddleware("organization"), blogPost);
 

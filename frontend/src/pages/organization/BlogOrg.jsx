@@ -9,6 +9,11 @@ export default function BlogList() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [stats, setStats] = useState({
+  totalBlogs: 0,
+  totalViews: 0,
+  totalUpvotes: 0
+});
 
   const navigate = useNavigate();
 
@@ -29,6 +34,12 @@ export default function BlogList() {
         tags: blog.category ? [blog.category] : ["General"], // always an array
       }));
         setBlogs(mappedBlogs);
+        const totalBlogs = mappedBlogs.length;
+        const totalUpvotes = mappedBlogs.reduce((sum, b) => sum + b.upvotes, 0);
+        setStats({
+          totalBlogs,
+          totalUpvotes
+        });
       }catch(err){
         toast.error(response?.data?.error || "Failed to fetch blogs");
         setError("Failed to load blogs");
@@ -67,15 +78,15 @@ export default function BlogList() {
           {/* Stats */}
           <div className="flex gap-24">
             <div className="text-white">
-              <div className="text-4xl font-bold mb-1">25</div>
+              <div className="text-4xl font-bold mb-1">{stats.totalBlogs}</div>
               <div className="text-sm">Total Blogs</div>
             </div>
             <div className="text-white">
-              <div className="text-4xl font-bold mb-1">4500+</div>
+              <div className="text-4xl font-bold mb-1">{stats.totalViews}+</div>
               <div className="text-sm">Total Views</div>
             </div>
             <div className="text-white">
-              <div className="text-4xl font-bold mb-1">1200+</div>
+              <div className="text-4xl font-bold mb-1">{stats.totalUpvotes}+</div>
               <div className="text-sm">Total Upvotes</div>
             </div>
           </div>

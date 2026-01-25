@@ -73,6 +73,7 @@ const getAllBlog = async(req, res) =>{
 }
 
 
+
 const upvoteBlog = async (req, res) => {
     try {
         const { blog_id } = req.params;
