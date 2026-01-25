@@ -60,9 +60,6 @@ const ProfileHeader = ({ profile, isEditing}) => {
     }catch(err){
       console.log("error : ", err)
     }
-        // // console.log("this is image 1",previewUrl)
-    // // console.log("this is image 2",file)
-    // await updateIndPfp(file)
   };
 
   return (
@@ -400,10 +397,10 @@ export default function IndividualProfile() {
   if(loading) return <div><p>loading wait a min</p></div>
   if(!indDetail) return <div><p>didn't get any data for this individual</p></div>
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async() => {
     if(!validator()) return
 
-    const res = updateIndProfile(formData);
+    await updateIndProfile(formData);
   };
 
   const validator = () =>{

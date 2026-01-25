@@ -134,7 +134,7 @@ const updateIndividualDetails = async (req, res) => {
     }
 };
 
-const getRecentActivity =async(req, res) => {
+const getIndRecentActivity =async(req, res) => {
 
     const { id } = req.user
     if(!id){
@@ -163,4 +163,4 @@ const getRecentActivity =async(req, res) => {
     })
 }
 
-module.exports = { getIndividualDetails, updateIndividualDetails, getRecentActivity, updatePfp};
+module.exports = { getIndividualDetails, updateIndividualDetails, getIndRecentActivity, updatePfp};

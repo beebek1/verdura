@@ -13,22 +13,19 @@ const OrgInfo = sequelize.define(
 
         user_id: {
             type: DataTypes.INTEGER,
-            references : {
-                model: Register,
-                key: "user_id"
-            },
             onDelete: "CASCADE",
-            allowNull: false
+            allowNull: false,
+            unique : true
         },
 
         description: {
             type: DataTypes.STRING,
-            allowNull:false
+            allowNull:true
         },
 
         PAN_no: {
             type: DataTypes.STRING,
-            allowNull:false
+            allowNull:true
         },
         
         verification_status: {
@@ -40,7 +37,7 @@ const OrgInfo = sequelize.define(
 
         logo_path: {
             type: DataTypes.STRING,
-            allowNull:false
+            allowNull:true
         },
 
         legal_documents: {
@@ -50,13 +47,13 @@ const OrgInfo = sequelize.define(
 
         address: {
             type: DataTypes.STRING,
-            allowNull:false
+            allowNull:true
         },
 
         total_blogs: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
-            allowNull:false
+            allowNull:true
         },
         
         total_upvotes: {

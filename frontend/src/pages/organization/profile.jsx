@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef,useState } from 'react';
 import { User, Mail, MapPin, Calendar, CalendarCheck,CalendarX, TrendingUp, Settings, ShieldX, ShieldCheck, Camera, Link, AlignEndVertical, X, Leaf, Target, ArrowBigUp, Users, Briefcase, FileText, Upload, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
 import { useEffect } from 'react';
-import { getOrgById } from '../../services/api';
+import { getOrgById, getOrgRecentActivity, updateOrgPfp, updateOrgProfile } from '../../services/api';
 import tempImage from '../../assets/pollution.png';
 import authRole from '../protect/authRole';
 import Profile from '../individual/profile';
+import { useNavigate } from 'react-router-dom';
 
 // Mock organization data - would come from backend
 const orgData = {
@@ -83,15 +84,32 @@ const orgData = {
 const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
   const [localProfile, setLocalProfile] = useState(profile);
   const [imageHover, setImageHover] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleChange = (field, value) => {
     setLocalProfile(prev => ({ ...prev, [field]: value }));
   };
 
-  // console.log("consolel fuck",profile)
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
 
-  const handleSave = () => {
-    onSave(localProfile);
+  const handleImageChange = async(e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setPreviewImage(previewUrl);
+
+    const formData = new FormData();
+    formData.append("thumbnail", file);
+
+    try{
+      await updateOrgPfp(formData)
+    }catch(err){
+      console.log("error : ", err)
+    }
   };
 
   return (
@@ -99,25 +117,44 @@ const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
       <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
       <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
         <div className="flex flex-col md:flex-row gap-8 items-start">
-          {/* Avatar */}
+          {/* avatar */}
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            hidden
+            onChange={handleImageChange}
+          />
           <div className="relative group/avatar">
-            <div 
+            <div
               className="relative w-32 h-32 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-5xl font-bold text-white shadow-lg shadow-emerald-500/30 cursor-pointer"
               onMouseEnter={() => setImageHover(true)}
               onMouseLeave={() => setImageHover(false)}
+              onClick={handleClick}
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-{              console.log(profile)
-}              {profile.OrgInfo.logo_path ? (
-                <img src={profile.OrgInfo.logo_path} alt="image" className="w-full h-full object-cover rounded-2xl" />
+              {previewImage ? (
+                <img
+                  src={previewImage}
+                  alt="profile preview"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              ) : profile?.OrgInfo?.logo_path ? (
+                <img
+                  src={`${import.meta.env.VITE_API_BASE_URL}/${profile.OrgInfo.logo_path}`}
+                  alt="profile"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
               ) : (
-                profile.username.substring(0, 2).toUpperCase()
+                profile?.username?.substring(0, 2).toUpperCase()
               )}
+
               {imageHover && (
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center gap-2 transition-all duration-300">
                   <Camera className="w-6 h-6 text-white" />
-                  <span className="text-xs text-white font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Change Logo
+                  <span className="text-xs text-white font-medium">
+                    Change profile
                   </span>
                 </div>
               )}
@@ -228,12 +265,24 @@ const DocumentUploader = ({ legalDocString, onUpdate }) => {
     onUpdate(updatedArray.join(' ').trim());
   };
 
-  const onFileSelect = (e, index) => {
+  const onFileSelect = async(e, index) => {
     const file = e.target.files[0];
+    const file2 = e.target.files[1];
     if (file) {
       // THIS IS THE KEY: It generates a local temporary path for the image preview
       const localPreviewUrl = URL.createObjectURL(file);
       handleAction(index, localPreviewUrl);
+
+      const formData = new FormData();
+      formData.append("images", file);
+      formData.append("images", file2);
+
+      try{
+        await updateOrgPfp(formData)
+      }catch(err){
+        console.log("error : ", err)
+      }
+      
     }
   };
 
@@ -325,7 +374,7 @@ const StatsCard = ({ icon: Icon, label, value, sublabel, color = "from-emerald-5
 );
 
 
-const CampaignCard = ({ campaign }) => (
+const CampaignCard = ({ campaign, seeMoreHandler }) => (
   <div className="relative group">
     <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     <div className="relative bg-white rounded-xl p-6 border border-gray-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300">
@@ -361,8 +410,8 @@ const CampaignCard = ({ campaign }) => (
         </div>
       </div>
       <div className="flex gap-2 mt-4">
-        <button className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-          Edit
+        <button className="flex-1 cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold transition-all duration-300" onClick={seeMoreHandler} style={{ fontFamily: "'Inter', sans-serif" }}>
+          See More
         </button>
       </div>
     </div>
@@ -389,7 +438,6 @@ const calculateImpactScore = (data) => {
   
   let score = limit * (rawPoints / (rawPoints + k));
 
-  console.log("score", score)
   // 3. Verification Bonus (e.g., +10% boost for verified orgs)
   if (verification_status) {
     score = score + (limit - score) * 0.1; 
@@ -400,7 +448,7 @@ const calculateImpactScore = (data) => {
 
 
 export default function OrganizationProfile() {
-
+  const navigate = useNavigate();
   const role = authRole();
 
   if( role === "individual"){
@@ -410,10 +458,21 @@ export default function OrganizationProfile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
   const [preferences, setPreferences] = useState(orgData.preferences);
-  const [formData, setFormData] = useState(orgData.profile);
   const [orgDetail, setOrgDetail] =useState(null);
   const [loading, setLoading] = useState(true)
   const [legalDoc, setLegalDoc] = useState(null);
+  const [sliceLimit1, setSliceLimit1] = useState(2);
+  const [sliceLimit2, setSliceLimit2] = useState(2);
+  const [recentActivity, setRecentActivity] = useState(false);
+  const [formData, setFormData] = useState({
+    bio : "",
+    email : "",
+    orgName : "",
+    country : "",
+    state : "",
+    city : "", 
+    street : ""
+  });
 
 
   useEffect(()=>{
@@ -421,9 +480,10 @@ export default function OrganizationProfile() {
 
       try{
         const res = await getOrgById();
+        const res2 = await getOrgRecentActivity();
 
         setOrgDetail(res.data.organization)
-
+        setRecentActivity(res2.data.recentActivities)
       }catch(err){
         console.log("failed to fetch organization detail", err)
       }finally{
@@ -434,45 +494,44 @@ export default function OrganizationProfile() {
     
   }, []);
 
+  useEffect(() => {
+    if (orgDetail) {
+      const parts = orgDetail.OrgInfo?.address?.split(" ") || [];
+      setFormData({
+        bio: orgDetail.OrgInfo?.description || "",
+        email: orgDetail.email || "",
+        orgName: orgDetail.username || "",
+        country: parts[0] || "",
+        state: parts[1] || "",
+        city: parts[2] || "",
+        street: parts[3] || ""
+      });
+    }
+  },[orgDetail])
+
   if(loading) return <div><p>loading wait a min</p></div>
   if(!orgDetail) return <div><p>backend isn't loading data</p></div>
-
-  const handleSaveProfile = (updatedProfile) => {
-    console.log('Saving profile:', updatedProfile);
-    setIsEditing(false);
-  };
-
-    //for splitting address
-  const parts = orgDetail.OrgInfo.address.split(" ");
-  const country = parts[0]
-  const state = parts[1]
-  const city = parts[2]
-  const street = parts[3]
-
-  // const docPaths = orgDetail.OrgInfo.legal_documents ? formData.legalDocs.split(' ') : [];
-
-  console.log(country, state, city, street)
 
   const togglePreference = (key) => {
     setPreferences(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target
+
+    setFormData(prev =>({
+      ...prev,
+      [name] : value
+    }))
   };
 
-  const handleLocationChange = (field, value) => {
-    setFormData({
-      ...formData,
-      location: {
-        ...formData.location,
-        [field]: value
-      }
-    });
+  const handleSaveProfile = async() => {
+    await updateOrgProfile(formData)
   };
+
+  const seeMoreHandler = () => {
+    navigate('/campaigns')
+  }
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
@@ -572,38 +631,92 @@ export default function OrganizationProfile() {
                         <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: "'Inter', sans-serif" }}>
                           Active Campaigns
                         </h2>
-                        <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-                          View All <span>→</span>
-                        </button>
+                        {sliceLimit2 === 2 ? (
+                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit2(5)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                              View all <span>→</span>
+                            </button>
+                          ):(
+                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit2(2)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                              View less <span>→</span>
+                            </button>
+                        )}
                       </div>
                       <div className="space-y-4">
-                        {orgDetail.OrgInfo.Campaigns.slice(0, 2).map(campaign => (
-                          <CampaignCard key={campaign.campaign_id} campaign={campaign} />
+                        {orgDetail.OrgInfo.Campaigns.slice(0, sliceLimit2).map(campaign => (
+                          <CampaignCard key={campaign.campaign_id} campaign={campaign} seeMoreHandler={seeMoreHandler} />
                         ))}
                       </div>
                     </div>
 
                     {/* Recent Activity */}
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
-                      <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-                        <h2 className="text-xl font-bold text-gray-800 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
-                          Recent Activity
-                        </h2>
-                        <div className="space-y-4">
-                          {orgData.recentActivity.map(activity => (
-                            <div key={activity.id} className="flex items-start gap-4 pb-4 border-b border-gray-200 last:border-0 group/item hover:bg-gray-50 -mx-4 px-4 py-2 rounded-lg transition-colors duration-300">
-                              <div className="text-2xl">{activity.icon}</div>
-                              <div className="flex-1">
-                                <p className="font-semibold text-gray-800 mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                  {activity.action}
-                                </p>
-                                <p className="text-sm text-gray-600" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                  {activity.date}
-                                </p>
+                    <div className="relative group py-5">
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/40 to-teal-100/40 rounded-3xl blur-2xl" />
+                      <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-100">
+                        <div className="flex items-center justify-between mb-8">
+                          <h2 className="text-xl font-bold text-gray-800 tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
+                            Recent Activity
+                          </h2>
+                          {sliceLimit1 === 2 ? (
+                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit1(5)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                              View all <span>→</span>
+                            </button>
+                          ):(
+                            <button className="text-sm cursor-pointer text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1" onClick={()=>setSliceLimit1(2)} style={{ fontFamily: "'Inter', sans-serif" }}>
+                              View less <span>→</span>
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="space-y-6">
+                          {recentActivity?.slice(0, sliceLimit1).map((activity, index) => {
+                            const isCampaign = !!activity.campaign_id;
+                            const type = isCampaign ? "Campaign" : "Blog";
+                            const title = activity.title;
+                            const status = activity.status;
+                            const category = activity.category || "-";
+                            const date = new Date(activity.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+
+                            return (
+                              <div key={isCampaign ? activity.campaign_id : activity.blog_id} className="relative flex gap-6 group/item">
+                                {/* Timeline Connector Line */}
+                                {index !== recentActivity.length - 1 && (
+                                  <div className="absolute left-[11px] top-8 w-[2px] h-full bg-gray-100 group-hover/item:bg-emerald-100 transition-colors" />
+                                )}
+
+                                {/* Icon */}
+                                <div className="relative z-10 flex-shrink-0 w-6 h-6 rounded-full bg-white border-2 border-emerald-500 flex items-center justify-center group-hover/item:scale-110 transition-transform duration-300">
+                                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                </div>
+
+                                <div className="flex-1 pb-6 border-b border-gray-50 last:border-0">
+                                  <div className="flex justify-between items-start mb-1">
+                                    <p className="font-bold text-gray-800 group-hover/item:text-emerald-600 transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                      [{type}] {title}
+                                    </p>
+                                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+                                      {date}
+                                    </div>
+                                  </div>
+
+                                  <p className="text-sm text-gray-500 line-clamp-1 italic" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                    Category: {category}
+                                  </p>
+
+                                  {/* Status Tag */}
+                                  <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-[10px] font-bold text-emerald-700">
+                                    {status}
+                                  </div>
+                                </div>
                               </div>
+                            );
+                          })}
+
+                          {/* Empty State */}
+                          {(!recentActivity || recentActivity.length === 0) && (
+                            <div className="text-center py-10">
+                              <p className="text-gray-400 text-sm">No recent actions recorded yet.</p>
                             </div>
-                          ))}
+                          )}
                         </div>
                       </div>
                     </div>
@@ -640,32 +753,6 @@ export default function OrganizationProfile() {
                         </div>
                       </div>
                     </div>
-
-                    {/* Articles Upvoted */}
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
-                      <div className="relative bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-                        <h2 className="text-lg font-bold text-gray-800 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-                          Articles You Upvoted
-                        </h2>
-                        <div className="space-y-3">
-                          {orgData.articles.map((article, idx) => (
-                            <div 
-                              key={idx} 
-                              className="flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 transition-all duration-300 group/article cursor-pointer"
-                            >
-                              <p className="text-sm font-medium text-gray-800 flex-1 group-hover/article:text-emerald-700 transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                {article.title}
-                              </p>
-                              <span className="text-sm text-emerald-600 ml-3 font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
-                                ▲ {article.upvotes}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
                   </div>
                 </div>
               </div>
@@ -689,7 +776,7 @@ export default function OrganizationProfile() {
                               </label>
                               <textarea
                                 name="bio"
-                                value={orgDetail.OrgInfo.description}
+                                value={formData.bio}
                                 onChange={handleInputChange}
                                 placeholder="Tell us about your organization..."
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent resize-none h-24"
@@ -703,7 +790,7 @@ export default function OrganizationProfile() {
                               <input
                                 type="email"
                                 name="email"
-                                value={orgDetail.email}
+                                value={formData.email}
                                 onChange={handleInputChange}
                                 placeholder="e.g necessary cleaner"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -717,7 +804,7 @@ export default function OrganizationProfile() {
                               <input
                                 type="text"
                                 name="orgName"
-                                value={orgDetail.username}
+                                value={formData.orgName}
                                 onChange={handleInputChange}
                                 placeholder="e.g necessary cleaner"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -735,7 +822,7 @@ export default function OrganizationProfile() {
                             <input
                               type="text"
                               name="country"
-                              value={country}
+                              value={formData.country}
                               onChange={handleInputChange}
                               placeholder="Country"
                               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -743,7 +830,7 @@ export default function OrganizationProfile() {
                             <input
                               type="text"
                               name="state"
-                              value={state}
+                              value={formData.state}
                               onChange={handleInputChange}
                               placeholder="State"
                               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -751,7 +838,7 @@ export default function OrganizationProfile() {
                             <input
                               type="text"
                               name="city"
-                              value={city}
+                              value={formData.city}
                               onChange={handleInputChange}
                               placeholder="City"
                               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"
@@ -760,7 +847,7 @@ export default function OrganizationProfile() {
                           <input
                             type="text"
                             name="street"
-                            value={street}
+                            value={formData.street}
                             onChange={handleInputChange}
                             placeholder="Street"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2d5f4d] focus:border-transparent"

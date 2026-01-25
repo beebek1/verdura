@@ -31,7 +31,8 @@ export const joinCampaignApi =(campaign_id) => Api.patch(`/api/user/join-campaig
 
 export const getOrgById =() => Api.get(`/api/user/get-org`, config)
 export const getIndById =() => Api.get(`/api/user/get-ind`, config)
-export const getIndRecentActivity =() => Api.get(`/api/user/get-recent-activity`, config)
+export const getIndRecentActivity =() => Api.get(`/api/user/get-ind-recent-activity`, config)
+export const getOrgRecentActivity =() => Api.get(`/api/user/get-org-recent-activity`, config)
 
 export const getAllBlogs =async() => { 
     const res = await Api.get("/api/user/get-all-blogs",config) 
@@ -49,14 +50,22 @@ export const createBlog = async (data) => {
     return res.data;
 };
 
-
 export const updateIndProfile = async (data) => {
     const res = await Api.put("/api/user/update-ind-profile", data,config); 
     return res.data;
 };
 
+export const updateOrgProfile = async (data) => {
+    const res = await Api.put("/api/user/update-org-profile", data,config); 
+    return res.data;
+};
 export const updateIndPfp = async (data) => {
     const res = await ApiFormData.put("/api/user/update-ind-pfp", data,config); 
+    return res.data;
+};
+
+export const updateOrgPfp = async (data) => {
+    const res = await ApiFormData.put("/api/user/update-org-pfp", data,config); 
     return res.data;
 };
 
