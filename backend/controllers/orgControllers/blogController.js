@@ -110,4 +110,63 @@ const upvoteBlog = async (req, res) => {
     }
 };
 
-module.exports = {blogPost, getAllBlog, upvoteBlog}
+const deleteBlog = async (req, res) => {
+    try {
+        const { blog_id } = req.params;
+        
+        // Find the blog
+        const blog = await CreateBlog.findByPk(blog_id);
+        
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: "Blog not found"
+            });
+        }
+
+        // Find the organization associated with the logged-in user
+        const org = await OrgInfo.findOne({ where: { user_id: req.user.id } });
+
+        if (!org) {
+            return res.status(400).json({ 
+                success: false,
+                message: "Organization not found for this user" 
+            });
+        }
+
+        // Check if the blog belongs to this organization (authorization)
+        if (blog.org_id !== org.org_id) {
+            return res.status(403).json({
+                success: false,
+                message: "You don't have permission to delete this blog"
+            });
+        }
+
+        // Decrement the total upvotes from the organization
+        if (blog.upvotes > 0) {
+            await OrgInfo.decrement('total_upvotes', { 
+                where: { org_id: org.org_id },
+                by: blog.upvotes
+            });
+        }
+
+        // Delete the blog
+        await blog.destroy();
+
+        return res.status(200).json({
+            success: true,
+            message: "Blog deleted successfully"
+        });
+
+    } catch (error) {
+        console.error("Error deleting blog:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to delete blog",
+            error: error.message
+        });
+    }
+};
+
+
+module.exports = {blogPost, getAllBlog, upvoteBlog, deleteBlog};

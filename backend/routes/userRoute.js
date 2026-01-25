@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 const authMiddleware = require("../helpers/authMiddleware");
 const roleMiddleware = require("../helpers/roleMiddleware");
-const {blogPost, getAllBlog, upvoteBlog} = require("../controllers/orgControllers/blogController");
+const {blogPost, getAllBlog, upvoteBlog,deleteBlog} = require("../controllers/orgControllers/blogController");
 const {campaignPost, getAllCampaigns, joinCampaign} = require("../controllers/orgControllers/campaignController");
 const {getOrganizationDetails, updateOrgPfp, getOrgRecentActivity, updateOrganizationDetails} = require("../controllers/orgControllers/orgController");
 const {getIndividualDetails, updateIndividualDetails, getIndRecentActivity, updatePfp} = require("../controllers/indControllers/indController");
@@ -16,6 +16,7 @@ router.put('/update-org-profile', authMiddleware, roleMiddleware("organization")
 
 //for getting blogs
 router.get('/get-all-blogs',authMiddleware, getAllBlog);
+router.delete('/delete-blog/:blog_id', authMiddleware, deleteBlog);
 router.patch('/upvote/:blog_id',authMiddleware, roleMiddleware("individual"),upvoteBlog);
 router.post('/create-blog',authMiddleware,roleMiddleware("organization"), blogPost);
 

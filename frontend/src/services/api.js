@@ -39,6 +39,11 @@ export const getAllBlogs =async() => {
     return res.data.blogs
     };
 
+    
+export const deleteBlog = async (blog_id) => {
+    const res = await Api.delete(`/api/user/delete-blog/${blog_id}`, config); 
+    return res.data;
+};
 
 export const getAllCampaigns =async() => { 
     const res = await Api.get("/api/user/get-all-campaigns",config) 

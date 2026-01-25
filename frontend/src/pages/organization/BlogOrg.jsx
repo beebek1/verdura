@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllBlogs } from '../../services/api';
+import { getAllBlogs, deleteBlog} from '../../services/api';
 import toast, { Toaster } from 'react-hot-toast'
 
 export default function BlogList() {
@@ -11,7 +11,6 @@ export default function BlogList() {
   const [error, setError] = useState('');
   const [stats, setStats] = useState({
   totalBlogs: 0,
-  totalViews: 0,
   totalUpvotes: 0
 });
 
@@ -30,7 +29,6 @@ export default function BlogList() {
         image: blog.cover_image || "https://via.placeholder.com/400x250",
         upvotes: blog.upvotes,
         badge: blog.badge,
-        views: Math.floor(Math.random() * 1000),
         tags: blog.category ? [blog.category] : ["General"],
         status: blog.status || 'published',
       }));
@@ -65,12 +63,33 @@ export default function BlogList() {
     // navigate to edit page
   };
 
-  const handleDelete = (blogId) => {
-    if (window.confirm('Are you sure you want to delete this blog?')) {
-      console.log('Deleting blog:', blogId);
-      // Add delete logic here
+  const handleDelete = async (blogId) => {
+  console.log('Delete clicked for blog ID:', blogId);
+  
+  if (window.confirm('Are you sure you want to delete this blog?')) {
+    try {
+      console.log('Calling deleteBlog API with ID:', blogId);
+      const response = await deleteBlog(blogId);
+      console.log('Delete response:', response);
+      
+      // Remove the deleted blog from state
+      setBlogs(prevBlogs => prevBlogs.filter(blog => blog.id !== blogId));
+      
+      // Update stats
+      const deletedBlog = blogs.find(b => b.id === blogId);
+      setStats(prevStats => ({
+        totalBlogs: prevStats.totalBlogs - 1,
+        totalUpvotes: prevStats.totalUpvotes - (deletedBlog?.upvotes || 0)
+      }));
+      
+      toast.success('Blog deleted successfully!');
+    } catch (err) {
+      console.error('Full delete error:', err);
+      console.error('Error response:', err.response);
+      toast.error(err.response?.data?.message || 'Failed to delete blog');
     }
-  };
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-slate-100">
