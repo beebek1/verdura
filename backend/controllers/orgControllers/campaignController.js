@@ -103,6 +103,87 @@ const joinCampaign = async (req, res) => {
     }
 };
 
+const getCampaignById = async(req, res) => {
+    try {
+        const { campaign_id } = req.params;
+
+        const campaign = await CreateCampaigns.findByPk(campaign_id, {
+            attributes: ["campaign_id", "title", "description", "volunteer", "status", "category", "start_date", "end_date"],
+            include: {
+                model: OrgInfo,
+                attributes: ["org_id", "description", "logo_path"]
+            }
+        });
+
+        if (!campaign) {
+            return res.status(404).json({
+                success: false,
+                message: "Campaign not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Campaign fetched successfully",
+            campaign
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+}
+
+const deleteCampaign = async(req, res) => {
+    try {
+        const { campaign_id } = req.params;
+
+        const campaign = await CreateCampaigns.findByPk(campaign_id);
+
+        if (!campaign) {
+            return res.status(404).json({
+                success: false,
+                message: "Campaign not found"
+            });
+        }
+
+        // Verify that the campaign belongs to the organization of the logged-in user
+        const org = await OrgInfo.findOne({ where: { user_id: req.user.id } });
+
+        if (!org) {
+            return res.status(403).json({
+                success: false,
+                message: "Organization not found for this user"
+            });
+        }
+
+        if (campaign.org_id !== org.org_id) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to delete this campaign"
+            });
+        }
+
+        // Delete the campaign
+        await campaign.destroy();
+
+        return res.status(200).json({
+            success: true,
+            message: "Campaign deleted successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to delete campaign",
+            error: error.message
+        });
+    }
+}
 
 
-module.exports = {campaignPost, getAllCampaigns, joinCampaign};    
+
+module.exports = {campaignPost, getAllCampaigns, joinCampaign, getCampaignById, deleteCampaign};    
