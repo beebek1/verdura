@@ -403,6 +403,25 @@ export default function IndividualProfile() {
     await updateIndProfile(formData);
   };
 
+const deleteHandler = async () => {
+  const isConfirmed = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+
+  if (!isConfirmed) {
+    return;
+  }
+
+  try {
+    const response = await axios.delete('/api/users/delete-account'); // Adjust to your route
+    if (response.status === 200) {
+      alert("Account deleted successfully.");
+      window.location.href = '/'; 
+    }
+  } catch (error) {
+    console.error("Delete failed:", error);
+    alert("Could not delete account. Please try again.");
+  }
+};
+
   const validator = () =>{
     if(!formData.bio || !formData.email || !formData.indName || !formData.country){
       alert("all fields are required");
@@ -772,7 +791,7 @@ export default function IndividualProfile() {
                   Danger Zone
                 </h2>
                 <div className="space-y-3">
-                  <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" onClick={deleteHandler} style={{ fontFamily: "'Inter', sans-serif" }}>
                     Log Out
                   </button>
                   <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -787,3 +806,4 @@ export default function IndividualProfile() {
     </div>
   );
 }
+//uo r the best teacher

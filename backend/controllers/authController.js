@@ -190,30 +190,37 @@ const userLogin = async (req, res) =>{
 
 
 
-const deleteUser = async(req, res) =>{
+const deleteUser = async (req, res) => {
+    try {
+        const id = req.user.id; 
+        
+        // 2. Find the user
+        const user = await Register.findByPk(id);
 
-    try{
-        const id=req.user.id
-        const user= await Register.findByPk(id)
-
-        if (!user){
-            return res.json({
-                message: "user not found"
-            })
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
         }
-        await user.destroy()
-         return res.json({
-                message: "user deleted!!"
-            })
-    }
-    catch(error){
-        return res.status(401).json({
-            message: "something went wrong form userdelete",
-            error: error.message
-        })
-    }
-}
+        await user.destroy();
 
+        res.clearCookie("token"); // Replace "token" with your actual cookie name
+
+        return res.status(200).json({
+            success: true,
+            message: "Account deleted successfully. We're sorry to see you go!"
+        });
+
+    } catch (error) {
+        console.error("Delete Error:", error);
+        return res.status(500).json({ // Changed to 500 as 401 is for Unauthenticated
+            success: false,
+            message: "Internal server error during account deletion",
+            error: error.message
+        });
+    }
+};
 
 
 module.exports = {registerUser, userLogin, deleteUser, forgotPassword};
