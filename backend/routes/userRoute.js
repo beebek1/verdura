@@ -3,7 +3,7 @@ const router = require("express").Router();
 const authMiddleware = require("../helpers/authMiddleware");
 const roleMiddleware = require("../helpers/roleMiddleware");
 const {blogPost, getAllBlog, upvoteBlog,deleteBlog,getBlogById} = require("../controllers/orgControllers/blogController");
-const {campaignPost, getAllCampaigns, joinCampaign} = require("../controllers/orgControllers/campaignController");
+const {campaignPost, getAllCampaigns, joinCampaign,deleteCampaign,getCampaignById} = require("../controllers/orgControllers/campaignController");
 const {getOrganizationDetails, updateOrgPfp, getOrgRecentActivity, updateOrganizationDetails} = require("../controllers/orgControllers/orgController");
 const {getIndividualDetails, updateIndividualDetails, getIndRecentActivity, updatePfp} = require("../controllers/indControllers/indController");
 
@@ -25,6 +25,8 @@ router.post('/create-blog',authMiddleware,roleMiddleware("organization"), blogPo
 router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campaignPost);
 router.patch('/join-campaign/:campaign_id',authMiddleware,roleMiddleware("individual"), joinCampaign);
 router.get('/get-all-campaigns', getAllCampaigns);
+router.delete('/delete-campaign/:campaign_id', authMiddleware, deleteCampaign);
+router.put('/update-campaign/:campaign_id', authMiddleware, roleMiddleware("organization"), getCampaignById);
 
 
 //for individual
