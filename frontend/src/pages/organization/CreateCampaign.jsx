@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createCampaign, updateCampaign , getCampaignById} from '../../services/api';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast'
 
 export default function CreateCampaign() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const {state} = useLocation();
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(''); 
   const [formData, setFormData] = useState({
     title: '',
     volunteersNeeded: 0,
@@ -14,8 +17,24 @@ export default function CreateCampaign() {
     category: '',
     description: ''
   });
-  const [loading, setLoading] = useState(false); 
-  const [error, setError] = useState(''); 
+
+  useEffect(() => {
+      if (state) {
+        setFormData({
+          title: state.title || '', 
+          volunteersNeeded : state.volunteer,
+          startDate: state.start_date ? new Date(state.start_date).toISOString().split('T')[0] : '',
+          endDate: state.end_date ? new Date(state.end_date).toISOString().split('T')[0] : '',
+          status: state.status ? state.status.toUpperCase() : '',
+          category : state.category ? state.category.toLowerCase(): '',
+          description: state.description || ''
+        });
+        
+        if (state.coverImage) {
+          setCoverImage(state.coverImage);
+        }
+      }
+  }, [state]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
