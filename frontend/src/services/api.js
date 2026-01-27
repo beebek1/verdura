@@ -50,6 +50,7 @@ export const updateBlog = async (blog_id, data) => {
     return res.data;
 };
 
+
 export const getAllCampaigns =async() => { 
     const res = await Api.get("/api/user/get-all-campaigns",config) 
     return res.data.campaigns
@@ -79,11 +80,28 @@ export const updateOrgPfp = async (data) => {
     return res.data;
 };
 
+
+//campaign apis
 export const createCampaign = async (data) => {
     const res = await Api.post("/api/user/campaignpost", data,config); 
     return res.data;
 };
 
+export const updateCampaign = async (campaign_id, data) => {
+    const res = await Api.put(`/api/user/update-campaign/${campaign_id}`, data, config); 
+    return res.data;
+};
+
+
+export const getCampaignById = async (campaign_id) => {
+    const res = await Api.get(`/api/user/campaign/${campaign_id}`, config);
+    return res.data.campaign;
+};
+
+export const deleteCampaign = async (campaign_id) => {
+    const res = await Api.delete(`/api/user/delete-campaign/${campaign_id}`, config);
+    return res.data;
+};
 
 const WeatherApi = axios.create({
     baseURL: import.meta.env.VITE_WEATHER_API_URL
