@@ -39,11 +39,13 @@ function AppWrapper(){
             {/* <Route path='/profile' element={<Profile/>}/> */}
             <Route path='/blogs' element={<Blog/>}/>
             <Route path='/blogs/:blogId' element={<BlogDetails/>}/>
+            <Route path='/create-blog/:blogId' element={<CreateBlog/>}/>
             <Route path='/reset-password' element={<ForgetPassword/>}/>
             <Route path='/signin' element={<Login/>}/>
             <Route path='/signup' element={<SignUpInd/>}/>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/campaigns' element={<Campaign/>}/>
+            <Route path='/create-campaign/:CampaignId' element={<CreateCampaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
             <Route path='/create-campaign' element={<CreateCampaign/>}/>
             <Route path='/climate' element={<Climate/>}/>

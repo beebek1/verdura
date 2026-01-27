@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBlog } from '../../services/api';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function CreateBlog() {
   const navigate = useNavigate();
+  const {state} = useLocation();
   const [formData, setFormData] = useState({
     title: '',
     status: '',
@@ -13,6 +14,22 @@ export default function CreateBlog() {
   const [coverImage, setCoverImage] = useState(null);
   const [loading, setLoading] = useState(false); 
   const [error, setError] = useState(''); 
+
+useEffect(() => {
+    if (state) {
+      setFormData({
+        title: state.title || '', 
+        status: state.status ? state.status.toUpperCase() : '',
+        tags: state.tags || '',
+        content: state.content || ''
+      });
+      
+      if (state.coverImage) {
+        setCoverImage(state.coverImage);
+      }
+    }
+  }, [state]);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

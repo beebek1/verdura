@@ -2,8 +2,8 @@ const router = require("express").Router();
 
 const authMiddleware = require("../helpers/authMiddleware");
 const roleMiddleware = require("../helpers/roleMiddleware");
-const {blogPost, getAllBlog, upvoteBlog} = require("../controllers/orgControllers/blogController");
-const {campaignPost, getAllCampaigns, joinCampaign} = require("../controllers/orgControllers/campaignController");
+const {blogPost, getAllBlog, upvoteBlog,deleteBlog,getBlogById} = require("../controllers/orgControllers/blogController");
+const {campaignPost, getAllCampaigns, joinCampaign,deleteCampaign,getCampaignById} = require("../controllers/orgControllers/campaignController");
 const {getOrganizationDetails, updateOrgPfp, getOrgRecentActivity, updateOrganizationDetails} = require("../controllers/orgControllers/orgController");
 const {getIndividualDetails, updateIndividualDetails, getIndRecentActivity, updatePfp} = require("../controllers/indControllers/indController");
 
@@ -15,7 +15,9 @@ router.get('/get-org-recent-activity', authMiddleware, roleMiddleware("organizat
 router.put('/update-org-profile', authMiddleware, roleMiddleware("organization"), updateOrganizationDetails);
 
 //for getting blogs
-router.get('/get-all-blogs',authMiddleware,roleMiddleware("individual"), getAllBlog);
+router.get('/get-all-blogs',authMiddleware, getAllBlog);
+router.delete('/delete-blog/:blog_id', authMiddleware, deleteBlog);
+router.put('/update-blog/:blog_id', authMiddleware, roleMiddleware("organization"), getBlogById);
 router.patch('/upvote/:blog_id',authMiddleware, roleMiddleware("individual"),upvoteBlog);
 router.post('/create-blog',authMiddleware,roleMiddleware("organization"), blogPost);
 
@@ -23,6 +25,8 @@ router.post('/create-blog',authMiddleware,roleMiddleware("organization"), blogPo
 router.post('/campaignpost',authMiddleware,roleMiddleware("organization"), campaignPost);
 router.patch('/join-campaign/:campaign_id',authMiddleware,roleMiddleware("individual"), joinCampaign);
 router.get('/get-all-campaigns', getAllCampaigns);
+router.delete('/delete-campaign/:campaign_id', authMiddleware, deleteCampaign);
+router.put('/update-campaign/:campaign_id', authMiddleware, roleMiddleware("organization"), getCampaignById);
 
 
 //for individual
