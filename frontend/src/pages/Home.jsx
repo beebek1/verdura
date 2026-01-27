@@ -1,24 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
-
-// Placeholder images - replace with your actual imports
-const coverPic = "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=1600&q=80";
-const forestImage = "https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&q=80";
-
-// Simple ImageFormat component (replace with your actual component)
-const ImageFormat = ({ src, alt, className, crop }) => (
-  <div className={className}>
-    <img 
-      src={src} 
-      alt={alt} 
-      className={`w-full h-24 object-cover ${crop ? 'opacity-50' : ''}`}
-    />
-  </div>
-);
-
-const Home = () => {
-  const role = "individual";
-=======
 import coverPic from '../assets/coverpic.png';
 import footerImage from '../assets/footerImage.jpeg';
 import cleanImage from '../assets/clean.png';
@@ -26,7 +6,6 @@ import pollutionImage from '../assets/pollution.png';
 import deadImage from '../assets/dead.png';
 
 const Home = () => {
->>>>>>> origin/anuska
 
   const cards = [
     {
@@ -76,16 +55,8 @@ const Home = () => {
             balance
           </h1>
 
-<<<<<<< HEAD
-          <button
-            className="mt-6 w-[180px] py-3 bg-[#ac7b06] text-white font-bold tracking-widest hover:bg-[#8f6605] transition-colors"
-            style={{ fontFamily: "Oswald" }}
-          >
-            GET START →
-=======
           <button className="mt-4 w-fit px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-bold tracking-wider text-sm transition">
             Get Started →
->>>>>>> origin/anuska
           </button>
         </div>
 
@@ -117,41 +88,8 @@ const Home = () => {
         </div>
       </section>
 
-<<<<<<< HEAD
-      {/* ================= DIVIDER LINE ================= */}
-      <div className="w-full h-px bg-gray-300"></div>
-
-      {/* ================= CARDS SECTION ================= */}
-      <section className="grid grid-cols-1 md:grid-cols-3">
-        {cards.map((card, index) => (
-          <div key={index} className="bg-white">
-            <div className="aspect-[4/3] overflow-hidden">
-              <img 
-                src={card.image} 
-                alt="" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-8">
-              <p className="text-gray-800 text-lg leading-relaxed">
-                {card.text}
-              </p>
-            </div>
-          </div>
-        ))}
-      </section>
-
-      {/* ================= FOREST LOSS SECTION ================= */}
-      <section className="py-20 px-16 bg-white">
-        <div className="max-w-7xl mx-auto flex items-center gap-16">
-          <div className="flex-1">
-            <p className="text-gray-500 uppercase tracking-wider mb-4 font-semibold">
-              ACT NOW
-            </p>
-=======
       {/* ================= SPACER ================= */}
       <div className="h-64 bg-white"></div>
->>>>>>> origin/anuska
 
       {/* ================= IMPACT STATS SECTION ================= */}
       <section className="relative h-[600px] w-full">
@@ -160,7 +98,6 @@ const Home = () => {
           alt="Environmental workers"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        
         <div className="absolute inset-0 bg-black/40" />
         
         <div className="relative z-10 h-full flex items-center justify-around px-20">
