@@ -39,6 +39,7 @@ function AppWrapper(){
             <Route path='/signup' element={<SignUpInd/>}/>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/campaigns' element={<Campaign/>}/>
+            <Route path='/create-campaign/:CampaignId' element={<CreateCampaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
             <Route path='/create-campaign' element={<CreateCampaign/>}/>
             <Route path='/climate' element={<Climate/>}/>

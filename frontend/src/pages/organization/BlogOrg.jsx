@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAllBlogs, deleteBlog,updateBlog} from '../../services/api';
+import { getAllBlogs, deleteBlog, updateBlog} from '../../services/api';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function BlogList() {
