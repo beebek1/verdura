@@ -17,6 +17,9 @@ import CreateCampaign from './pages/organization/CreateCampaign.jsx';
 import Climate from './pages/climate.jsx';
 import Campaign from './pages/individual/JoinCampaign.jsx'
 import AboutUs from './pages/accessibilities/FAQs.jsx';
+import ProtectedRoute from './pages/protect/protectedRoute.jsx'
+import OrganizationProfile from './pages/organization/profile.jsx';
+
 // import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
 
 // import TermsOfService from './pages/accessibilities/TermsOfService.jsx';
@@ -46,8 +49,8 @@ function AppWrapper(){
             <Route path='/create-campaign/:CampaignId' element={<CreateCampaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
             <Route path='/create-campaign' element={<CreateCampaign/>}/>
-            <Route path='/climate' element={<Climate/>}/>
-            <Route path='/profile' element={<Profile/>}/>
+            <Route path='/climate' element={<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Climate/>}/>}/>
+            <Route path='/profile' element= {<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Profile/>}/>}/>
 
             {/* <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
             <Route path='/terms' element={<TermsOfService/>}/>

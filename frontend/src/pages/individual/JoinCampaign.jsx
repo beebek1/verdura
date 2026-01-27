@@ -199,8 +199,8 @@ const JoinCampaign = () => {
 
   return (
     <>
-    {role === "organization" && <CreateCampaign/>}
-    {role === "individual" &&
+    {role === "organization"  && <CreateCampaign/>}
+    {role === "individual" || !role &&
       <div className="flex flex-col min-h-screen bg-slate-50 w-full">
         {/* Toast Container */}
         <div className="fixed top-4 right-4 z-50 space-y-2">

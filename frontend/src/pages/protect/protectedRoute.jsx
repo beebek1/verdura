@@ -1,12 +1,12 @@
 import { Navigate } from "react-router-dom";
-import { getUserRole } from "./authRole";
+import getUserRole from "./authRole";
  
 const ProtectedRoute = ({ element, allowedRoles }) => {
   const role = getUserRole();
  
   if (!role || !allowedRoles.includes(role)) {
     localStorage.removeItem("token");
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/signin" replace />;
   }
  
   return element;
