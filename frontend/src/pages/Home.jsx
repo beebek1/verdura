@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 
 // Placeholder images - replace with your actual imports
 const coverPic = "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=1600&q=80";
@@ -17,6 +18,15 @@ const ImageFormat = ({ src, alt, className, crop }) => (
 
 const Home = () => {
   const role = "individual";
+=======
+import coverPic from '../assets/coverpic.png';
+import footerImage from '../assets/footerImage.jpeg';
+import cleanImage from '../assets/clean.png';
+import pollutionImage from '../assets/pollution.png';
+import deadImage from '../assets/dead.png';
+
+const Home = () => {
+>>>>>>> origin/anuska
 
   const cards = [
     {
@@ -49,55 +59,65 @@ const Home = () => {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%), linear-gradient(to right, rgba(0,0,0,0.7) 20%, transparent 90%)",
+              "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%), linear-gradient(to right, rgba(0,0,0,0.6) 20%, transparent 90%)",
           }}
         />
 
         {/* Hero Content */}
-        <div className="relative z-10 flex flex-col gap-6 pt-[17vh] pl-20 max-w-4xl">
-          <div className="border-b-2 border-r-2 border-[#dc9e0d] w-fit px-2">
-            <h1 className="text-white font-bold tracking-wide">ACT NOW</h1>
+        <div className="relative z-10 flex flex-col gap-6 pt-[17vh] pl-20 max-w-3xl">
+          <div className="border-b-2 border-l-2 border-yellow-600 w-fit px-3 py-1">
+            <h5 className="text-white font-bold tracking-widest text-sm">ACT NOW</h5>
           </div>
 
-          <h1
-            className="text-white text-5xl font-bold leading-relaxed tracking-wide"
-            style={{ fontFamily: "Abril Fatface" }}
-          >
-            This Earth Season, stand <br />
-            with nature and restore <br />
-            a planet rapidly losing its <br />
+          <h1 className="text-white text-4xl font-bold leading-tight tracking-wide">
+            This Earth Season, stand<br />
+            with nature and restore<br />
+            a planet rapidly losing its<br />
             balance
           </h1>
 
+<<<<<<< HEAD
           <button
             className="mt-6 w-[180px] py-3 bg-[#ac7b06] text-white font-bold tracking-widest hover:bg-[#8f6605] transition-colors"
             style={{ fontFamily: "Oswald" }}
           >
             GET START →
+=======
+          <button className="mt-4 w-fit px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-bold tracking-wider text-sm transition">
+            Get Started →
+>>>>>>> origin/anuska
           </button>
         </div>
 
         {/* ================= SEE MORE STRIP ================= */}
-        <div className="absolute bottom-20 left-20 right-0 z-10">
+        <div className="absolute -bottom-32 left-0 right-0 z-10 px-20">
           <div className="flex items-center gap-6 mb-6">
-            <h5 className="text-white font-bold">SEE MORE</h5>
-            <div className="flex-1 h-[1px] bg-white" />
+            <h5 className="text-white font-bold text-sm tracking-wider">SEE MORE</h5>
+            <div className="flex-1 h-[1px] bg-white/50" />
           </div>
 
-          <div className="flex gap-4 overflow-hidden max-w-xl">
-            {[1, 2, 3, 4].map((_, i) => (
-              <ImageFormat
-                key={i}
-                src={coverPic}
-                alt={`preview-${i}`}
-                className="w-40 flex-shrink-0"
-                crop={i === 3}
-              />
+          <div className="flex gap-4 overflow-hidden">
+            {[
+              { img: pollutionImage, text: "Human activities are pushing countless species toward extinction" },
+              { img: cleanImage, text: "The average person consumes nearly a credit card's worth of microplastics every week through food, water, and air" },
+              { img: deadImage, text: "Rising sea levels threaten coastal communities" }
+            ].map((item, i) => (
+              <div key={i} className="bg-white flex-shrink-0 w-64 overflow-hidden shadow-lg">
+                <img
+                  src={item.img}
+                  alt={`preview-${i}`}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <p className="text-gray-800 text-sm leading-relaxed">{item.text}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
+<<<<<<< HEAD
       {/* ================= DIVIDER LINE ================= */}
       <div className="w-full h-px bg-gray-300"></div>
 
@@ -128,36 +148,42 @@ const Home = () => {
             <p className="text-gray-500 uppercase tracking-wider mb-4 font-semibold">
               ACT NOW
             </p>
+=======
+      {/* ================= SPACER ================= */}
+      <div className="h-64 bg-white"></div>
+>>>>>>> origin/anuska
 
-            <h3 className="text-5xl font-bold text-green-800 mb-6 leading-tight">
-              We lose forests every single minute
-            </h3>
-
-            <p className="text-gray-700 text-lg mb-8">
-              An area of rainforest the size of 20 football fields disappears
-              every minute due to logging and agriculture.
-            </p>
-
-            <button className="bg-blue-400 hover:bg-blue-500 text-white px-8 py-3 rounded font-semibold transition">
-              Read More
-            </button>
+      {/* ================= IMPACT STATS SECTION ================= */}
+      <section className="relative h-[600px] w-full">
+        <img
+          src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200"
+          alt="Environmental workers"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        
+        <div className="absolute inset-0 bg-black/40" />
+        
+        <div className="relative z-10 h-full flex items-center justify-around px-20">
+          <div className="text-center text-white">
+            <h2 className="text-6xl font-bold mb-2">69 k+</h2>
+            <p className="text-xl">Trees Planted</p>
           </div>
-
-          <div className="flex-1">
-            <img
-              src="https://images.unsplash.com/photo-1574870111867-089730e5a72b?w=800"
-              alt="Deforestation"
-              className="w-full h-96 object-cover rounded-lg shadow-xl"
-            />
+          <div className="text-center text-white">
+            <h2 className="text-6xl font-bold mb-2">8 +</h2>
+            <p className="text-xl">Rivers Cleaned</p>
+          </div>
+          <div className="text-center text-white">
+            <h2 className="text-6xl font-bold mb-2">467kg +</h2>
+            <p className="text-xl">Trash Picked</p>
           </div>
         </div>
       </section>
 
       {/* ================= FULL FOREST IMAGE ================= */}
-      <section className="w-full h-[800px]">
+      <section className="w-full h-[900px]">
         <img
-          src={forestImage}
-          alt="Lush forest"
+          src={footerImage}
+          alt="Misty forest"
           className="w-full h-full object-cover"
         />
       </section>
