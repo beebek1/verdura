@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Edit, Users, Calendar, Trash2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { getAllCampaigns } from '../../services/api';
-import {toast} from 'react-hot-toast';
+import { Link,useNavigate } from 'react-router-dom';
+import { getAllCampaigns,deleteCampaign } from '../../services/api';
+import toast, {Toaster} from 'react-hot-toast';
 
 
 const getStatusColor = (status) => {
@@ -28,6 +28,7 @@ export default function VerduraCampaign() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All Status');
   const [loading, setLoading] = useState(true);
+  const [error,setError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,15 +52,32 @@ export default function VerduraCampaign() {
     console.log("im here")
   };
 
-  const handleEdit = (campaignId) => {
-    console.log('Editing campaign:', campaignId);
-    // navigate to edit page
-  };
+  // const handleEdit = (campaignId) => {
+  //   console.log('Editing campaign:', campaignId);
+  //   // navigate to edit page
+  // };
 
-  const handleDelete = (campaignId) => {
+ const handleDelete = async (campaignId) => {
+    console.log('Delete clicked for campaign ID:', campaignId);
+    
     if (window.confirm('Are you sure you want to delete this campaign?')) {
-      console.log('Deleting campaign:', campaignId);
-      // Add delete logic here
+      try {
+        console.log('Calling deleteCampaign API with ID:', campaignId);
+        const response = await deleteCampaign(campaignId);
+        console.log('Delete response:', response);
+        
+        // Remove the deleted campaign from state
+        setCampaigns(prevCampaigns => prevCampaigns.filter(campaign => campaign.campaign_id !== campaignId));
+
+        // Update stats after deletion
+        const deletedCampaign = campaigns.find(c => c.campaign_id === campaignId);
+        
+        toast.success('Campaign deleted successfully!');
+      } catch (err) {
+        console.error('Full delete error:', err);
+        console.error('Error response:', err.response);
+        toast.error(err.response?.data?.message || 'Failed to delete campaign');
+      }
     }
   };
 
@@ -80,7 +98,7 @@ export default function VerduraCampaign() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-slate-100">
-
+      <Toaster/>
       {/* Hero Section with Background Image */}
       <div 
         className="relative bg-cover bg-center py-20"
@@ -229,12 +247,24 @@ export default function VerduraCampaign() {
                     </svg>
                     View Details
                   </button>
-                  <button 
-                    onClick={() => handleEdit(c.campaign_id)}
-                    className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center"
-                  >
-                    <Edit size={18} />
-                  </button>
+
+                  {/* Edit */}
+               <Link 
+                  to={`/create-campaign/${c.campaign_id}`}
+                  className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center"
+                  state={{
+                    campaign_id: c.campaign_id,
+                    title: c.title,
+                    description: c.description,
+                    category: c.category,
+                    volunteer: c.volunteer,
+                    status: c.status,
+                    start_date: c.start_date,
+                    end_date: c.end_date
+                  }}
+                >
+                  <Edit size={18} />
+                </Link>
                   <button 
                     onClick={() => handleDelete(c.campaign_id)}
                     className="px-4 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center border border-red-200"
