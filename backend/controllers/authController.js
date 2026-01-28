@@ -69,7 +69,7 @@ const registerUser = async(req, res) =>{
     }
 
     //link inside email
-    const verifyLink = `http://localhost:3000/api/verify-email?token=${verificationToken}`;
+    const verifyLink = `http://localhost:5173/verifying/${verificationToken}`;
 
     const html = verifyEmailTemplate(verifyLink)
 

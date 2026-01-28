@@ -14,9 +14,7 @@ router.post('/login', userLogin);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.post('/verify-token', verifyToken);
-
-//get request
-router.get('/verify-email', verifyEmail);
+router.post('/verify-email', verifyEmail);
 
 //delete request
 router.delete('/delete-user', authMiddleware, deleteUser);

@@ -1,4 +1,4 @@
-const RegisterUser = require("../models/userModel");
+const {Register} = require('../models/associations');
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
@@ -37,7 +37,7 @@ const emailSender = async(html, subject, email) => {
 //verifying email
 const verifyEmail = async(req, res) => {
     try{
-        const {token} = req.query;
+        const {token} = req.body;
 
         if(!token){
             return res.status(400).json({
@@ -46,10 +46,11 @@ const verifyEmail = async(req, res) => {
         }
 
         //find user with valid token
-        const user = await RegisterUser.findOne({where: {verificationToken: token}});
+        const user = await Register.findOne({where: {verificationToken: token}});
 
         if(!user){
             return res.status(400).json({
+                success : false,
                 message: "Invalid token",
             });
         }
@@ -57,11 +58,11 @@ const verifyEmail = async(req, res) => {
         //check expiry
         if(user.verificationTokenExpires < new Date()){
             return res.status(400).json({
+                success : false,
                 message: "Token expired. Retry"
             })
         }
-
-
+        
         //reset verification tokens
         user.isVerified = true;
         user.verificationToken = null;
@@ -70,11 +71,13 @@ const verifyEmail = async(req, res) => {
         await user.save();
 
         return res.status(200).json({
+            success : true,
             message: "Email verified successfully"
         })
 
     }catch(error){
-        return res.status(404).json({
+        return res.status(500).json({
+            success : false,
             message : "something went wrong",
             error: error.message
         })
