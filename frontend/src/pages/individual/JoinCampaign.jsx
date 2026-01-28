@@ -3,6 +3,7 @@ import { getAllCampaigns, joinCampaignApi } from '../../services/api';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import CreateCampaign from '../organization/CampaignOrg';
 import getUserRole from '../protect/authRole';
+import {Loading, BadRequest} from '../../components/Loading';
 
 const CampaignCard = ({ campaign_id, title, status, volunteers, currentVolunteers, description, location, date }) => {
   const [isJoined, setIsJoined] = useState(false);
@@ -196,6 +197,9 @@ const JoinCampaign = () => {
     
     fetchBlogs();
   },[]);
+
+  if(loading) return <Loading/>
+  if(!campaigns) return <BadRequest/>
 
   return (
     <>

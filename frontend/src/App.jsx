@@ -18,7 +18,6 @@ import Climate from './pages/climate.jsx';
 import Campaign from './pages/individual/JoinCampaign.jsx'
 import AboutUs from './pages/accessibilities/FAQs.jsx';
 import ProtectedRoute from './pages/protect/protectedRoute.jsx'
-import OrganizationProfile from './pages/organization/profile.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Verifying from './pages/auth/Verifying.jsx'
 // import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
@@ -52,7 +51,7 @@ function AppWrapper(){
             <Route path='/reset-password/:token' element={<ResetPassword/>}/>
             <Route path="/verifying/:token" element={<Verifying/>} />
             <Route path='/create-campaign' element={<CreateCampaign/>}/>
-            <Route path='/climate' element={<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Climate/>}/>}/>
+            <Route path='/climate'  element={<Climate/>}/>
             <Route path='/profile' element= {<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Profile/>}/>}/>
 
             {/* <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>

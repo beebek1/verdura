@@ -61,11 +61,8 @@ export default function SignupIn() {
     }
 
     try{
-
       const response = await createUserApi(sendData);
-
       toast.success(response.data.message);
-
       navigate('/signin')
 
     }catch(error){

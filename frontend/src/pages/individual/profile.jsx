@@ -3,6 +3,8 @@ import { User, Mail, MapPin, Calendar,Clock, Award,  CalendarCheck,CalendarX, Tr
 import { useEffect } from 'react';
 import { getIndById, getIndRecentActivity, updateIndPfp, updateIndProfile } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
+import DangerZone from '../../components/Elements';
+import {Loading, BadRequest} from '../../components/Loading';
 
 // Mock individual data - would come from backend
 const RANKS = [
@@ -61,7 +63,6 @@ const ProfileHeader = ({ profile, isEditing}) => {
       console.log("error : ", err)
     }
   };
-
   return (
     <div className="relative group mb-8">
       <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/50 to-teal-100/50 rounded-2xl blur-xl" />
@@ -69,7 +70,6 @@ const ProfileHeader = ({ profile, isEditing}) => {
         <div className="flex flex-col md:flex-row gap-8 items-start">
 
           {/* avatar */}
-
           <input
             type="file"
             ref={fileInputRef}
@@ -324,8 +324,6 @@ const getRankFromScore = (score) => {
 };
 
 
-
-
 export default function IndividualProfile() {
 
   const navigate = useNavigate();
@@ -394,33 +392,11 @@ export default function IndividualProfile() {
     setRank(rank);
   }, [indDetail]);
 
-  if(loading) return <div><p>loading wait a min</p></div>
-  if(!indDetail) return <div><p>didn't get any data for this individual</p></div>
-
   const handleSaveProfile = async() => {
     if(!validator()) return
 
     await updateIndProfile(formData);
   };
-
-const deleteHandler = async () => {
-  const isConfirmed = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
-
-  if (!isConfirmed) {
-    return;
-  }
-
-  try {
-    const response = await axios.delete('/api/users/delete-account'); // Adjust to your route
-    if (response.status === 200) {
-      alert("Account deleted successfully.");
-      window.location.href = '/'; 
-    }
-  } catch (error) {
-    console.error("Delete failed:", error);
-    alert("Could not delete account. Please try again.");
-  }
-};
 
   const validator = () =>{
     if(!formData.bio || !formData.email || !formData.indName || !formData.country){
@@ -448,6 +424,9 @@ const deleteHandler = async () => {
     { id: 'profile', label: 'individual Info', icon: User },
     { id: 'dangerZone', label: 'Danzer Zone', icon: Settings }
   ]
+
+  if (loading) return <Loading></Loading>
+  if (!indDetail) return <BadRequest></BadRequest>
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50/30 to-teal-50/30">
@@ -781,25 +760,10 @@ const deleteHandler = async () => {
                     </div>
                   </div>
                 </div>
-              )};
+              )}
 
           {activeTab === 'dangerZone' && (
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-red-100/50 to-orange-100/50 rounded-2xl blur-xl" />
-              <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-red-200">
-                <h2 className="text-xl font-bold text-red-600 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Danger Zone
-                </h2>
-                <div className="space-y-3">
-                  <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" onClick={deleteHandler} style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Log Out
-                  </button>
-                  <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Delete Account
-                  </button>
-                </div>
-              </div>
-            </div>
+              <DangerZone/>
           )}
         </div>
       </div>

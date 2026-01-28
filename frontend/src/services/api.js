@@ -49,6 +49,17 @@ export const deleteBlog = async (blog_id) => {
     return res.data;
 };
 
+export const deleteAccountApi = (data) => {
+  const token = localStorage.getItem("token");
+
+  return Api.delete(`/api/auth/delete-user`, {
+    headers: {
+      'authorization': `Bearer ${token}`
+    },
+    data: data
+  });
+};
+
 
 
 export const updateBlog = async (blog_id, data) => {

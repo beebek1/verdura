@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Cloud, Wind, Droplets, Eye, Gauge, AlertTriangle, TrendingUp, ThermometerSun, Leaf, Factory, Car, Search, RefreshCw } from 'lucide-react';
 import { getIndById, getLatestWeather } from '../services/api';
-
+import getUserRole from './protect/authRole';
+import {Loading, BadRequest} from '../components/Loading';
 
 const getAQIColor = (aqi) => {
   if (aqi <= 50) return 'from-green-500 to-emerald-500';
@@ -18,8 +19,6 @@ const getAQITextColor = (aqi) => {
   if (aqi <= 200) return 'text-red-600';
   return 'text-purple-600';
 };
-
-
 
 const PollutantBar = ({ name, value, max, unit }) => {
   const percentage = (value / max) * 100;
@@ -44,34 +43,42 @@ const PollutantBar = ({ name, value, max, unit }) => {
 };
 
 export default function ClimateDashboard() {
+
+  const role = getUserRole();
   const [location, setLocation] = useState(null);
+  const [weatherLocation, setWeatherLocation] = useState(null);
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect( () =>{
-    const fetchUserAddress = async() =>{
-      const localResponse = await getIndById();
-      
-      const location = localResponse?.data?.individual?.IndividualInfo?.address;
-      // const location = localResponse?.data?.IndividualInfo?.address.split(" ")[2]|| "kathmandu"
-      setLocation(location);
-    }
+  // Get user location from browser geolocation
+  const getLocation = async () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        return reject("Geolocation not supported");
+      }
 
-    fetchUserAddress();
-  }, [])
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
+          const data = await response.json();
+          const city = data.address.county || "Unknown Location";
+          resolve(city);
+        } catch (error) {
+          reject("Failed to fetch city name");
+        }
+      }, (err) => {
+        reject(err.message); 
+      });
+    });
+  };
 
-  useEffect(() => {
-    if (location) {
-      getWeather();
-    }
-  }, [location]);
-
-  const getWeather = async () => {
+  // Fetch weather data
+  const getWeather = async (city) => {
     try {
-      setLoading(true);
-
-      if(!location) return "there is nothing bruh"
-      const response = await getLatestWeather(location.split(" ")[2]);
+      const response = await getLatestWeather(city);
       const current = response.data.current;
       const air = current.air_quality;
 
@@ -94,12 +101,12 @@ export default function ClimateDashboard() {
       };
 
       const aqi = calculateSimpleAQI(air.pm2_5);
-
+      
       setData({
         location: {
-          city: location.split(" ")[2],
-          state: location.split(" ")[1],
-          country: location.split(" ")[0]
+          city: location?.split(" ")[2] || city,
+          state: location?.split(" ")[1] || "",
+          country: location?.split(" ")[0] || ""
         },
         weather: {
           temperature: current.temp_c,
@@ -122,6 +129,7 @@ export default function ClimateDashboard() {
           so2: air.so2,
         },
       });
+      
     } catch (error) {
       console.error("Failed to fetch weather data", error);
     } finally {
@@ -129,13 +137,38 @@ export default function ClimateDashboard() {
     }
   };
 
+  // Single useEffect to handle everything
   useEffect(() => {
-    getWeather();
-  }, []);
+    const initializeWeather = async () => {
+      try {
+        if (role) {
+          // User is logged in - fetch from their profile
+          const localResponse = await getIndById();
+          const userLocation = localResponse?.data?.individual?.IndividualInfo?.address;
+          
+          if (userLocation) {
+            setLocation(userLocation);
+            const city = userLocation.split(" ")[2];
+            setWeatherLocation(city);
+            await getWeather(city);
+          }
+        } else {
+          const city = await getLocation();
+          setWeatherLocation(city);
 
-  if (loading) return <div className="p-10">Loading climate data...</div>;
-  if (!data) return <div className="p-10">No climate data available</div>;
+          await getWeather(city);
+        }
+      } catch (error) {
+        console.error("Failed to initialize weather", error);
+        setLoading(false);
+      }
+    };
 
+    initializeWeather();
+  }, [role]);
+
+  if (loading) return <Loading></Loading>
+  if (!data) return <BadRequest></BadRequest>
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50/30 to-teal-50/30">
       <div className="p-4 md:p-8">
@@ -149,7 +182,7 @@ export default function ClimateDashboard() {
                 <div className="flex items-center gap-2 text-gray-700">
                   <MapPin className="w-5 h-5 text-emerald-600" />
                   <span className="font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    {data.location.city}, {data.location.state}, {data.location.country}
+                    {data.location.city}, {data.location.state || "Bagmati"}, {data.location.country || "Nepal"}
                   </span>
                 </div>
 

@@ -4,6 +4,8 @@ import BlogOrg from './organization/BlogOrg';
 import authRole from '../pages/protect/authRole';
 import { getAllBlogs } from '../services/api';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { Loading } from '../components/Loading';
+import { BadRequest } from '../components/Loading';
 
 
 const Blogs = () => {
@@ -39,13 +41,8 @@ const Blogs = () => {
     fetchBlogs();
   },[]);
 
-  if(loading){
-    return(
-      <div className="min-h-screen flex items-center justify-center">
-          Loading blogs...
-        </div>
-    )
-  }
+  if(loading) return <Loading/>
+  if(!blogs) return <BadRequest/>
 
   return (
     <>

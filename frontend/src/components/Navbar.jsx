@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'; // Added useEffect
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { User, Menu, X } from 'lucide-react';
 import Verdu from '../assets/logo.png';
 
 const Navbar = ({ transparent = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
   
   // --- SCROLL LOGIC START ---
   const [showNavbar, setShowNavbar] = useState(true);
@@ -33,21 +34,17 @@ const Navbar = ({ transparent = false }) => {
     { label: 'Profile', to: '/profile', icon: User }
   ];
 
+  const isActive = (path) => location.pathname === path;
+
   return (
     <>
-      {/* Key changes: 
-        1. Added 'fixed top-0 left-0 right-0 z-50' to stay on top.
-        2. Added 'transition-transform duration-300' for the slide effect.
-        3. Added conditional 'translate-y' logic based on showNavbar state.
-      */}
-      <nav className={`w-full px-10 py-4 backdrop-blur-xl fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
+      <nav className={`w-full px-10 py-5 backdrop-blur-md fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
         showNavbar ? "translate-y-0" : "-translate-y-full"
       } ${
         transparent
           ? 'bg-transparent'
-          : 'bg-gradient-to-br from-[#1a2332]/90 via-[#29313D]/90 to-[#1e2633]/90 border-b border-white/10'
+          : 'bg-[#1a2332]/95 border-b border-white/5'
       }`}>
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-emerald-500/5 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto flex justify-between items-center">
           {/* Logo */}
           <div className="cursor-pointer">
@@ -55,33 +52,35 @@ const Navbar = ({ transparent = false }) => {
               <img 
                 src={Verdu} 
                 alt="logo" 
-                className="w-40 h-14 object-contain transition-transform duration-300 hover:scale-105"
+                className="w-36 h-12 object-contain transition-opacity duration-200 hover:opacity-80"
               />
             </Link>
           </div>
 
           {/* Navigation links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-10">
             {navItems.map((item, index) => {
               const Icon = item.icon;
+              const active = isActive(item.to);
               return (
-                <div key={index} className="relative group cursor-pointer">
-                  <Link
-                    to={item.to}
-                    className="text-gray-300 text-sm font-medium uppercase tracking-wider transition-all duration-300 hover:text-emerald-400"
-                    style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif", letterSpacing: '0.5px' }}
-                  >
-                    {Icon ? <Icon className="w-5 h-5 inline" /> : item.label}
-                  </Link>
-                  <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-emerald-400 transition-all duration-300 group-hover:w-full"></span>
-                </div>
+                <Link
+                  key={index}
+                  to={item.to}
+                  className={`text-sm font-medium tracking-wide transition-colors duration-200 ${
+                    active 
+                      ? 'text-white' 
+                      : 'text-gray-300 hover:text-white'
+                  }`}
+                >
+                  {Icon ? <Icon className="w-5 h-5" /> : item.label}
+                </Link>
               );
             })}
           </div>
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden text-gray-300 hover:text-emerald-400 transition-colors"
+            className="md:hidden text-gray-300 hover:text-white transition-colors duration-200"
           >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -89,14 +88,19 @@ const Navbar = ({ transparent = false }) => {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="md:hidden mt-4 mx-4 rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 flex flex-col gap-4 px-6 py-6">
+          <div className="md:hidden mt-4 mx-4 rounded-lg bg-[#29313D]/95 backdrop-blur-md border border-white/5 flex flex-col gap-1 px-4 py-4">
             {navItems.map((item, index) => {
               const Icon = item.icon;
+              const active = isActive(item.to);
               return (
                 <Link
                   key={index}
                   to={item.to}
-                  className="text-gray-300 text-sm font-medium hover:text-emerald-400 transition"
+                  className={`text-sm font-medium px-3 py-2.5 rounded-md transition-all duration-200 ${
+                    active
+                      ? 'text-white bg-white/10'
+                      : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                  }`}
                   onClick={() => setMenuOpen(false)}
                 >
                   {Icon && <Icon className="inline w-4 h-4 mr-2" />}

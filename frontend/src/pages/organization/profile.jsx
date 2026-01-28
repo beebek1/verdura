@@ -416,6 +416,14 @@ export default function OrganizationProfile() {
     await updateOrgProfile(formData)
   };
 
+  const logOutHandler = () =>{
+  }
+
+  const deleteHandler = async() =>{
+  }
+    
+  
+
   const seeMoreHandler = () => {
     navigate('/campaigns')
   }
@@ -785,10 +793,10 @@ export default function OrganizationProfile() {
                     Danger Zone
                   </h2>
                   <div className="space-y-3">
-                    <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    <button onClick={()=>logOutHandler()} className="cursor-pointer w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
                       Log Out
                     </button>
-                    <button className="w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+                    <button onClick={()=>deleteHandler()} className="cursor-pointer w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
                       Delete Account
                     </button>
                   </div>
