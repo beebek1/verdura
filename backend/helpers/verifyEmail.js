@@ -81,4 +81,41 @@ const verifyEmail = async(req, res) => {
     }
 }
 
-module.exports = {verifyEmail, sendEmail, emailSender};
+const verifyToken = async(req, res) =>{
+    try{
+        const {token} = req.body;
+
+        if(!token){
+            return res.status(400).json({
+                message : "token missing"
+            });
+        }
+
+        //find user with valid token
+        const user = await RegisterUser.findOne({where: {verificationToken: token}});
+
+        if(!user){
+            return res.status(400).json({
+                message: "Invalid token",
+            });
+        }
+        
+        //check expiry
+        if(user.verificationTokenExpires < new Date()){
+            return res.status(400).json({
+                message: "Token expired. Retry"
+            })
+        }
+
+        return res.status(201).json({
+            message : "token verified"
+        })
+
+    }catch(error){
+        return res.status(500).json({
+            message : "something went wrong",
+            error: error.message
+        })
+    }
+}
+module.exports = {verifyEmail, sendEmail, emailSender, verifyToken};

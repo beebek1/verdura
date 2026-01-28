@@ -69,7 +69,7 @@ const registerUser = async(req, res) =>{
     }
 
     //link inside email
-    const verifyLink = `http://localhost:3000/api/user/verify-email?token=${verificationToken}`;
+    const verifyLink = `http://localhost:3000/api/verify-email?token=${verificationToken}`;
 
     const html = verifyEmailTemplate(verifyLink)
 
@@ -78,7 +78,7 @@ const registerUser = async(req, res) =>{
 
     return res.status(201).json({
         success : true,
-        message: "user captured but unverified email sent",
+        message: "User added successfully",
         user:{
             username: currentUser.username,
             email: currentUser.email
@@ -107,16 +107,12 @@ const forgotPassword = async(req, res) =>{
         const { verificationToken, verificationTokenExpires} = verifyToken();
 
         //link inside email
-        const verifyLink = `http://localhost:3000/api/user/reset-password?token=${verificationToken}`;
-
+        const verifyLink = `http://localhost:5173/reset-password/${verificationToken}`;
         const html = resetPasswordemailTemplate(verifyLink)
 
         //sending email
         emailSender(html, "Reset password request" ,email);
  
-
-        
-
         user.verificationToken = verificationToken,
         user.verificationTokenExpires = verificationTokenExpires,
 
@@ -135,10 +131,8 @@ const forgotPassword = async(req, res) =>{
     }
 }
     
-
 //for login
 const userLogin = async (req, res) =>{
-
     const{email, password} = req.body;
 
     if(!email || !password){

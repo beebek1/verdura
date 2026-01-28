@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const {registerUser, userLogin, deleteUser, forgotPassword} = require('../controllers/authController');
-const {verifyEmail} = require('../helpers/verifyEmail');
+const {verifyEmail, verifyToken} = require('../helpers/verifyEmail');
 const resetPassword = require("../helpers/resetPassword");
 const { blogPost } = require('../controllers/orgControllers/blogController');
 const authMiddleware = require("../helpers/authMiddleware");
@@ -13,7 +13,7 @@ router.post('/register', registerUser);
 router.post('/login', userLogin);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
-
+router.post('/verify-token', verifyToken);
 
 //get request
 router.get('/verify-email', verifyEmail);
