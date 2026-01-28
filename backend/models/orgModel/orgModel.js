@@ -1,6 +1,5 @@
 const {DataTypes} = require("sequelize");
 const {sequelize} = require("../../db/database");
-const Register = require("../userModel");
 
 const OrgInfo = sequelize.define(
     "OrgInfo",
@@ -84,5 +83,7 @@ const OrgInfo = sequelize.define(
         timestamps: true
     }
 );
+
+
 
 module.exports = OrgInfo;

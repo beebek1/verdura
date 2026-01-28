@@ -54,5 +54,33 @@ const Register = sequelize.define(
     }
 );
 
+ Register.addHook('afterCreate', async (user, options) => {
+    if (user.role === 'organization') {
+        try {
+            const OrgInfo = sequelize.models.OrgInfo; 
+            
+            await OrgInfo.create({
+                user_id: user.user_id,
+            });
+            console.log(`OrgInfo created for user ${user.user_id}`);
+        } catch (error) {
+            console.error("Error creating OrgInfo automatically:", error);
+        }
+    }
+
+    if (user.role === 'individual') {
+        try {
+            const IndInfo = sequelize.models.IndividualInfo; 
+            
+            await IndInfo.create({
+                user_id: user.user_id,
+            });
+            console.log(`OrgInfo created for user ${user.user_id}`);
+        } catch (error) {
+            console.error("Error creating OrgInfo automatically:", error);
+        }
+    }
+});
+
 module.exports = Register;
 
