@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
+import { forgotPasswordApi } from '../../services/api'
 
 const ForgetPassword = () => {
 
@@ -12,12 +13,10 @@ const ForgetPassword = () => {
         setEmail(e.target.value)
     }
 
-    const handleSubmit = (e) =>{
-        e.preventDefault();
-        if(!email){
-           return toast.error("please fill all the fields")
-        }
-        toast.success("verification link sent")
+    const handleSubmit = async(e) =>{
+        console.log(email)
+        await forgotPasswordApi({email : email})
+
     }
 
     return (
@@ -50,7 +49,7 @@ const ForgetPassword = () => {
 
                     <button
                         onClick={handleSubmit}
-                        className="w-full p-3 bg-[#00605a] text-white font-semibold rounded-md hover:bg-teal-900 transition-colors"
+                        className=" cursor-pointer w-full p-3 bg-[#00605a] text-white font-semibold rounded-md hover:bg-teal-900 transition-colors"
                     >
                         Send Reset Link
                     </button>

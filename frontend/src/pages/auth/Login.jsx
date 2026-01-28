@@ -131,7 +131,7 @@ const LoginInd = () => {
                             </label>
                             </div>
 
-                            <Link to='/reset-password' className="text-teal-700 hover:underline text-sm">
+                            <Link to='/forgot-password' className="text-teal-700 hover:underline text-sm">
                             Forgot Password ?
                             </Link>
                         </div>

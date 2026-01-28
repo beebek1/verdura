@@ -19,6 +19,7 @@ import Campaign from './pages/individual/JoinCampaign.jsx'
 import AboutUs from './pages/accessibilities/FAQs.jsx';
 import ProtectedRoute from './pages/protect/protectedRoute.jsx'
 import OrganizationProfile from './pages/organization/profile.jsx';
+import ResetPassword from './pages/auth/ResetPassword.jsx';
 
 // import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
 
@@ -30,7 +31,7 @@ import OrganizationProfile from './pages/organization/profile.jsx';
 function AppWrapper(){
 
   const location = useLocation();
-  const hideComponents = location.pathname === '/signup' || location.pathname === '/signin' || location.pathname === '/reset-password'
+  const hideComponents = location.pathname === '/signup' || location.pathname.startsWith('/reset-password/') || location.pathname === '/reset-password/:token' || location.pathname === '/forgot-password' || location.pathname === '/signin'
 
   return (
       <>
@@ -41,13 +42,14 @@ function AppWrapper(){
             <Route path='/blogs' element={<Blog/>}/>
             <Route path='/blogs/:blogId' element={<BlogDetails/>}/>
             <Route path='/create-blog/:blogId' element={<CreateBlog/>}/>
-            <Route path='/reset-password' element={<ForgetPassword/>}/>
+            <Route path='/forgot-password' element={<ForgetPassword/>}/>
             <Route path='/signin' element={<Login/>}/>
             <Route path='/signup' element={<SignUpInd/>}/>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/campaigns' element={<Campaign/>}/>
             <Route path='/create-campaign/:CampaignId' element={<CreateCampaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
+            <Route path='/reset-password/:token' element={<ResetPassword/>}/>
             <Route path='/create-campaign' element={<CreateCampaign/>}/>
             <Route path='/climate' element={<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Climate/>}/>}/>
             <Route path='/profile' element= {<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Profile/>}/>}/>

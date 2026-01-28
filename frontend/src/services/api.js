@@ -26,6 +26,9 @@ const config ={
 
 export const createUserApi =(data) => Api.post("/api/auth/register",data)
 export const loginUserApi =(data) => Api.post("/api/auth/login",data)
+export const verifyTokenApi =(data) => Api.post("/api/auth/verify-token",data)
+export const resetPasswordApi =(data) => Api.post("/api/auth/reset-password",data)
+export const forgotPasswordApi =(data) => Api.post("/api/auth/forgot-password",data)
 export const upVoteBlog =(blog_id) => Api.patch(`/api/user/upvote/${blog_id}`,{}, config)
 export const joinCampaignApi =(campaign_id) => Api.patch(`/api/user/join-campaign/${campaign_id}`,{}, config)
 
@@ -44,6 +47,8 @@ export const deleteBlog = async (blog_id) => {
     const res = await Api.delete(`/api/user/delete-blog/${blog_id}`, config); 
     return res.data;
 };
+
+
 
 export const updateBlog = async (blog_id, data) => {
     const res = await Api.put(`/api/user/update-blog/${blog_id}`, data, config); 
