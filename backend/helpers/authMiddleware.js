@@ -5,7 +5,8 @@ module.exports = (req, res, next) =>{
 
     if(!authHeader){
         return res.status(401).json({
-            message: "token missing"
+            message: "token missinggg",
+            token : authHeader
         });
     }
 

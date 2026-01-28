@@ -3,7 +3,6 @@ const router = require('express').Router();
 const {registerUser, userLogin, deleteUser, forgotPassword} = require('../controllers/authController');
 const {verifyEmail, verifyToken} = require('../helpers/verifyEmail');
 const resetPassword = require("../helpers/resetPassword");
-const { blogPost } = require('../controllers/orgControllers/blogController');
 const authMiddleware = require("../helpers/authMiddleware");
 
 //for all users

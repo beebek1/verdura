@@ -186,20 +186,33 @@ const userLogin = async (req, res) =>{
 
 const deleteUser = async (req, res) => {
     try {
-        const id = req.user.id; 
-        
-        // 2. Find the user
+        const id = req.user.id;
+        const { password } = req.body
+
+        if (!req.body) {
+            return res.status(400).json({
+                success: false,
+                message: "No password passed"
+            });
+        }
+
         const user = await Register.findByPk(id);
 
         if (!user) {
-            return res.status(404).json({
+            return res.status(400).json({
                 success: false,
                 message: "User not found"
             });
         }
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Password didn't match"
+            });
+        }
+        
         await user.destroy();
-
-        res.clearCookie("token"); // Replace "token" with your actual cookie name
 
         return res.status(200).json({
             success: true,
@@ -208,13 +221,12 @@ const deleteUser = async (req, res) => {
 
     } catch (error) {
         console.error("Delete Error:", error);
-        return res.status(500).json({ // Changed to 500 as 401 is for Unauthenticated
+        return res.status(500).json({
             success: false,
             message: "Internal server error during account deletion",
             error: error.message
         });
     }
 };
-
 
 module.exports = {registerUser, userLogin, deleteUser, forgotPassword};
