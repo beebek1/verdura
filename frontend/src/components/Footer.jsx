@@ -204,12 +204,12 @@ const Footer = ({ role = 'individual' }) => {
 >
   Privacy Policy
 </a>
-              <a href="#terms" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Terms of Service
-              </a>
-              <a href="#cookies" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Cookie Policy
-              </a>
+<a href="/terms" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+  Terms of Service
+ </a>
+ <a href="/cookies" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+  Cookie Policy
+  </a>
             </div>
           </div>
         </div>
