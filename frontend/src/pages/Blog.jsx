@@ -9,7 +9,6 @@ import { BadRequest } from '../components/Loading';
 
 
 const Blogs = () => {
-
   
   const role = authRole();
 
@@ -46,9 +45,8 @@ const Blogs = () => {
 
   return (
     <>
-
     {role === "organization" && <BlogOrg/>}
-    {role === "individual" || !role &&
+    {(role === "individual" || !role) &&
 
       <div className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-3xl mx-auto">

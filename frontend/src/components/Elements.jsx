@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { deleteAccountApi } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const DangerZone = () => {
+  const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteStep, setDeleteStep] = useState(1); // 1: confirm text, 2: password
   const [confirmText, setConfirmText] = useState('');
@@ -43,8 +45,9 @@ const DangerZone = () => {
   const handleFinalDelete = async() => {
     if (password) {
       try{
-        const res = await deleteAccountApi({password});
+        await deleteAccountApi({password});
         handleCloseModal();
+        localStorage.removeItem('token');
       }catch(error){
         const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Something went wrong. Please try again.';
         setError(errorMessage);
@@ -59,13 +62,11 @@ const DangerZone = () => {
   };
 
   const handleConfirmLogout = () => {
-    // Remove token from localStorage
     localStorage.removeItem('token');
-    // You can also clear other user data if needed
     localStorage.removeItem('user');
+
+    navigate('/sigin')
     
-    // Redirect to login page or home
-    window.location.href = '/signin'; // or use your router's navigation
   };
 
   const handleCancelLogout = () => {

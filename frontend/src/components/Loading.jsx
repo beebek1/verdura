@@ -33,7 +33,7 @@ export function Loading() {
                         A lot tea to spill
                     </h2>
                     <p className="text-gray-600 mb-6">
-                        We couldn't wait to tell you! Just give me a little more time
+                        We couldn't wait to tell you! Just give us a moment...
                     </p>
                 </div>
             </div>

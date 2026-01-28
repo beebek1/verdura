@@ -151,7 +151,7 @@ const ProfileHeader = ({ profile, isEditing}) => {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-emerald-600" />
-                    {profile?.IndividualInfo?.address.split(" ", 2).join(" ") || "no address found"}
+                    {profile?.IndividualInfo?.address? profile.IndividualInfo.address.split(" ", 2).join(" ") : "no address found"}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-4 h-4 text-emerald-600" />

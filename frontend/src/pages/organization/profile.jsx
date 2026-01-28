@@ -5,6 +5,9 @@ import { getOrgById, getOrgRecentActivity, updateOrgPfp, updateOrgProfile } from
 import authRole from '../protect/authRole';
 import Profile from '../individual/profile';
 import { useNavigate } from 'react-router-dom';
+import DangerZone from '../../components/Elements';
+import {Loading, BadRequest} from '../../components/Loading';
+
 
 const ProfileHeader = ({ profile, isEditing, onEdit, onSave, onCancel }) => {
   const [localProfile, setLocalProfile] = useState(profile);
@@ -396,8 +399,8 @@ export default function OrganizationProfile() {
     }
   },[orgDetail])
 
-  if(loading) return <div><p>loading wait a min</p></div>
-  if(!orgDetail) return <div><p>backend isn't loading data</p></div>
+  if (loading) return <Loading></Loading>
+  if (!orgDetail) return <BadRequest></BadRequest>
 
   const togglePreference = (key) => {
     setPreferences(prev => ({ ...prev, [key]: !prev[key] }));
@@ -476,7 +479,7 @@ export default function OrganizationProfile() {
                   <StatsCard 
                     icon={Target} 
                     label="Campaigns" 
-                    value={orgDetail.OrgInfo.total_campaigns}
+                    value={orgDetail.OrgInfo?.total_campaigns}
                     sublabel="Created"
                     color="from-emerald-500 to-teal-500"
                   />
@@ -490,21 +493,21 @@ export default function OrganizationProfile() {
                   <StatsCard 
                     icon={Users} 
                     label="Volunteers" 
-                    value={orgDetail.OrgInfo.total_volunteers}
+                    value={orgDetail.OrgInfo?.total_volunteers}
                     sublabel="Total"
                     color="from-emerald-600 to-teal-500"
                   />
                   <StatsCard 
                     icon={FileText} 
                     label="Blogs" 
-                    value={orgDetail.OrgInfo.total_blogs}
+                    value={orgDetail.OrgInfo?.total_blogs}
                     sublabel="Published"
                     color="from-teal-600 to-emerald-500"
                   />
                   <StatsCard 
                     icon={BarChart3} 
                     label="Impact" 
-                    value={calculateImpactScore(orgDetail.OrgInfo)}
+                    value={calculateImpactScore(orgDetail?.OrgInfo)}
                     sublabel="Score"
                     color="from-emerald-500 to-teal-600"
                   />
@@ -786,22 +789,7 @@ export default function OrganizationProfile() {
                 )};
 
             {activeTab === 'dangerZone' && (
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-red-100/50 to-orange-100/50 rounded-2xl blur-xl" />
-                <div className="relative bg-white rounded-2xl p-8 shadow-lg border border-red-200">
-                  <h2 className="text-xl font-bold text-red-600 mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-                    Danger Zone
-                  </h2>
-                  <div className="space-y-3">
-                    <button onClick={()=>logOutHandler()} className="cursor-pointer w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                      Log Out
-                    </button>
-                    <button onClick={()=>deleteHandler()} className="cursor-pointer w-full text-left px-4 py-3 bg-gray-50 hover:bg-red-50 border border-gray-300 hover:border-red-300 rounded-lg text-red-600 font-medium transition-all duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                      Delete Account
-                    </button>
-                  </div>
-                </div>
-              </div>
+                <DangerZone/>
             )}
           </div>
         </div>
