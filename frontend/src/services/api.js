@@ -27,6 +27,7 @@ const config ={
 export const createUserApi =(data) => Api.post("/api/auth/register",data)
 export const loginUserApi =(data) => Api.post("/api/auth/login",data)
 export const verifyTokenApi =(data) => Api.post("/api/auth/verify-token",data)
+export const verifyEmailApi =(data) => Api.post("/api/auth/verify-email",data)
 export const resetPasswordApi =(data) => Api.post("/api/auth/reset-password",data)
 export const forgotPasswordApi =(data) => Api.post("/api/auth/forgot-password",data)
 export const upVoteBlog =(blog_id) => Api.patch(`/api/user/upvote/${blog_id}`,{}, config)

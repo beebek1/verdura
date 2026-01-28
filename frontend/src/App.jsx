@@ -20,7 +20,7 @@ import AboutUs from './pages/accessibilities/FAQs.jsx';
 import ProtectedRoute from './pages/protect/protectedRoute.jsx'
 import OrganizationProfile from './pages/organization/profile.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
-
+import Verifying from './pages/auth/Verifying.jsx'
 // import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
 
 // import TermsOfService from './pages/accessibilities/TermsOfService.jsx';
@@ -31,7 +31,7 @@ import ResetPassword from './pages/auth/ResetPassword.jsx';
 function AppWrapper(){
 
   const location = useLocation();
-  const hideComponents = location.pathname === '/signup' || location.pathname.startsWith('/reset-password/') || location.pathname === '/reset-password/:token' || location.pathname === '/forgot-password' || location.pathname === '/signin'
+  const hideComponents = location.pathname === '/signup' || location.pathname.startsWith('/reset-password/') || location.pathname.startsWith('/verifying') || location.pathname === '/reset-password/:token' || location.pathname === '/forgot-password' || location.pathname === '/signin'
 
   return (
       <>
@@ -50,6 +50,7 @@ function AppWrapper(){
             <Route path='/create-campaign/:CampaignId' element={<CreateCampaign/>}/>
             <Route path='/create-blog' element={<CreateBlog/>}/>
             <Route path='/reset-password/:token' element={<ResetPassword/>}/>
+            <Route path="/verifying/:token" element={<Verifying/>} />
             <Route path='/create-campaign' element={<CreateCampaign/>}/>
             <Route path='/climate' element={<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Climate/>}/>}/>
             <Route path='/profile' element= {<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Profile/>}/>}/>

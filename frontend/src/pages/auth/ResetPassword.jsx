@@ -58,7 +58,6 @@ const ResetPassword = () => {
         }catch(err){
             console.log("something went wrong", err);
         }
-
     }
 
     return (
