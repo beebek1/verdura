@@ -20,6 +20,9 @@ import AboutUs from './pages/accessibilities/FAQs.jsx';
 import ProtectedRoute from './pages/protect/protectedRoute.jsx'
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Verifying from './pages/auth/Verifying.jsx'
+import { NotFound } from './components/Loading.jsx';
+
+
 // import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
 
 // import TermsOfService from './pages/accessibilities/TermsOfService.jsx';
@@ -53,6 +56,8 @@ function AppWrapper(){
             <Route path='/create-campaign' element={<CreateCampaign/>}/>
             <Route path='/climate'  element={<Climate/>}/>
             <Route path='/profile' element= {<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Profile/>}/>}/>
+
+            <Route path="*" element={<NotFound />} />
 
             {/* <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
             <Route path='/terms' element={<TermsOfService/>}/>

@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 export function Loading() {
     return (
         <div className="min-h-screen bg-white p-8">
@@ -95,4 +97,61 @@ export function BadRequest() {
             </div>
         </div>
     );
+}
+
+export function NotFound() {
+
+    const onClickHandler=()=>{
+        const navigate = useNavigate();
+        navigate('/signin')
+    }
+    return (
+        <div className="min-h-screen bg-gray-50 p-8">
+                <div className="min-h-screen bg-white p-8">
+                    <div className="flex items-center justify-center min-h-[500px]">
+                        <div className="text-center max-w-md">
+                            <div className="mb-6">
+                                <svg className="h-40 w-40 mx-auto" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                                    {/* Trees */}
+                                    <rect x="20" y="70" width="6" height="20" fill="#8B4513" />
+                                    <circle cx="23" cy="65" r="12" fill="#2d6a4f" opacity="0.7" />
+                                    
+                                    <rect x="50" y="65" width="8" height="25" fill="#8B4513" />
+                                    <circle cx="54" cy="58" r="15" fill="#40916c" opacity="0.7" />
+                                    
+                                    <rect x="85" y="70" width="6" height="20" fill="#8B4513" />
+                                    <circle cx="88" cy="65" r="12" fill="#52b788" opacity="0.7" />
+                                    
+                                    {/* Lost person (stick figure) */}
+                                    <circle cx="60" cy="45" r="4" fill="#6B7280">
+                                        <animate attributeName="cx" values="60;65;60" dur="3s" repeatCount="indefinite" />
+                                    </circle>
+                                    <line x1="60" y1="49" x2="60" y2="58" stroke="#6B7280" strokeWidth="2">
+                                        <animate attributeName="x1" values="60;65;60" dur="3s" repeatCount="indefinite" />
+                                        <animate attributeName="x2" values="60;65;60" dur="3s" repeatCount="indefinite" />
+                                    </line>
+                                    
+                                    {/* Question marks floating */}
+                                    <text x="70" y="35" fontSize="16" fill="#9CA3AF" opacity="0.6">
+                                        ?
+                                        <animate attributeName="y" values="35;30;35" dur="2s" repeatCount="indefinite" />
+                                    </text>
+                                </svg>
+                            </div>
+                            
+                            <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>
+                            <h2 className="text-3xl font-bold text-gray-800 mb-3">
+                                Lost in the Forest
+                            </h2>
+                            <p className="text-gray-600 mb-6">
+                                This path doesn't exist in our wilderness. Let's guide you back to familiar trails.
+                            </p>
+                            <button onClick={onClickHandler} className=" cursor-pointer px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium">
+                                Return Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    )
 }

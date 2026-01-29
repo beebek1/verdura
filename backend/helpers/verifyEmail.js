@@ -95,7 +95,7 @@ const verifyToken = async(req, res) =>{
         }
 
         //find user with valid token
-        const user = await RegisterUser.findOne({where: {verificationToken: token}});
+        const user = await Register.findOne({where: {verificationToken: token}});
 
         if(!user){
             return res.status(400).json({

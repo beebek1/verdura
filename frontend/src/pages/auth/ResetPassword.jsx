@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate, useParams} from 'react-router-dom'
 import { resetPasswordApi, verifyTokenApi } from '../../services/api';
 import { useEffect } from 'react';
+import {Loading, BadRequest} from '../../components/Loading';
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -37,8 +38,8 @@ const ResetPassword = () => {
         }
     }, [token, navigate]);
 
-    if(isVerifying) return<p>verifying your token please wait..</p>;
-
+  if (isVerifying) return <Loading></Loading>
+  if (!token) return <BadRequest></BadRequest>
     const changeHandler = (e) =>{
         const{ name, value } = e.target;
 
