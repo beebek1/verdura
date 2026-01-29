@@ -3,17 +3,6 @@ import React from 'react';
 const CookiePolicy = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-gray-800 text-white px-4 sm:px-6 lg:px-8 py-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold">Verdura</div>
-          <div className="flex gap-4 sm:gap-8 text-sm sm:text-base">
-            <a href="#" className="hover:text-gray-300 transition">Blog</a>
-            <a href="#" className="hover:text-gray-300 transition">Campaigns</a>
-            <a href="#" className="hover:text-gray-300 transition">Profile</a>
-          </div>
-        </div>
-      </nav>
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
@@ -152,22 +141,6 @@ const CookiePolicy = () => {
           </p>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold mb-4">Verdura</div>
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mb-4 text-sm">
-              <a href="#" className="hover:text-gray-300 transition">Privacy Policy</a>
-              <a href="#" className="hover:text-gray-300 transition">Terms of Service</a>
-              <a href="#" className="hover:text-gray-300 transition">Cookie Policy</a>
-              <a href="#" className="hover:text-gray-300 transition">Contact</a>
-            </div>
-            <p className="text-sm text-gray-400">copyright © 2025 Impact Venture, Inc.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

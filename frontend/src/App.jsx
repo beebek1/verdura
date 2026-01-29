@@ -16,18 +16,18 @@ import CreateBlog from './pages/organization/CreateBlog.jsx';
 import CreateCampaign from './pages/organization/CreateCampaign.jsx';
 import Climate from './pages/climate.jsx';
 import Campaign from './pages/individual/JoinCampaign.jsx'
-import AboutUs from './pages/accessibilities/FAQs.jsx';
 import ProtectedRoute from './pages/protect/protectedRoute.jsx'
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Verifying from './pages/auth/Verifying.jsx'
 import { NotFound } from './components/Loading.jsx';
 
+import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
+import TermsOfService from './pages/accessibilities/TermsOfService.jsx';
+import CookiePolicy from './pages/accessibilities/CookiePolicy.jsx';
+import AboutUs from './pages/accessibilities/AboutUs.jsx';
+import Contact from './pages/accessibilities/Contact.jsx';
+import FAQs from './pages/accessibilities/FAQs.jsx';
 
-// import PrivacyPolicy from './pages/accessibilities/PrivacyPolicy.jsx';  
-
-// import TermsOfService from './pages/accessibilities/TermsOfService.jsx';
-
-// import CookiePolicy from './pages/accessibilities/CookiePolicy.jsx';
 
 
 function AppWrapper(){
@@ -58,10 +58,12 @@ function AppWrapper(){
             <Route path='/profile' element= {<ProtectedRoute allowedRoles={["individual", "organization"]} element={<Profile/>}/>}/>
 
             <Route path="*" element={<NotFound />} />
-
-            {/* <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
+            <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
             <Route path='/terms' element={<TermsOfService/>}/>
-            <Route path='/cookies' element={<CookiePolicy/>}/> */}
+            <Route path='/cookies' element={<CookiePolicy/>}/>
+            <Route path='/about' element={<AboutUs/>}/>
+            <Route path='/contact' element={<Contact/>}/>
+            <Route path='/faq' element={<FAQs/>}/>
 
         </Routes>
       {!hideComponents && <Footer/>}

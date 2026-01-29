@@ -30,14 +30,12 @@ const Footer = ({ role = 'individual' }) => {
     },
     individual: {
       platform: [
-        { label: 'Dashboard', to: '/inddashboard' },
-        { label: 'Campaigns', to: '/joincampaign' },
-        { label: 'My Impact', to: '/my-impact' },
-        { label: 'Blog', to: '/blog' }
+        { label: 'Dashboard', to: '/' },
+        { label: 'Campaigns', to: '/campaigns' },
+        { label: 'Blog', to: '/blogs' }
       ],
       company: [
         { label: 'About Us', to: '/about' },
-        { label: 'How It Works', to: '/how-it-works' },
         { label: 'Contact', to: '/contact' },
         { label: 'FAQs', to: '/faq' }
       ]
