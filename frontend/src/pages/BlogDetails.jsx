@@ -81,7 +81,7 @@ const BlogDetail = () => {
         <div className="max-w-4xl mx-auto px-4 py-6">
           <button 
             onClick={navigateRoute}
-            className="flex items-center gap-2 text-teal-600 hover:text-teal-700 mb-4"
+            className="cursor-pointer flex items-center gap-2 text-teal-600 hover:text-teal-700 mb-4"
           >
             <ArrowLeft size={20} />
             <span>Back to Blogs</span>

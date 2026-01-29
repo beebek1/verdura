@@ -197,15 +197,19 @@ const Footer = ({ role = 'individual' }) => {
               © {new Date().getFullYear()} Verdu. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <a href="#privacy" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Privacy Policy
-              </a>
-              <a href="#terms" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Terms of Service
-              </a>
-              <a href="#cookies" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Cookie Policy
-              </a>
+              <a 
+  href="/privacy-policy" 
+  className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" 
+  style={{ fontFamily: "'Inter', sans-serif" }}
+>
+  Privacy Policy
+</a>
+<a href="/terms" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+  Terms of Service
+ </a>
+ <a href="/cookies" className="text-gray-400 hover:text-emerald-400 text-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif" }}>
+  Cookie Policy
+  </a>
             </div>
           </div>
         </div>

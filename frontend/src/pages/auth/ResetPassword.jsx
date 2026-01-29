@@ -51,6 +51,7 @@ const ResetPassword = () => {
 
     const submitHandler = async() =>{
         try{
+            console.log("jhukkera ksri hunxa")
             if(password.password !== password.confirmPassword){
                 return console.log("confirm password didn't match ")
             }
