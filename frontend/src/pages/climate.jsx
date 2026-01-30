@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Cloud, Wind, Droplets, Eye, Gauge, AlertTriangle, TrendingUp, ThermometerSun, Leaf, Factory, Car, Search, RefreshCw } from 'lucide-react';
-import { getIndById, getLatestWeather } from '../services/api';
+import { getIndById, getLatestWeather, getOrgById } from '../services/api';
 import getUserRole from './protect/authRole';
 import {Loading, BadRequest} from '../components/Loading';
 
@@ -138,29 +138,38 @@ export default function ClimateDashboard() {
   };
 
   // Single useEffect to handle everything
-  useEffect(() => {
+useEffect(() => {
     const initializeWeather = async () => {
       try {
+        setLoading(true); // Ensure loading starts
+        let finalCity = "";
+
         if (role) {
-          // User is logged in - fetch from their profile
-          const localResponse = await getIndById();
-          const userLocation = localResponse?.data?.individual?.IndividualInfo?.address;
-          
-          if (userLocation) {
-            setLocation(userLocation);
-            const city = userLocation.split(" ")[2];
-            setWeatherLocation(city);
-            await getWeather(city);
+          let rawAddress = "";
+          if (role === "individual") {
+            const res = await getIndById();
+            rawAddress = res?.data?.individual?.IndividualInfo?.address;
+          } else if (role === "organization") {
+            const res = await getOrgById();
+            rawAddress = res?.data?.organization?.OrgInfo?.address;
+          }
+
+          if (rawAddress) {
+            setLocation(rawAddress); 
+            finalCity = rawAddress.split(" ")[2] || rawAddress; // Use the local variable here!
           }
         } else {
-          const city = await getLocation();
-          setWeatherLocation(city);
+          finalCity = await getLocation();
+        }
 
-          await getWeather(city);
+        if (finalCity) {
+          setWeatherLocation(finalCity);
+          await getWeather(finalCity); // Now this will definitely run
         }
       } catch (error) {
         console.error("Failed to initialize weather", error);
-        setLoading(false);
+      } finally {
+        setLoading(false); // Always stop loading, even on error
       }
     };
 

@@ -16,7 +16,7 @@ import CreateBlog from './pages/organization/CreateBlog.jsx';
 import CreateCampaign from './pages/organization/CreateCampaign.jsx';
 import Climate from './pages/climate.jsx';
 import Campaign from './pages/individual/JoinCampaign.jsx'
-import ProtectedRoute from './pages/protect/protectedRoute.jsx'
+import {ProtectedRoute, PublicRoute} from './pages/protect/protectedRoute.jsx'
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Verifying from './pages/auth/Verifying.jsx'
 import { NotFound } from './components/Loading.jsx';
@@ -39,14 +39,17 @@ function AppWrapper(){
       <>
       {!hideComponents && <Navbar/>}
         <Routes>
+
+          <Route element={<PublicRoute />}>
+            <Route path='/signin' element={<Login/>}/>
+            <Route path='/signup' element={<SignUpInd/>}/>
+          </Route>
           
             {/* <Route path='/profile' element={<Profile/>}/> */}
             <Route path='/blogs' element={<Blog/>}/>
             <Route path='/blogs/:blogId' element={<BlogDetails/>}/>
             <Route path='/create-blog/:blogId' element={<CreateBlog/>}/>
             <Route path='/forgot-password' element={<ForgetPassword/>}/>
-            <Route path='/signin' element={<Login/>}/>
-            <Route path='/signup' element={<SignUpInd/>}/>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/campaigns' element={<Campaign/>}/>
             <Route path='/create-campaign/:CampaignId' element={<CreateCampaign/>}/>

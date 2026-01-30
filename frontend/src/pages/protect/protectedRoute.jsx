@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import getUserRole from "./authRole";
  
 const ProtectedRoute = ({ element, allowedRoles }) => {
@@ -11,5 +11,15 @@ const ProtectedRoute = ({ element, allowedRoles }) => {
  
   return element;
 };
- 
-export default ProtectedRoute;
+
+
+const PublicRoute = () => {
+    const token = localStorage.getItem('token'); // or your auth check logic
+
+    if (token) {
+        return <Navigate to="/" replace />;
+    }
+    return <Outlet />;
+};
+
+export {PublicRoute, ProtectedRoute};
