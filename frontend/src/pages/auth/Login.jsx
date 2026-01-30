@@ -3,11 +3,13 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { loginUserApi } from '../../services/api';
+import LoaderButton from '../../components/BtnCompo';
 
 const LoginInd = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
-
+    const [loading, setIsLoading] = useState(false);
+    
     const navigate= useNavigate();
     
     const [formData, setFormData] = useState({
@@ -38,6 +40,7 @@ const LoginInd = () => {
 
     const handleSubmit = async (e) => {
         if (!validate()) return;
+        setIsLoading(true)
         try {
 
             const response = await loginUserApi(formData);
@@ -50,6 +53,8 @@ const LoginInd = () => {
 
         } catch (error) {
             toast.error(error?.response?.data?.message || "something terribly went wrong");
+        }finally{
+            setIsLoading(false)
         }
     }
 
@@ -137,12 +142,12 @@ const LoginInd = () => {
                         </div>
 
                         {/* Submit Button */}
-                        <button
-                            onClick={handleSubmit}
-                            className="w-full bg-teal-800 hover:bg-teal-900 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 uppercase tracking-wide"
-                        >
-                            Create an Account
-                        </button>
+                        <LoaderButton 
+                            text="Login" 
+                            loadingText="Logging In..." 
+                            isLoading={loading} 
+                            onClick={handleSubmit} 
+                        />
 
                         {/* Sign In Link */}
                         <div className="text-center pt-4">

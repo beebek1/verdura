@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams} from 'react-router-dom'
 import { resetPasswordApi, verifyTokenApi } from '../../services/api';
 import { useEffect } from 'react';
 import {Loading, BadRequest} from '../../components/Loading';
+import LoaderButton from '../../components/BtnCompo';
+import toast from 'react-hot-toast';
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -11,6 +13,7 @@ const ResetPassword = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const[isVerifying, setIsVerifying] = useState(true)
+    const [loading, setIsLoading] = useState(false);
     const[isTokenValid, setIsTokenValid] = useState(false)
     const [password, setPassword] = useState({
         password : '',
@@ -22,9 +25,8 @@ const ResetPassword = () => {
             try{
                 await verifyTokenApi({token : token})
                 setIsTokenValid(true)
-            }catch(err){
-                alert("invalid or expired token")
-                console.log("error", err)
+            }catch(error){
+                toast.error(error?.response?.data?.message)
                 navigate('/signin')
             }finally{
                 setIsVerifying(false)
@@ -39,7 +41,7 @@ const ResetPassword = () => {
     }, [token, navigate]);
 
   if (isVerifying) return <Loading></Loading>
-  if (!token) return <BadRequest></BadRequest>
+
     const changeHandler = (e) =>{
         const{ name, value } = e.target;
 
@@ -50,15 +52,18 @@ const ResetPassword = () => {
     }
 
     const submitHandler = async() =>{
+        setIsLoading(true)
         try{
-            console.log("jhukkera ksri hunxa")
-            if(password.password !== password.confirmPassword){
-                return console.log("confirm password didn't match ")
+            if(password.password !== password.confirmPassword || !password.password){
+                return toast.error("confirm password didn't match")
+
             }
             await resetPasswordApi({token : token, password : password.password})
             navigate('/signin')
         }catch(err){
             console.log("something went wrong", err);
+        }finally{
+            setIsLoading(false)
         }
     }
 
@@ -146,12 +151,12 @@ const ResetPassword = () => {
                                     </button>
                                 </div>
                             </div>
-
-                            <button
-                                className="cursor-pointer w-full p-3 bg-[#00605a] text-white font-semibold rounded-md hover:bg-teal-900 transition-colors" onClick={submitHandler}
-                            >
-                                Reset Password
-                            </button>
+                            <LoaderButton 
+                                text="Submit" 
+                                loadingText="Submitting..." 
+                                isLoading={loading} 
+                                onClick={submitHandler} 
+                            />
 
                             <div className="text-center mt-9">
                                 <span className="text-gray-600">Remember your password? </span>

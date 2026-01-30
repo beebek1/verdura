@@ -2,11 +2,12 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast, Toaster } from 'react-hot-toast'
 import { forgotPasswordApi } from '../../services/api'
+import LoaderButton from '../../components/BtnCompo';
 
 const ForgetPassword = () => {
 
     const navigate = useNavigate()
-
+    const [loading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('')
 
     const handlechange = (e) => {
@@ -14,9 +15,19 @@ const ForgetPassword = () => {
     }
 
     const handleSubmit = async(e) =>{
-        console.log(email)
-        await forgotPasswordApi({email : email})
-
+        if(!email){
+            return toast.error("enter valid email address")
+        }
+        setIsLoading(true)
+        try{
+            const res = await forgotPasswordApi({email : email})
+            toast.success(res?.data?.message)
+            navigate("/signin")
+        }catch(err){
+            toast.error(error?.response?.data?.message || "something terribly went wrong");
+        }finally{
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -47,19 +58,19 @@ const ForgetPassword = () => {
                         />
                     </div>
 
-                    <button
-                        onClick={handleSubmit}
-                        className=" cursor-pointer w-full p-3 bg-[#00605a] text-white font-semibold rounded-md hover:bg-teal-900 transition-colors"
-                    >
-                        Send Reset Link
-                    </button>
+                    <LoaderButton 
+                        text="Verify" 
+                        loadingText="Verifying..." 
+                        isLoading={loading} 
+                        onClick={handleSubmit} 
+                    />
 
-                        <div className="text-center mt-9">
-                            <span className="text-gray-600">Remember your password?  </span>
-                            <Link to='/signin' className="text-teal-700 hover:underline font-medium">
-                                Sign In
-                            </Link>
-                        </div>
+                    <div className="text-center mt-9">
+                        <span className="text-gray-600">Remember your password?  </span>
+                        <Link to='/signin' className="text-teal-700 hover:underline font-medium">
+                            Sign In
+                        </Link>
+                    </div>
                 </div>
             </div>
 

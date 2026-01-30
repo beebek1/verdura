@@ -111,7 +111,7 @@ describe(`login user`, () => {
         const res = await request(BASE_URL)
             .post(`/api/auth/login`)
             .send({
-                email: 'unique1769504770815@gmail.com',
+                email: 'unique1769503721990@gmail.com',
                 password: 'Pa$$w0rd!'
             });
 
@@ -158,7 +158,7 @@ describe(`deleteUser`, () => {
 
     beforeAll(() => {
         testToken = jwt.sign(
-            { id: 9, role: 'individual' },
+            { id: 87, role: 'individual' },
             process.env.JWT_SECRET, 
             { expiresIn: '1h' }
         );

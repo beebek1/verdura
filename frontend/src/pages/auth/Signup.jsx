@@ -2,12 +2,14 @@ import React, { act, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast, Toaster } from 'react-hot-toast'
 import { createUserApi } from '../../services/api';
+import LoaderButton from '../../components/BtnCompo';
 
 export default function SignupIn() {
   const [activeTab, setActiveTab] = useState('individual');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
 
@@ -50,6 +52,7 @@ export default function SignupIn() {
   // final submit
   const handleSubmit = async() => {
     if(!isVerified()) return
+    setIsLoading(true);
 
     //data format while sending to backend
     const sendData = {
@@ -67,6 +70,8 @@ export default function SignupIn() {
 
     }catch(error){
       return toast.error(error?.response?.data?.message || "something went heavily wrong")
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -236,12 +241,12 @@ export default function SignupIn() {
                 </div>
 
                 {/* Submit Button */}
-                <button
-                  onClick={handleSubmit}
-                  className="cursor-pointer w-full bg-teal-800 hover:bg-teal-900 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 uppercase tracking-wide"
-                >
-                  Create an Account
-                </button>
+                <LoaderButton 
+                  text="Register" 
+                  loadingText="Registering..." 
+                  isLoading={loading} 
+                  onClick={handleSubmit} 
+                />
 
                 {/* Sign In Link */}
                 <div className="text-center pt-4">
@@ -391,12 +396,12 @@ export default function SignupIn() {
                 </div>
 
                 {/* Submit Button */}
-                <button
-                  onClick={handleSubmit}
-                  className="cursor-pointer w-full bg-teal-800 hover:bg-teal-900 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 uppercase tracking-wide"
-                >
-                  Verify Account
-                </button>
+                <LoaderButton 
+                  text="Register" 
+                  loadingText="Registering..." 
+                  isLoading={loading} 
+                  onClick={handleSubmit} 
+                />
 
                 {/* Sign In Link */}
                 <div className="text-center">
