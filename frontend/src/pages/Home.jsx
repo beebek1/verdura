@@ -1,26 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import coverPic from '../assets/coverpic.png';
 import footerImage from '../assets/footerImage.jpeg';
 import cleanImage from '../assets/clean.png';
 import pollutionImage from '../assets/pollution.png';
 import deadImage from '../assets/dead.png';
+import { getAllBlogs} from '../services/api';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const cards = [
-    {
-      image: "https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=800&q=80",
-      text: "Human activities are pushing countless species toward extinction"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80",
-      text: "The average person consumes nearly a credit card's worth of microplastics every week through food, water, and air"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&q=80",
-      text: "More deaths result from air pollution annually than from war and violence combined"
-    }
-  ];
+// ADDED this useEffect to fetch blogs from database
+useEffect(() => {
+  const fetchBlogs = async () => {
+  try {
+    const data = await getAllBlogs();
+    const mappedBlogs = data
+      .filter(blog => blog.cover_image) // Only include blogs with images
+      .map(blog => ({
+        id: blog.blog_id,
+        title: blog.title,
+        image: blog.cover_image,
+        excerpt: blog.content?.slice(0, 150) + '...',
+      }));
+    setBlogs(mappedBlogs);
+  } catch (err) {
+    console.error("Failed to load blogs", err);
+  } finally {
+    setLoading(false);
+  }
+};
+  fetchBlogs();
+}, []);
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -60,32 +72,47 @@ const Home = () => {
           </button>
         </div>
 
-        {/* ================= SEE MORE STRIP ================= */}
-        <div className="absolute -bottom-32 left-0 right-0 z-10 px-20">
-          <div className="flex items-center gap-6 mb-6">
-            <h5 className="text-white font-bold text-sm tracking-wider">SEE MORE</h5>
-            <div className="flex-1 h-[1px] bg-white/50" />
-          </div>
+          {/* ================= SEE MORE STRIP - NOW SHOWING BLOGS ================= */}
+<div className="absolute -bottom-32 left-0 right-0 z-10 px-20">
+  <div className="flex items-center gap-6 mb-6">
+    <h5 className="text-white font-bold text-sm tracking-wider">LATEST BLOGS</h5>
+    <div className="flex-1 h-[1px] bg-white/50" />
+  </div>
 
-          <div className="flex gap-4 overflow-hidden">
-            {[
-              { img: pollutionImage, text: "Human activities are pushing countless species toward extinction" },
-              { img: cleanImage, text: "The average person consumes nearly a credit card's worth of microplastics every week through food, water, and air" },
-              { img: deadImage, text: "Rising sea levels threaten coastal communities" }
-            ].map((item, i) => (
-              <div key={i} className="bg-white flex-shrink-0 w-64 overflow-hidden shadow-lg">
-                <img
-                  src={item.img}
-                  alt={`preview-${i}`}
-                  className="w-full h-40 object-cover"
-                />
-                <div className="p-4">
-                  <p className="text-gray-800 text-sm leading-relaxed">{item.text}</p>
-                </div>
-              </div>
-            ))}
+  <div className="flex gap-8 overflow-hidden">
+    {loading ? (
+      <p className="text-white">Loading blogs...</p>
+    ) : blogs.length > 0 ? (
+      blogs.slice(0, 5).map((blog) => (
+        <Link 
+          key={blog.id}
+          to="/blogs"
+          className="bg-white flex-shrink-0 w-80 overflow-hidden shadow-lg cursor-pointer 
+                     hover:shadow-2xl hover:scale-105 hover:-translate-y-2 
+                     transition-all duration-300 ease-in-out rounded-lg group block"
+        >
+          <div className="overflow-hidden">
+            <img
+              src={blog.image}
+              alt={blog.title}
+              className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+            />
           </div>
-        </div>
+          <div className="p-5">
+            <h3 className="text-gray-900 font-bold text-base mb-3 group-hover:text-yellow-600 transition-colors duration-300">
+              {blog.title}
+            </h3>
+            <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+              {blog.excerpt}
+            </p>
+          </div>
+        </Link>
+      ))
+    ) : (
+      <p className="text-white">No blogs available yet.</p>
+    )}
+  </div>
+</div>
       </section>
 
       {/* ================= SPACER ================= */}

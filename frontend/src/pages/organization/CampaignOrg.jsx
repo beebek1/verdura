@@ -3,6 +3,7 @@ import { Search, Edit, Users, Calendar, Trash2 } from 'lucide-react';
 import { Link,useNavigate } from 'react-router-dom';
 import { getAllCampaigns,deleteCampaign } from '../../services/api';
 import toast, {Toaster} from 'react-hot-toast';
+import CampaignDetail from '../../components/CampaignDetails';
 
 
 const getStatusColor = (status) => {
@@ -30,6 +31,8 @@ export default function VerduraCampaign() {
   const [loading, setLoading] = useState(true);
   const [error,setError] = useState(false);
   const navigate = useNavigate();
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchCampaign = async () => {
@@ -81,10 +84,15 @@ export default function VerduraCampaign() {
     }
   };
 
-  const handleViewDetails = (campaignId) => {
-    console.log('Viewing campaign details:', campaignId);
-    // navigate to details page
+  const handleViewDetails = (campaign) => {
+    setSelectedCampaign(campaign);
+    setIsModalOpen(true);
   };
+
+  const handleCloseModal = () => {
+  setIsModalOpen(false);
+  setSelectedCampaign(null);
+};
 
  const filteredCampaigns = campaigns.filter(c => {
   const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -99,6 +107,12 @@ export default function VerduraCampaign() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-slate-100">
       <Toaster/>
+         {/* Campaign Detail Modal */}
+    <CampaignDetail 
+      campaign={selectedCampaign}
+      isOpen={isModalOpen}
+      onClose={handleCloseModal}
+    />
       {/* Hero Section with Background Image */}
       <div 
         className="relative bg-cover bg-center py-20"
@@ -238,7 +252,7 @@ export default function VerduraCampaign() {
                 {/* Action Buttons */}
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                   <button
-                    onClick={() => handleViewDetails(c.campaign_id)}
+                    onClick={() => handleViewDetails(c)}
                     className="flex-1 px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium flex items-center justify-center gap-2 shadow-sm"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
